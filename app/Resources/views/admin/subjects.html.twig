@@ -1,0 +1,69 @@
+{% block title %}Przedmioty{% endblock %}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1 class="text-center">Słownik przedmiotów</h1>
+    {% if librarySubjects is not empty %}
+    <table class="table">
+	<thead class="thead-dark">
+	<tr>
+	    <th>Nazwa</th>
+	    <th>Opis</th>
+	    <th>Edytuj</th>
+	    <th>Usuń</th>
+	</tr>
+	</thead>
+	<tbody>
+	{% for i in 0..librarySubjects|length-1 %}
+	    <tr>
+		<td>{{ librarySubjects[i].nazwa }}</td>
+		<td>{{ librarySubjects[i].opis }}</td>
+		<td><a class="btn btn-outline-primary" href="{{ url('subjects',{'id':librarySubjects[i].id} ) }}">edytuj</a></td>
+		<td>
+		    <a class="btn btn-outline-danger" href="{{ url('subjects',{'id':librarySubjects[i].id,'delete':1} ) }}">usuń</a>
+		</td>
+	    </tr>
+	{% endfor %}
+	</tbody>
+    </table>
+    {% else %}
+	brak
+    {% endif %}
+    <h2>Dodawanie/edytowanie</h2>
+    {{form(formLibrarySubjects)}}
+    
+    <h1 class="text-center">Przedmioty</h1>
+    {% if subjects is not empty %}
+    <table class="table">
+	<thead class="thead-dark">
+	<tr>
+	    <th>Prowadzący</th>
+	    <th>Przedmiot</th>
+	    <th>Edytuj</th>
+	    <th>Usuń</th>
+	</tr>
+	</thead>
+	<tbody>
+	{% for i in 0..subjects|length-1 %}
+	    <tr>
+		<td>{{ subjects[i].prowadzacy.imie }} {{ subjects[i].prowadzacy.nazwisko }}</td>
+		<td>{{ subjects[i].przedmiot.nazwa }}</td>
+		<td>
+		    <a class="btn btn-outline-primary" href="{{ url('subjects',{'id':subjects[i].id,'form':'przedmioty'} ) }}">
+			edytuj
+		    </a>
+		</td>
+		<td>
+		    <a class="btn btn-outline-danger" href="{{ url('subjects',{'id':subjects[i].id,
+		    'form':'przedmioty','delete':1} ) }}">usuń</a>
+		</td>
+	    </tr>
+	{% endfor %}
+	</tbody>
+    </table>
+    {% else %}
+	brak
+    {% endif %}
+    <h2>Dodawanie/edytowanie</h2>
+    {{form(formSubjects)}}
+{% endblock %}

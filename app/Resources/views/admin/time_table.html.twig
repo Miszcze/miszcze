@@ -1,0 +1,214 @@
+{% block title %}Terminarz{% endblock %}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1 class="text-center">Terminarz</h1>
+    {% if timeTable is not empty %}
+    <table class="table">
+	<thead class="thead-dark">
+	<tr>
+	    <th>Sala</th>
+	    <th>Godzina</th>
+	    <th>Dzień tygodnia</th>
+	    <th>Przedmiot - prowadzący</th>
+	    <th>Klasa</th>
+	    <th>Typ</th>
+	    <th>Początek</th>
+	    <th>Koniec</th>
+	    <th>Opis</th>
+	    <th>Edytuj</th>
+	    <th>Usuń</th>
+	</tr>
+	</thead>
+	<tbody>
+	{% for i in 0..timeTable|length-1 %}
+	    <tr>
+		<td>{{ timeTable[i].sala.nrSali }}</td>
+		<td>{{ timeTable[i].godzina.poczatek|date("G:i") }}</td>
+		<td>{{ timeTable[i].dzienTygodnia }}</td>
+		<td>
+		    {{ timeTable[i].ktoCo.przedmiot.nazwa }} - 
+		    {{ timeTable[i].ktoCo.prowadzacy.imie }} {{ timeTable[i].ktoCo.prowadzacy.nazwisko }}
+		</td>
+		<td>{{ timeTable[i].klasa.poziom }}{{ timeTable[i].klasa.klasa }}</td>
+		<td>{{ timeTable[i].typ }}</td>
+		<td>{{ timeTable[i].poczatek|date("Y-m-d") }}</td>
+		<td>{{ timeTable[i].koniec|date("Y-m-d") }}</td>
+		<td>{{ timeTable[i].opis }}</td>
+		<td><a class="btn btn-outline-primary" href="{{ url('time_table',{'id':timeTable[i].id} ) }}">edytuj</a></td>
+		<td><a class="btn btn-outline-danger" href="{{ url('time_table',{'id':timeTable[i].id,'delete':1} ) }}">usuń</a></td>
+	    </tr>
+	{% endfor %}
+	</tbody>
+    </table>
+    {% else %}
+	brak
+    {% endif %}
+    
+    <div class="col-sm-3 p-0">
+	<div class="input-group mb-2">
+	    <div class="input-group-prepend">
+		<div class="input-group-text border-dark text-dark">Plan lekcji</div>
+	    </div>
+	    <select onchange="location=this.value;" class="form-control custom-select border-dark text-primary">
+		<option value="{{url('time_table')}}">Wybierz klasę</option>
+		{% for class in classes %}
+		    <option value="{{url('time_table',{'numberClass':class.poziom,'class':class.klasa})}} ">
+			{{class.poziom}}{{class.klasa}}</option>
+		{% endfor %}
+	    </select>
+	</div>
+    </div>
+    
+    
+    {% if lessons is not empty %}
+	<h2>Klasa {{ app.request.get('numberClass') }}{{ app.request.get('class') }}</h2>
+	<table class="table table-striped">
+	    <thead class="">
+	    <tr>
+		<th>Godz.</th>
+		<th>Poniedziałek</th>
+		<th>Wtorek</th>
+		<th>Środa</th>
+		<th>Czwartek</th>
+		<th>Piątek piąteczek piątunio</th>
+		<th>Sobota</th>
+	    </tr>
+	    </thead>
+	    <tbody>
+	    {% for i in 0..lessonHours|length-1 %}
+		<tr>
+		    <td>
+			{{ lessonHours[i].poczatek|date('H:i') }} - 
+			{{ lessonHours[i].poczatek|date_modify("+45 min")|date('H:i') }}
+		    </td>
+		    <td>
+			{% if lessons[i]['poniedzialek'] is not null %}
+			    {{ lessons[i]['poniedzialek'].ktoCo.przedmiot.nazwa }}
+			    {#<br>
+			    <a href="{{ url('time_table',{'id':lessons[i]['poniedzialek'].id} ) }}">
+				edytuj
+			    </a>
+			    /
+			    <a href="{{ url('time_table',{'id':lessons[i]['poniedzialek'].id,'delete':1} ) }}">
+				usuń
+			    </a>#}
+			{% endif %}
+		    </td>
+		    <td>
+			{% if lessons[i]['wtorek'] is not null %}
+			    {{ lessons[i]['wtorek'].ktoCo.przedmiot.nazwa }}
+			{% endif %}
+		    </td>
+		    <td>
+			{% if lessons[i]['sroda'] is not null %}
+			    {{ lessons[i]['sroda'].ktoCo.przedmiot.nazwa }}
+			{% endif %}
+		    </td>
+		    <td>
+			{% if lessons[i]['czwartek'] is not null %}
+			    {{ lessons[i]['czwartek'].ktoCo.przedmiot.nazwa }}
+			{% endif %}
+		    </td>
+		    <td>
+			{% if lessons[i]['piatek'] is not null %}
+			    {{ lessons[i]['piatek'].ktoCo.przedmiot.nazwa }}
+			{% endif %}
+		    </td>
+		    <td>
+			{% if lessons[i]['sobota'] is not null %}
+			    {{ lessons[i]['sobota'].ktoCo.przedmiot.nazwa }}
+			{% endif %}
+		    </td>
+		</tr>
+	    {% endfor %}
+	    </tbody>
+	</table>
+	<div class="alert alert-info">
+	    <b>Info:</b> w przypadku dwóch lub więcej terminów dla danej klasy, dnia tygodnia oraz godziny, 
+	    wyświetli się najstarszy termin dla danego miejsca.
+	</div>
+    {% endif %}
+    
+    <br>
+    <h2>{% if app.request.get('id')==0 %}Dodawanie {% else %}Edytowanie {% endif %} terminu</h2>
+    {{form_start(form)}}
+    <div class="form-group">
+	<div class="input-group mb-2">
+	    <div class="input-group-prepend">
+		<div class="input-group-text">Sala</div>
+	    </div>
+	    {{form_widget(form.sala,{'attr':{'class':'form-control custom-select '}})}}
+	</div>
+    </div>
+    <div class="form-group">
+	<div class="input-group mb-2">
+	    <div class="input-group-prepend">
+		<div class="input-group-text">Godzina</div>
+	    </div>
+	    {{form_widget(form.godzina,{'attr':{'class':'form-control custom-select '}})}}
+	</div>
+    </div>
+	    <div class="form-group">
+	<div class="input-group mb-2">
+	    <div class="input-group-prepend">
+		<div class="input-group-text">Dzień tygodnia</div>
+	    </div>
+	    {{form_widget(form.dzienTygodnia,{'attr':{'class':'form-control custom-select '}})}}
+	</div>
+    </div>
+    <div class="form-group">
+	<div class="input-group mb-2">
+	    <div class="input-group-prepend">
+		<div class="input-group-text">Przedmiot prowadzący</div>
+	    </div>
+	    {{form_widget(form.ktoCo,{'attr':{'class':'form-control custom-select '}})}}
+	</div>
+    </div>
+    <div class="form-group">
+	<div class="input-group mb-2">
+	    <div class="input-group-prepend">
+		<div class="input-group-text">Klasa</div>
+	    </div>
+	    {{form_widget(form.klasa,{'attr':{'class':'form-control custom-select '}})}}
+	</div>
+    </div>
+    <div class="form-group">
+	<div class="input-group mb-2">
+	    <div class="input-group-prepend">
+		<div class="input-group-text">Typ</div>
+	    </div>
+	    {{form_widget(form.typ,{'attr':{'class':'form-control custom-select '}})}}
+	</div>
+    </div>
+    <div class="form-group">
+	<div class="input-group mb-2">
+	    <div class="input-group-prepend">
+		<div class="input-group-text">Początek</div>
+	    </div>
+	    {{form_widget(form.poczatek,{'attr':{'class':'form-control'}})}}
+	</div>
+    </div>
+    <div class="form-group">
+	<div class="input-group mb-2">
+	    <div class="input-group-prepend">
+		<div class="input-group-text">Koniec</div>
+	    </div>
+	    {{form_widget(form.koniec,{'attr':{'class':'form-control'}})}}
+	</div>
+    </div>    
+    <div class="form-group">
+	<div class="input-group mb-2">
+	    <div class="input-group-prepend">
+		<div class="input-group-text">Opis</div>
+	    </div>
+	    {{form_widget(form.opis,{'attr':{'class':'form-control'}})}}
+	</div>
+    </div>
+    {{form_widget(form.submit,{'attr':{'class':'btn btn-primary','label':'default'},'label':'Wyślij'})}}
+    {{form_end(form)}}
+    
+    
+    <br>
+    {% if error is not empty %}<div class="alert alert-danger">{{error}}</div>{% endif %}
+{% endblock %}

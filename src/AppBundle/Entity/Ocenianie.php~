@@ -1,0 +1,74 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Ocenianie
+ *
+ * @ORM\Table(name="ocenianie", indexes={@ORM\Index(name="FK_ocenianie_uczniowie_idx", columns={"uczen"}), @ORM\Index(name="FK_ocenianie_przedmioty_idx", columns={"przedmiot"})})
+ * @ORM\Entity
+ */
+class Ocenianie
+{
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="semestr", type="string", length=10, nullable=true)
+     */
+    private $semestr;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="terminowosc", type="integer", nullable=false)
+     */
+    private $terminowosc = '0';
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="wiedza", type="integer", nullable=false)
+     */
+    private $wiedza = '0';
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="kulturalnosc", type="integer", nullable=false)
+     */
+    private $kulturalnosc = '0';
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var \AppBundle\Entity\Uczniowie
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Uczniowie")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="uczen", referencedColumnName="id")
+     * })
+     */
+    private $uczen;
+
+    /**
+     * @var \AppBundle\Entity\Przedmioty
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Przedmioty")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="przedmiot", referencedColumnName="id")
+     * })
+     */
+    private $przedmiot;
+
+
+}
+

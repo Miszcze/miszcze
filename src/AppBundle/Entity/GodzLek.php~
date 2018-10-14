@@ -1,0 +1,33 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * GodzLek
+ *
+ * @ORM\Table(name="godz_lek")
+ * @ORM\Entity
+ */
+class GodzLek
+{
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="poczatek", type="datetime", nullable=false)
+     */
+    private $poczatek;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+
+}
+

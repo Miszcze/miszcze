@@ -1,0 +1,39 @@
+{% block title %}Gadu Gadu{% endblock %}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Gadu Gadu</h1>
+    {% if messages is not empty %}
+	<table>
+	    <tr><td>Nadawca</td><td>Tytuł</td><td>Wiadomość</td><td>Wiadomość</td></tr>
+	{% for message in messages %}
+	    <tr>
+		<td>{{message.nadawca.login}}</td>
+		<td>{{message.tytul}}</td>
+		<td><a href="{{url('message',{'id':message.id})}}">czytaj</a></td>
+		<td>
+		    <a href="{{url('message',{'id':message.id,'delete':1,
+		    'idRoute':app.request.get('id')})}}">usuń</a>
+		</td>
+	    </tr>
+	{% endfor %}
+	</table>
+    {% elseif app.request.get('id')!=0 %}
+	Brak wiadomości.<br>
+    {% elseif app.request.get('id')==0 %}
+	Brak nowych wiadomości.<br>
+    {% endif %}
+    
+    Użytkownik:<select onchange="location=this.value;">
+	<option value="{{url('messages')}}">Wybierz użytkownika</option>
+	{% for user in users %}
+	<option value="{{url('messages',{'id':user.id})}}" 
+	    {% if app.request.get('id')==user.id %}selected{% endif %}>
+	    {{user.login}} | {{user.mail}}</option>
+	{% endfor %}
+    </select>
+    
+    {% if app.request.get('id')!=0 %}
+	{{form(form)}}
+    {% endif %}
+{% endblock %}

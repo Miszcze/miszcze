@@ -1,0 +1,11 @@
+{% block title %}Wiadomość{% endblock %}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>{{message.tytul}}</h1>
+    <div>From: <b>{{message.nadawca.login}}</b> to <b>{{message.odbiorca.login}}</b></div>
+    <p>{{message.tresc}}</p>
+    {% if message.zalacznik is not empty %}
+	<a href="{{url('download',{'file':message.zalacznik})}}">Załącznik</a>
+    {% endif %}
+{% endblock %}

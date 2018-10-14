@@ -1,0 +1,16 @@
+{% block title %}Ustawienia administratora{% endblock %}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1 class="text-center">Ustawienia administratora</h1>
+    Kopia bazy: <a href="{{url('database')}}">wykonaj</a>
+    {{form(formDatabase)}}
+    {% if technicalBreak==0 %}
+	Przerwa techczniną wyłączona
+    {% else %}
+	Przerwa techczniną włączona
+    {% endif %}
+    {{form(formTechnicalBreak)}}
+{% endblock %}
+
+

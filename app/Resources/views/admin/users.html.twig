@@ -1,0 +1,70 @@
+{% block title %}Użytkownicy{% endblock %}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1 class="text-center">Użytkownicy:</h1>
+    {% if users is not empty %}
+	<table class="table">
+	<thead class="thead-dark">
+	    <tr>
+		<th>Login</th>
+		<th>Typ</th>
+		<th>E-mail</th>
+		<th>Edytuj</th>
+		<th>Usuń</th>
+	    </tr>
+		</thead>
+	<tbody>
+	    {% for i in 0..users|length-1 %}
+		<tr>
+		    <td>{{ users[i].login }}</td>
+		    <td>{{ users[i].typ }}</td>
+		    <td>{{ users[i].mail }}</td>
+		    <td>
+			{% if users[i].typ=='uczeń' %}
+			<a class="btn btn-outline-primary" href="{{ url('users',{'formType':'uczen','id':users[i].id} ) }}">
+			    edytuj
+			</a>
+			{% else %}
+			<a class="btn btn-outline-primary" href="{{ url('users',{'formType':users[i].typ,'id':users[i].id} ) }}">
+			    edytuj
+			</a>
+			{% endif %}
+		    </td>
+		    <td>
+			{% if users[i].typ=='uczeń' %}
+			<a class="btn btn-outline-danger" href="{{ url('users',{'formType':'uczen','id':users[i].id,'delete':1} ) }}">
+			    usuń
+			</a>
+			{% else %}
+			<a class="btn btn-outline-danger" href="{{ url('users',{'formType':users[i].typ,'id':users[i].id,'delete':1} ) }}">
+			    usuń
+			</a>
+			{% endif %}
+		    </td>
+		</tr>
+	    {% endfor %}
+	{% else %}
+	    brak
+	{% endif %}
+    </tbody>
+    </table>
+    
+    <h1>{% if app.request.get('id')==0 %} Dodawanie {% else %} Edycja {% endif %}
+       {{ app.request.get('formType') }}</h1>
+       
+    Wybór formularza:
+    <select onchange="location=this.value;">
+	<option value="{{url('users',{'formType':'uczen'})}} "
+		{% if app.request.get('formType')=='uczen' %}selected{% endif %}>Uczeń</option>
+	<option value="{{url('users',{'formType':'opiekun'})}}"
+		{% if app.request.get('formType')=='opiekun' %}selected{% endif %}>Opiekun</option>
+	<option value="{{url('users',{'formType':'pracownik'})}}"
+		{% if app.request.get('formType')=='pracownik' %}selected{% endif %}>Pracownik</option>
+    </select><br><br>
+    {{ form(form) }}
+    
+    {% for error in errors %}
+	{{error}}
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,140 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Uczniowie
+ *
+ * @ORM\Table(name="uczniowie", uniqueConstraints={@ORM\UniqueConstraint(name="pesel_UNIQUE", columns={"pesel"})}, indexes={@ORM\Index(name="opiekun_idx", columns={"opiekun"}), @ORM\Index(name="FK_uczniowe_users_idx", columns={"uzytkownik"}), @ORM\Index(name="FK_uczniowie_klasy_idx", columns={"klasa"})})
+ * @ORM\Entity
+ */
+class Uczniowie
+{
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="imie", type="string", length=15, nullable=false)
+     */
+    private $imie;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="imie_2", type="string", length=15, nullable=true)
+     */
+    private $imie2;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nazwisko", type="string", length=30, nullable=false)
+     */
+    private $nazwisko;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="data_urodzenia", type="date", nullable=false)
+     */
+    private $dataUrodzenia;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="pesel", type="string", length=11, nullable=false)
+     */
+    private $pesel;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="miejscowosc", type="string", length=45, nullable=false)
+     */
+    private $miejscowosc;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="ulica", type="string", length=45, nullable=true)
+     */
+    private $ulica;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nr_domu", type="string", length=10, nullable=false)
+     */
+    private $nrDomu;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="kod_pocztowy", type="string", length=6, nullable=false)
+     */
+    private $kodPocztowy;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="poczta", type="string", length=45, nullable=false)
+     */
+    private $poczta;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="kontakt", type="text", length=65535, nullable=true)
+     */
+    private $kontakt;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="status", type="boolean", nullable=true)
+     */
+    private $status;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var \AppBundle\Entity\Opiekunowie
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Opiekunowie")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="opiekun", referencedColumnName="id")
+     * })
+     */
+    private $opiekun;
+
+    /**
+     * @var \AppBundle\Entity\Klasy
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Klasy")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="klasa", referencedColumnName="id")
+     * })
+     */
+    private $klasa;
+
+    /**
+     * @var \AppBundle\Entity\Uzytkownicy
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Uzytkownicy")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="uzytkownik", referencedColumnName="id")
+     * })
+     */
+    private $uzytkownik;
+
+
+}
+

@@ -1,0 +1,12 @@
+.fa{
+    font-size:24px !important;
+    position:relative;
+    top:4px;
+}
+.message{
+    font-weight:600;
+    font-size:22px;
+    position:relative;
+    top:4px;
+    padding-right:6px;
+}

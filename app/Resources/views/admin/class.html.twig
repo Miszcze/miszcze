@@ -1,0 +1,36 @@
+{% block title %}Klasa{% endblock %}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% if app.request.get('numberClass')!=0 and app.request.get('class')!='0' %}
+	<h1 class="text-center">{{class.poziom}}{{class.klasa}}
+	    <select onchange="location=this.value;">
+		<option value="{{url('class')}}">Wybierz klasę</option>
+		{% for class in classes %}
+		<option value="{{url('class',{'numberClass':class.poziom,'class':class.klasa})}} ">
+		    {{class.poziom}}{{class.klasa}}</option>
+		{% endfor %}
+	    </select>
+	</h1>
+	{% for student in students %}
+	    {{ student.imie }} {{ student.nazwisko }}
+	    <a class="btn btn-outline-danger" href="{{url('class',{'numberClass':class.poziom,'class':class.klasa,'id':student.id,'delete':1})}}">usuń</a>
+	    <br>
+	{% endfor %}
+	<br>
+	{{form(form)}}
+    {% else %}
+	<h1 class="text-center">Brak
+	    <select onchange="location=this.value;">
+		<option value="{{url('class')}}">Wybierz klasę</option>
+		{% for class in classes %}
+		<option value="{{url('class',{'numberClass':class.poziom,'class':class.klasa})}} ">
+		    {{class.poziom}}{{class.klasa}}</option>
+		{% endfor %}
+	    </select>
+	</h1>
+    {% endif %}
+{% endblock %}
+
+    
+    

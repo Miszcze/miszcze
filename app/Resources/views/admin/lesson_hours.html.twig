@@ -1,0 +1,28 @@
+{% block title %}Godziny lekcyjne{% endblock %}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1 class="text-center">Godziny lekcyjne</h1>
+    {% if lessonHours is not empty %}
+    <table class="table">
+	<thead class="thead-dark">
+	<tr>
+	    <th>Początek</th>
+	    <th>Edytuj</th>
+	    <th>Usuń</th>
+	</tr>
+	</thead>
+	{% for i in 0..lessonHours|length-1 %}
+	    <tr>
+		<td>{{ lessonHours[i].poczatek|date("G:i") }}</td>
+		<td><a class="btn btn-outline-primary" href="{{ url('lesson_hours',{'id':lessonHours[i].id} ) }}">edytuj</a></td>
+		<td><a class="btn btn-outline-danger" href="{{ url('lesson_hours',{'id':lessonHours[i].id,'delete':1} ) }}">usuń</a></td>
+	    </tr>
+	{% endfor %}
+    </table>
+    {% else %}
+	brak
+    {% endif %}
+    <h2>Dodawanie/edytowanie</h2>
+    {{form(form)}}
+{% endblock %}

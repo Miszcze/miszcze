@@ -1,0 +1,64 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Opiekunowie
+ *
+ * @ORM\Table(name="opiekunowie", indexes={@ORM\Index(name="FK_opiekunowie_users_idx", columns={"uzytkownik"})})
+ * @ORM\Entity
+ */
+class Opiekunowie
+{
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="imie", type="string", length=15, nullable=false)
+     */
+    private $imie;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nazwisko", type="string", length=30, nullable=false)
+     */
+    private $nazwisko;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="kontakt", type="text", length=65535, nullable=false)
+     */
+    private $kontakt;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="status", type="boolean", nullable=true)
+     */
+    private $status;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var \AppBundle\Entity\Uzytkownicy
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Uzytkownicy")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="uzytkownik", referencedColumnName="id")
+     * })
+     */
+    private $uzytkownik;
+
+
+}
+

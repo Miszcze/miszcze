@@ -1,0 +1,32 @@
+{% block title %}Sale{% endblock %}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1 class="text-center">Sale lekcyjne</h1>
+    {% if rooms is not empty %}
+    <table class="table">
+	<thead class="thead-dark">
+	<tr>
+	    <th>Nr sali</th>
+	    <th>Opis</th>
+	    <th>Edytuj</th>
+	    <th>Usuń</th>
+	</tr>
+	</thead>
+	<tbody>
+	{% for i in 0..rooms|length-1 %}
+	    <tr>
+		<td>{{ rooms[i].nrSali }}</td>
+		<td>{{ rooms[i].opis }}</td>
+		<td><a class="btn btn-outline-primary" href="{{ url('rooms',{'id':rooms[i].id} ) }}">edytuj</a></td>
+		<td><a class="btn btn-outline-danger" href="{{ url('rooms',{'id':rooms[i].id,'delete':1} ) }}">usuń</a></td>
+	    </tr>
+	{% endfor %}
+    </tbody>
+    </table>
+    {% else %}
+	brak
+    {% endif %}
+    <h2>Dodawanie/edytowanie</h2>
+    {{form(form)}}
+{% endblock %}

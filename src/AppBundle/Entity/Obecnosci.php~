@@ -1,0 +1,67 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Obecnosci
+ *
+ * @ORM\Table(name="obecnosci", indexes={@ORM\Index(name="fk_uczniowe_has_zajecia_uczniowe1_idx", columns={"uczen"}), @ORM\Index(name="fk_uczniowe_has_zajecia_zajecia1_idx", columns={"termin"})})
+ * @ORM\Entity
+ */
+class Obecnosci
+{
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="kiedy", type="datetime", nullable=false)
+     */
+    private $kiedy;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="obecny", type="integer", nullable=false)
+     */
+    private $obecny;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="komentarz", type="text", length=65535, nullable=true)
+     */
+    private $komentarz;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var \AppBundle\Entity\Terminarz
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Terminarz")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="termin", referencedColumnName="id")
+     * })
+     */
+    private $termin;
+
+    /**
+     * @var \AppBundle\Entity\Uczniowie
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Uczniowie")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="uczen", referencedColumnName="id")
+     * })
+     */
+    private $uczen;
+
+
+}
+

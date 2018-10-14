@@ -1,0 +1,81 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Wiadomosci
+ *
+ * @ORM\Table(name="wiadomosci", indexes={@ORM\Index(name="FK_wiadomosci_uzytkownicy_nadawca_idx", columns={"nadawca"}), @ORM\Index(name="FK_wiadomosci_uzytkownicy_odbiorca_idx", columns={"odbiorca"})})
+ * @ORM\Entity
+ */
+class Wiadomosci
+{
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="tytul", type="string", length=100, nullable=true)
+     */
+    private $tytul;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="tresc", type="text", length=65535, nullable=false)
+     */
+    private $tresc;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="zalacznik", type="string", length=45, nullable=true)
+     */
+    private $zalacznik;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="status_nadawcy", type="boolean", nullable=true)
+     */
+    private $statusNadawcy;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="status_odbiorcy", type="boolean", nullable=true)
+     */
+    private $statusOdbiorcy;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var \AppBundle\Entity\Uzytkownicy
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Uzytkownicy")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="odbiorca", referencedColumnName="id")
+     * })
+     */
+    private $odbiorca;
+
+    /**
+     * @var \AppBundle\Entity\Uzytkownicy
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Uzytkownicy")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="nadawca", referencedColumnName="id")
+     * })
+     */
+    private $nadawca;
+
+
+}
+

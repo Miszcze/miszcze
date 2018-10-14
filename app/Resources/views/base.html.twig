@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        {% block stylesheets %}{% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+	<link rel="stylesheet" href="{{ asset('css/style.css') }}">
+	<!-- bootstrap -->
+	<link rel="stylesheet" crossorigin="anonymous"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" 
+	integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B">
+	<!-- ikonki https://www.w3schools.com/icons/icons_reference.asp -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+	<nav class="bg-dark">
+	    <div class="container py-2">
+		<a href="{{url('homepage')}}"><i class="fa fa-home"></i></a>
+		{% if app.session.get('admin')['defined'] is defined %}
+		    <a class="btn btn-outline-primary btn-sm" href="{{url('users')}}">Użytkownicy</a> 
+		    <a class="btn btn-outline-primary btn-sm" href="{{url('classes')}}">Klasy</a>
+		    <a class="btn btn-outline-primary btn-sm" href="{{url('class')}}">Klasa</a>
+		    <a class="btn btn-outline-primary btn-sm" href="{{url('subjects')}}">Przedmioty</a>
+		    <a class="btn btn-outline-primary btn-sm" href="{{url('lesson_hours')}}">Godziny lekcyjne</a>
+		    <a class="btn btn-outline-primary btn-sm" href="{{url('rooms')}}">Sale</a>
+		    <a class="btn btn-outline-primary btn-sm" href="{{url('time_table')}}">Plan zajęć</a>
+		    <a class="btn btn-outline-primary btn-sm" href="{{url('settings')}}">Ustawienia</a>
+		{% endif %}
+		
+		<span class="float-sm-right">
+		{% if app.session.get('user')['user'] is defined %}
+		    {% set sessionUser=app.session.get('user')['user'] %}
+		    <span class="text-white pr-1">Zalogowany jako: <b>{{ sessionUser.login }}</b></span>
+		{% endif %}
+		{% if sessionUser is not defined %}
+		    <a href="{{url('login')}}"><i class="fa fa-sign-in"></i></a>
+		{% else %}
+		    <a href="{{url('messages')}}">
+			{% if newMessages is defined %}
+			    <i class="fa fa-envelope"></i> <span class="message">({{ newMessages }})</span>
+			{% else %}
+			    <i class="fa fa-envelope-o"></i>
+			{% endif %} 
+		    </a> 
+		    <a href="{{url('logout')}}"><i class="fa fa-sign-out"></i></a>
+		{% endif %}
+		</span>
+	    </div>
+	</nav>
+	<div class="container py-1 my-5 border rounded border-dark">{% block body %}{% endblock %}</div>
+	<footer class="bg-dark"><div class="container p-1 text-center text-light">Stopka strony</div></footer>
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>
