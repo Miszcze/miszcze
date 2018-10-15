@@ -1,0 +1,67 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Uwagi
+ *
+ * @ORM\Table(name="uwagi", indexes={@ORM\Index(name="FK_uwagi_uczniowie_idx", columns={"uczen"}), @ORM\Index(name="FK_uwagi_pracownicy_idx", columns={"nauczyciel"})})
+ * @ORM\Entity
+ */
+class Uwagi
+{
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="tresc", type="text", length=65535, nullable=false)
+     */
+    private $tresc;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="odczytane", type="boolean", nullable=true)
+     */
+    private $odczytane;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="status", type="boolean", nullable=true)
+     */
+    private $status;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var \AppBundle\Entity\Uczniowie
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Uczniowie")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="uczen", referencedColumnName="id")
+     * })
+     */
+    private $uczen;
+
+    /**
+     * @var \AppBundle\Entity\Pracownicy
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Pracownicy")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="nauczyciel", referencedColumnName="id")
+     * })
+     */
+    private $nauczyciel;
+
+
+}
+

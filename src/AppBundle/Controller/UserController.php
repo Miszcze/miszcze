@@ -6,13 +6,14 @@ use AppBundle\Entity\Constant;
 use AppBundle\Entity\Pracownicy;
 use AppBundle\Entity\Uzytkownicy;
 use AppBundle\Entity\Wiadomosci;
+use AppBundle\Utils\Message;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -22,9 +23,9 @@ class UserController extends Controller{
      * @Route("/", name="homepage")
      */
     public function homepageAction(){
-
 	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break');
-	UserController::countMessage($this);
+	$message=new Message;
+	$message->count($this);
 	return $this->render('user/homepage.html.twig');
     }
     
@@ -32,6 +33,8 @@ class UserController extends Controller{
      * @Route("/login", name="login")
      */
     public function loginAction(Request $request){
+	$message=new Message;
+	$message->count($this);
 	$entityManager=$this->getDoctrine()->getManager();
 	$error=null;
 
@@ -71,7 +74,8 @@ class UserController extends Controller{
 		    )
 		    ->getResult();
 		    
-		    if(!empty($admin)) $session->set('admin',['defined'=>true]);
+//		    if(!empty($admin)) $session->set('admin',['defined'=>true]);
+		    if(!empty($admin)) $session->set('admin',true);
 		    
 		    return $this->redirectToRoute('homepage');
 		}
@@ -107,7 +111,8 @@ class UserController extends Controller{
      * @Route("/messages/{id}", name="messages", defaults={"id"="0"})
      */
     public function messagesAction(Request $request,$id){
-	UserController::countMessage($this);
+	$message=new Message;
+	$message->count($this);
 	$entityManager=$this->getDoctrine()->getManager();
 	$users=$entityManager->getRepository(Uzytkownicy::class)->findAll();
 	
@@ -190,7 +195,8 @@ class UserController extends Controller{
      * defaults={"id"="0","delete"="0","idRoute"="0"})
      */
     public function messageAction($id,$delete,$idRoute){
-	UserController::countMessage($this);
+	$message=new Message;
+	$message->count($this);
 	$entityManager=$this->getDoctrine()->getManager();
 	
 	$sessionUserId=$this->get('session')->get('user')['user']->getId();
@@ -236,27 +242,5 @@ class UserController extends Controller{
      */
     public function downloadAction($file){
         return $this->file($this->get('kernel')->getRootDir().'/../web/upload/'.$file);
-    }
-    
-    public function countMessage($controller){
-	$entityManager=$controller->getDoctrine()->getManager();
-	
-	$sessionUserId=$controller->get('session')->get('user');
-	if(isset($sessionUserId))
-	    $sessionUserId=$controller->get('session')->get('user')['user']->getId();
-	else 
-	    $sessionUserId=0;
-	
-	$messages=$entityManager->createQuery(
-	        "SELECT count(w.id) countMessages ".
-		"FROM AppBundle\Entity\Wiadomosci w ".
-		"JOIN AppBundle\Entity\Uzytkownicy u ".
-		"WITH w.odbiorca=u.id ".
-		"WHERE w.odbiorca=".$sessionUserId." AND w.odczytana=0"
-	    )
-	    ->getResult();
-	
-	if($messages[0]['countMessages']>0)
-	    $controller->get('twig')->addGlobal('newMessages',$messages[0]['countMessages']);
     }
 }

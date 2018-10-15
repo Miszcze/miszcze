@@ -14,7 +14,9 @@ use AppBundle\Entity\SlownikPrzedmiotow;
 use AppBundle\Entity\Terminarz;
 use AppBundle\Entity\Uczniowie;
 use AppBundle\Entity\Uzytkownicy;
+use AppBundle\Utils\Admin;
 use AppBundle\Utils\GenerateString;
+use AppBundle\Utils\Message;
 use DateTime;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -28,9 +30,18 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 
+/**
+ * @Route("/admin")
+ */
 class AdminController extends Controller{
+    
+    public function setAdminForTest(){
+	$session=new Session();
+	$session->set('admin',true);
+    }
     
     public function checkAdmin(){
 	$session=new Session();
@@ -40,12 +51,13 @@ class AdminController extends Controller{
     }
     
     /**
-     * @Route("/admin/uzytkownicy/{formType}/{id}/{delete}", name="users", 
+     * @Route("/uzytkownicy/{formType}/{id}/{delete}", name="users", 
      * defaults={"formType"="pracownik","id"="0","delete"="0"})
      */
     public function usersAction(Request $request,$formType,$id,$delete){
 	if(AdminController::checkAdmin()) return $this->redirectToRoute('homepage');
-	UserController::countMessage($this);
+	$message=new Message;
+	$message->count($this);
 	$entityManager=$this->getDoctrine()->getManager();
 	$errors=null;
 
@@ -456,11 +468,12 @@ class AdminController extends Controller{
     }
     
     /**
-     * @Route("/admin/klasy/{id}/{delete}", name="classes", defaults={"id"="0","delete"="0"})
+     * @Route("/klasy/{id}/{delete}", name="classes", defaults={"id"="0","delete"="0"})
      */
     public function classesAction(Request $request,$id,$delete){
 	if(AdminController::checkAdmin()) return $this->redirectToRoute('homepage');
-	UserController::countMessage($this);
+	$message=new Message;
+	$message->count($this);
 	$entityManager=$this->getDoctrine()->getManager();
 	$classes=$this->getDoctrine()->getRepository(Klasy::class)->findBy(['status'=>0]);
 	
@@ -564,12 +577,13 @@ class AdminController extends Controller{
     }
     
     /**
-     * @Route("/admin/klasa/{numberClass}/{class}/{id}/{delete}", name="class", 
+     * @Route("/klasa/{numberClass}/{class}/{id}/{delete}", name="class", 
      * defaults={"numberClass"="0","class"="0","id"="0","delete"="0"})
      */
     public function classAction(Request $request,$numberClass,$class,$id,$delete){
 	if(AdminController::checkAdmin()) return $this->redirectToRoute('homepage');
-	UserController::countMessage($this);
+	$message=new Message;
+	$message->count($this);
 	$entityManager=$this->getDoctrine()->getManager();
 	$classes=$entityManager->getRepository(Klasy::class)->findBy(['status'=>0]);
 	
@@ -630,12 +644,13 @@ class AdminController extends Controller{
     }
     
     /**
-     * @Route("/admin/przedmioty/{form}/{id}/{delete}", name="subjects", 
+     * @Route("/przedmioty/{form}/{id}/{delete}", name="subjects", 
      * defaults={"form"="slownikPrzedmiotow","id"="0","delete"="0"})
      */
     public function subjectsAction(Request $request,$form,$id,$delete){
 	if(AdminController::checkAdmin()) return $this->redirectToRoute('homepage');
-	UserController::countMessage($this);
+	$message=new Message;
+	$message->count($this);
 	$entityManager=$this->getDoctrine()->getManager();
 	$librarySubjects=$this->getDoctrine()->getRepository(SlownikPrzedmiotow::class)->findAll();
 	$subjects=$this->getDoctrine()->getRepository(Przedmioty::class)->findBy(['status'=>0]);
@@ -666,7 +681,6 @@ class AdminController extends Controller{
 	
 	$formLibrarySubjects=$this->createFormBuilder($formValueLibrarySubjects)
 	    ->setMethod('POST')
-                ->add('nazwapola',IntegerType::class)
 	    ->add('nazwa',TextType::class)
 	    ->add('opis',TextareaType::class,['required'=>false])
 	    ->add('submitLibrarySubjects',SubmitType::class)
@@ -769,12 +783,13 @@ class AdminController extends Controller{
     }
     
     /**
-     * @Route("/admin/godziny_lekcyjne/{id}/{delete}", name="lesson_hours", 
+     * @Route("/godziny_lekcyjne/{id}/{delete}", name="lesson_hours", 
      * defaults={"id"="0","delete"="0"})
      */
     public function lessonHoursAction(Request $request,$id,$delete){
 	if(AdminController::checkAdmin()) return $this->redirectToRoute('homepage');
-	UserController::countMessage($this);
+	$message=new Message;
+	$message->count($this);
 	$entityManager=$this->getDoctrine()->getManager();
 	$lessonHours=$this->getDoctrine()->getRepository(GodzLek::class)->findAll();
 	$formValue=null;
@@ -825,12 +840,13 @@ class AdminController extends Controller{
     }
     
     /**
-     * @Route("/admin/sale/{id}/{delete}", name="rooms", 
+     * @Route("/sale/{id}/{delete}", name="rooms", 
      * defaults={"id"="0","delete"="0"})
      */
     public function roomsAction(Request $request,$id,$delete){
 	if(AdminController::checkAdmin()) return $this->redirectToRoute('homepage');
-	UserController::countMessage($this);
+	$message=new Message;
+	$message->count($this);
 	$entityManager=$this->getDoctrine()->getManager();
 	
 	$rooms=$this->getDoctrine()->getRepository(Sale::class)->findAll();
@@ -890,12 +906,17 @@ class AdminController extends Controller{
     }
     
     /**
-     * @Route("/admin/terminarz/{numberClass}/{class}/{id}/{delete}", name="time_table", 
+     * @Route("/terminarz/{numberClass}/{class}/{id}/{delete}", name="time_table", 
      * defaults={"numberClass"="0","class"="0","id"="0","delete"="0"})
      */
     public function timeTableAction(Request $request,$numberClass,$class,$id,$delete){
-	UserController::countMessage($this);
-	if(AdminController::checkAdmin()) return $this->redirectToRoute('homepage');
+	(new Message($this))->count($this);
+	if(!$this->get('session')->has('admin')) return $this->redirectToRoute('homepage',[],302);
+	if($this->get('session')->has('info')){
+	    $info=$this->get('session')->get('info');
+	    $this->get('session')->remove('info');
+	}
+	
 	$entityManager=$this->getDoctrine()->getManager();
 	$timeTable=$this->getDoctrine()->getRepository(Terminarz::class)->findAll();
 	$formValue=null;
@@ -1052,7 +1073,9 @@ class AdminController extends Controller{
 	    $entityManager->persist($term);
 	    $entityManager->flush();
 	    
-	    return $this->redirectToRoute('time_table');
+	    $this->get('session')->set('info','Dodano nowy termin do bazy.');
+	    
+	    return $this->redirectToRoute('time_table',["numberClass"=>$numberClass,"class"=>$class->getKlasa()],201);
 	//edytowanie
 	}else if($request->isMethod('post') && $id!=0){
 	    $entityManager->createQuery(
@@ -1071,7 +1094,9 @@ class AdminController extends Controller{
 	    )
 	    ->getResult();
 	    
-	    return $this->redirectToRoute('time_table');
+	    $this->get('session')->set('info','Zedytowano termin.');
+	    
+	    return $this->redirectToRoute('time_table',["numberClass"=>$numberClass,"class"=>$_POST['form']['klasa']],201);
 	//usuwanie
 	}else if($delete==1 && $id!=0){
 	    $entityManager->createQuery(
@@ -1080,7 +1105,9 @@ class AdminController extends Controller{
 	    )
 	    ->getResult();
 	    
-	    return $this->redirectToRoute('time_table');
+	    $this->get('session')->set('info','Usunięto termin.');
+	    
+	    return $this->redirectToRoute('time_table',[],201);
 	}
 	
 	return $this->render('admin/time_table.html.twig',[
@@ -1089,16 +1116,18 @@ class AdminController extends Controller{
 	    'lessonHours'=>$lessonHours,
 	    'lessons'=>@$lessons,
 	    'error'=>@$error,
-	    'classes'=>$classes
+	    'classes'=>$classes,
+	    'info'=>@$info
 	]);
     }
     
     /**
-     * @Route("/admin/settings", name="settings")
+     * @Route("/settings", name="settings")
      */
     public function settings(Request $request){
 	if(AdminController::checkAdmin()) return $this->redirectToRoute('homepage');
-	UserController::countMessage($this);
+	$message=new Message;
+	$message->count($this);
 	$dir=$this->get('kernel')->getRootDir().'/../web/backup/';
 	$files=array_diff(scandir($dir),[".",".."]);
 	foreach($files as $file) $arrayFiles[$file]=$file;
@@ -1149,11 +1178,12 @@ class AdminController extends Controller{
     }
     
     /**
-     * @Route("/admin/database", name="database")
+     * @Route("/database", name="database")
      */
     public function database(){
 	if(AdminController::checkAdmin()) return $this->redirectToRoute('homepage');
-	UserController::countMessage($this);
+	$message=new Message;
+	$message->count($this);
 	AdminController::database_export();
 	return $this->redirectToRoute('settings');
     }

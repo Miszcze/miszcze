@@ -1,0 +1,88 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Oceny
+ *
+ * @ORM\Table(name="oceny", indexes={@ORM\Index(name="fk_uczniowe_has_pracownik_na_przedmiot_pracownik_na_przedmi_idx", columns={"przedmiot"}), @ORM\Index(name="fk_uczniowe_has_pracownik_na_przedmiot_uczniowe1_idx", columns={"uczen"})})
+ * @ORM\Entity
+ */
+class Oceny
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="ocena", type="integer", nullable=false)
+     */
+    private $ocena;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="waga", type="integer", nullable=true)
+     */
+    private $waga;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="kiedy", type="datetime", nullable=false)
+     */
+    private $kiedy;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="typ", type="string", length=10, nullable=false)
+     */
+    private $typ;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="uwagi", type="text", length=65535, nullable=true)
+     */
+    private $uwagi;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="status", type="boolean", nullable=true)
+     */
+    private $status;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var \AppBundle\Entity\Uczniowie
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Uczniowie")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="uczen", referencedColumnName="id")
+     * })
+     */
+    private $uczen;
+
+    /**
+     * @var \AppBundle\Entity\Przedmioty
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Przedmioty")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="przedmiot", referencedColumnName="id")
+     * })
+     */
+    private $przedmiot;
+
+
+}
+

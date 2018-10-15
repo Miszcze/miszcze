@@ -1,0 +1,40 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Sale
+ *
+ * @ORM\Table(name="sale", uniqueConstraints={@ORM\UniqueConstraint(name="nr_sali_UNIQUE", columns={"nr_sali"})})
+ * @ORM\Entity
+ */
+class Sale
+{
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nr_sali", type="string", length=4, nullable=false)
+     */
+    private $nrSali;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="opis", type="text", length=65535, nullable=true)
+     */
+    private $opis;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+
+}
+

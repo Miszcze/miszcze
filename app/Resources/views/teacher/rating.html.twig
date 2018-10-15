@@ -1,0 +1,27 @@
+{% block title %}Oceny{% endblock %}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<h1>Oceny</h1>
+<select onchange="location=this.value;" class="form-control custom-select border-dark text-primary">
+    <option value="{{url('time_table')}}">Wybierz klasę</option>
+    {% for term in terms %}
+	<option value="{{url('rating',{'class':term.id,'student':app.request.get('student')})}} ">
+	   {{term.klasa.poziom}}{{term.klasa.klasa}} - {{term.ktoCo.przedmiot.nazwa}}
+	</option>
+    {% endfor %}
+</select>
+
+{% if students is not empty %}
+<select onchange="location=this.value;" class="form-control custom-select border-dark text-primary">
+    <option value="{{url('time_table')}}">Wybierz ucznia</option>
+    {% for student in students %}
+	<option value="{{url('rating',{'class':app.request.get('class'),'student':student.id})}} ">
+	   {{student.imie}} {{student.nazwisko}}
+	</option>
+    {% endfor %}
+</select>
+{% endif %}
+
+{% endblock %}

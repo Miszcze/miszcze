@@ -13,42 +13,61 @@
 	<!-- ikonki https://www.w3schools.com/icons/icons_reference.asp -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     </head>
-    <body>
+    <body class="bg-white">
 	<nav class="bg-dark">
-	    <div class="container py-2">
-		<a href="{{url('homepage')}}"><i class="fa fa-home"></i></a>
-		{% if app.session.get('admin')['defined'] is defined %}
-		    <a class="btn btn-outline-primary btn-sm" href="{{url('users')}}">Użytkownicy</a> 
-		    <a class="btn btn-outline-primary btn-sm" href="{{url('classes')}}">Klasy</a>
-		    <a class="btn btn-outline-primary btn-sm" href="{{url('class')}}">Klasa</a>
-		    <a class="btn btn-outline-primary btn-sm" href="{{url('subjects')}}">Przedmioty</a>
-		    <a class="btn btn-outline-primary btn-sm" href="{{url('lesson_hours')}}">Godziny lekcyjne</a>
-		    <a class="btn btn-outline-primary btn-sm" href="{{url('rooms')}}">Sale</a>
-		    <a class="btn btn-outline-primary btn-sm" href="{{url('time_table')}}">Plan zajęć</a>
-		    <a class="btn btn-outline-primary btn-sm" href="{{url('settings')}}">Ustawienia</a>
-		{% endif %}
-		
-		<span class="float-sm-right">
-		{% if app.session.get('user')['user'] is defined %}
-		    {% set sessionUser=app.session.get('user')['user'] %}
-		    <span class="text-white pr-1">Zalogowany jako: <b>{{ sessionUser.login }}</b></span>
-		{% endif %}
-		{% if sessionUser is not defined %}
-		    <a href="{{url('login')}}"><i class="fa fa-sign-in"></i></a>
-		{% else %}
-		    <a href="{{url('messages')}}">
-			{% if newMessages is defined %}
-			    <i class="fa fa-envelope"></i> <span class="message">({{ newMessages }})</span>
+	    <div class="container">
+		<div class="row py-2">
+		    <div class="col-sm-9">
+		    <a href="{{url('homepage')}}" class="text-light"><i class="fa fa-home"></i></a>
+		    {% if app.session.get('admin')['defined'] is defined %}
+			<a class="btn btn-outline-primary btn-sm" href="{{url('users')}}">Użytkownicy</a> 
+			<a class="btn btn-outline-primary btn-sm" href="{{url('classes')}}">Klasy</a>
+			<a class="btn btn-outline-primary btn-sm" href="{{url('class')}}">Klasa</a>
+			<a class="btn btn-outline-primary btn-sm" href="{{url('subjects')}}">Przedmioty</a>
+			<a class="btn btn-outline-primary btn-sm" href="{{url('lesson_hours')}}">Godziny lekcyjne</a>
+			<a class="btn btn-outline-primary btn-sm" href="{{url('rooms')}}">Sale</a>
+			<a class="btn btn-outline-primary btn-sm" href="{{url('time_table')}}">Plan zajęć</a>
+			<a class="btn btn-outline-primary btn-sm" href="{{url('settings')}}">Ustawienia</a>
+		    {% endif %}
+
+		    {#{% if app.session.get('teacher')['defined'] is defined %}#}
+		    {% if app.session.get('admin')['defined'] is defined %}
+			<a class="btn btn-outline-success btn-sm" href="{{url('presence')}}">Obecności</a>
+			<a class="btn btn-outline-success btn-sm" href="#">Oceny</a>
+			<a class="btn btn-outline-success btn-sm" href="#">Plan zajęć</a>
+			<a class="btn btn-outline-success btn-sm" href="#">Uwagi i pochwały</a>
+			<a class="btn btn-outline-success btn-sm" href="#">Usprawiedliwianie</a>
+		    {% endif %}
+		    {#{% if app.session.get('student')['defined'] is defined %}#}
+		    {% if app.session.get('admin')['defined'] is defined %}
+			<a class="btn btn-outline-info btn-sm" href="#">Oceny</a>
+			<a class="btn btn-outline-info btn-sm" href="#">Plan zajęć</a>
+			<a class="btn btn-outline-info btn-sm" href="#">Uwagi i pochwały</a>
+		    {% endif %}
+		    </div>
+		    
+		    <div class="col-sm-3 text-right">
+		    {% if app.session.get('user')['user'] is defined %}
+			    {% set sessionUser=app.session.get('user')['user'] %}
+			    <span class="text-light pr-1">Zalogowany jako: <b>{{ sessionUser.login }}</b></span>
+			{% endif %}
+			{% if sessionUser is not defined %}
+			    <a href="{{url('login')}}" class="text-light"><i class="fa fa-sign-in"></i></a>
 			{% else %}
-			    <i class="fa fa-envelope-o"></i>
-			{% endif %} 
-		    </a> 
-		    <a href="{{url('logout')}}"><i class="fa fa-sign-out"></i></a>
-		{% endif %}
-		</span>
+			    <a href="{{url('messages')}}" class="text-light">
+				{% if newMessages is defined %}
+				    <i class="fa fa-envelope"></i> <span class="message">({{ newMessages }})</span>
+				{% else %}
+				    <i class="fa fa-envelope-o"></i>
+				{% endif %} 
+			    </a> 
+			    <a href="{{url('logout')}}" class="text-light"><i class="fa fa-sign-out"></i></a>
+			{% endif %}
+		    </div>
+		</div>
 	    </div>
 	</nav>
-	<div class="container py-1 my-5 border rounded border-dark">{% block body %}{% endblock %}</div>
+	<div class="container py-1 my-5 border rounded border-dark bg-light">{% block body %}{% endblock %}</div>
 	<footer class="bg-dark"><div class="container p-1 text-center text-light">Stopka strony</div></footer>
         {% block javascripts %}{% endblock %}
     </body>

@@ -1,0 +1,64 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Klasy
+ *
+ * @ORM\Table(name="klasy", indexes={@ORM\Index(name="FK_KlasyUczniow_pracownicy_idx", columns={"wychowawca"})})
+ * @ORM\Entity
+ */
+class Klasy
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="poziom", type="integer", nullable=false)
+     */
+    private $poziom;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="klasa", type="string", length=1, nullable=true)
+     */
+    private $klasa;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="rocznik", type="string", length=4, nullable=false)
+     */
+    private $rocznik;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="status", type="boolean", nullable=true)
+     */
+    private $status;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var \AppBundle\Entity\Pracownicy
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Pracownicy")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="wychowawca", referencedColumnName="id")
+     * })
+     */
+    private $wychowawca;
+
+
+}
+

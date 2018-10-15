@@ -1,0 +1,101 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Terminarz
+ *
+ * @ORM\Table(name="terminarz", indexes={@ORM\Index(name="FK_godz_lek_rezerwacje_idx", columns={"godzina"}), @ORM\Index(name="FK_sale_rezerwacje_idx", columns={"sala"}), @ORM\Index(name="FK_terminarz_przedmioty_idx", columns={"kto_co"}), @ORM\Index(name="FK_terminarz_klasy_idx", columns={"klasa"})})
+ * @ORM\Entity
+ */
+class Terminarz
+{
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="dzien_tygodnia", type="string", length=10, nullable=false)
+     */
+    private $dzienTygodnia;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="typ", type="string", length=10, nullable=true)
+     */
+    private $typ;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="poczatek", type="date", nullable=true)
+     */
+    private $poczatek;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="koniec", type="date", nullable=true)
+     */
+    private $koniec;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="opis", type="text", length=65535, nullable=true)
+     */
+    private $opis;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var \AppBundle\Entity\Przedmioty
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Przedmioty")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="kto_co", referencedColumnName="id")
+     * })
+     */
+    private $ktoCo;
+
+    /**
+     * @var \AppBundle\Entity\Klasy
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Klasy")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="klasa", referencedColumnName="id")
+     * })
+     */
+    private $klasa;
+
+    /**
+     * @var \AppBundle\Entity\Sale
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Sale")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="sala", referencedColumnName="id")
+     * })
+     */
+    private $sala;
+
+    /**
+     * @var \AppBundle\Entity\GodzLek
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\GodzLek")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="godzina", referencedColumnName="id")
+     * })
+     */
+    private $godzina;
+
+
+}
+
