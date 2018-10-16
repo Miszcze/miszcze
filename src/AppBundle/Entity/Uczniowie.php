@@ -48,6 +48,13 @@ class Uczniowie
     private $pesel;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="numer_legitymacji", type="integer", nullable=false)
+     */
+    private $numerLegitymacji;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="miejscowosc", type="string", length=45, nullable=false)
@@ -106,14 +113,14 @@ class Uczniowie
     private $id;
 
     /**
-     * @var \AppBundle\Entity\Opiekunowie
+     * @var \AppBundle\Entity\Uzytkownicy
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Opiekunowie")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Uzytkownicy")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="opiekun", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="uzytkownik", referencedColumnName="id")
      * })
      */
-    private $opiekun;
+    private $uzytkownik;
 
     /**
      * @var \AppBundle\Entity\Klasy
@@ -126,14 +133,14 @@ class Uczniowie
     private $klasa;
 
     /**
-     * @var \AppBundle\Entity\Uzytkownicy
+     * @var \AppBundle\Entity\Opiekunowie
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Uzytkownicy")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Opiekunowie")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="uzytkownik", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="opiekun", referencedColumnName="id")
      * })
      */
-    private $uzytkownik;
+    private $opiekun;
 
 
 
@@ -255,6 +262,30 @@ class Uczniowie
     public function getPesel()
     {
         return $this->pesel;
+    }
+
+    /**
+     * Set numerLegitymacji
+     *
+     * @param integer $numerLegitymacji
+     *
+     * @return Uczniowie
+     */
+    public function setNumerLegitymacji($numerLegitymacji)
+    {
+        $this->numerLegitymacji = $numerLegitymacji;
+
+        return $this;
+    }
+
+    /**
+     * Get numerLegitymacji
+     *
+     * @return integer
+     */
+    public function getNumerLegitymacji()
+    {
+        return $this->numerLegitymacji;
     }
 
     /**
@@ -436,27 +467,27 @@ class Uczniowie
     }
 
     /**
-     * Set opiekun
+     * Set uzytkownik
      *
-     * @param \AppBundle\Entity\Opiekunowie $opiekun
+     * @param \AppBundle\Entity\Uzytkownicy $uzytkownik
      *
      * @return Uczniowie
      */
-    public function setOpiekun(\AppBundle\Entity\Opiekunowie $opiekun = null)
+    public function setUzytkownik(\AppBundle\Entity\Uzytkownicy $uzytkownik = null)
     {
-        $this->opiekun = $opiekun;
+        $this->uzytkownik = $uzytkownik;
 
         return $this;
     }
 
     /**
-     * Get opiekun
+     * Get uzytkownik
      *
-     * @return \AppBundle\Entity\Opiekunowie
+     * @return \AppBundle\Entity\Uzytkownicy
      */
-    public function getOpiekun()
+    public function getUzytkownik()
     {
-        return $this->opiekun;
+        return $this->uzytkownik;
     }
 
     /**
@@ -484,26 +515,26 @@ class Uczniowie
     }
 
     /**
-     * Set uzytkownik
+     * Set opiekun
      *
-     * @param \AppBundle\Entity\Uzytkownicy $uzytkownik
+     * @param \AppBundle\Entity\Opiekunowie $opiekun
      *
      * @return Uczniowie
      */
-    public function setUzytkownik(\AppBundle\Entity\Uzytkownicy $uzytkownik = null)
+    public function setOpiekun(\AppBundle\Entity\Opiekunowie $opiekun = null)
     {
-        $this->uzytkownik = $uzytkownik;
+        $this->opiekun = $opiekun;
 
         return $this;
     }
 
     /**
-     * Get uzytkownik
+     * Get opiekun
      *
-     * @return \AppBundle\Entity\Uzytkownicy
+     * @return \AppBundle\Entity\Opiekunowie
      */
-    public function getUzytkownik()
+    public function getOpiekun()
     {
-        return $this->uzytkownik;
+        return $this->opiekun;
     }
 }

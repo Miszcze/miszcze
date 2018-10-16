@@ -19,7 +19,7 @@
 		<div class="row py-2">
 		    <div class="col-sm-9">
 		    <a href="{{url('homepage')}}" class="text-light"><i class="fa fa-home"></i></a>
-		    {% if app.session.get('admin')['defined'] is defined %}
+		    {% if app.session.get('admin') is defined %}
 			<a class="btn btn-outline-primary btn-sm" href="{{url('users')}}">Użytkownicy</a> 
 			<a class="btn btn-outline-primary btn-sm" href="{{url('classes')}}">Klasy</a>
 			<a class="btn btn-outline-primary btn-sm" href="{{url('class')}}">Klasa</a>
@@ -31,18 +31,21 @@
 		    {% endif %}
 
 		    {#{% if app.session.get('teacher')['defined'] is defined %}#}
-		    {% if app.session.get('admin')['defined'] is defined %}
+		    {% if app.session.get('admin') is defined %}
 			<a class="btn btn-outline-success btn-sm" href="{{url('presence')}}">Obecności</a>
 			<a class="btn btn-outline-success btn-sm" href="#">Oceny</a>
+			<a class="btn btn-outline-success btn-sm" href="#">Spóźnienia</a>
 			<a class="btn btn-outline-success btn-sm" href="#">Plan zajęć</a>
 			<a class="btn btn-outline-success btn-sm" href="#">Uwagi i pochwały</a>
 			<a class="btn btn-outline-success btn-sm" href="#">Usprawiedliwianie</a>
 		    {% endif %}
+		    
 		    {#{% if app.session.get('student')['defined'] is defined %}#}
-		    {% if app.session.get('admin')['defined'] is defined %}
+		    {% if app.session.get('admin') is defined %}
 			<a class="btn btn-outline-info btn-sm" href="#">Oceny</a>
 			<a class="btn btn-outline-info btn-sm" href="#">Plan zajęć</a>
 			<a class="btn btn-outline-info btn-sm" href="#">Uwagi i pochwały</a>
+			<a class="btn btn-outline-info btn-sm" href="#">Obecności</a>
 		    {% endif %}
 		    </div>
 		    

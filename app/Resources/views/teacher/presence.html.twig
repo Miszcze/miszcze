@@ -3,7 +3,7 @@
 
 {% block body %}
 
-<h1>Obecności</h1>
+<h1>Obecności {% if term.ktoCo is defined %}dla {{term.ktoCo.przedmiot.nazwa}} {{term.klasa.poziom}}{{term.klasa.klasa}}{% endif %}</h1>
 <select onchange="location=this.value;" class="form-control custom-select border-dark text-primary">
     <option value="{{url('time_table')}}">Wybierz klasę</option>
     {% for term in terms %}
@@ -12,7 +12,7 @@
 	</option>
     {% endfor %}
 </select>
-
-{{form(form)}}
-
+{% if form is not empty %}
+    {{form(form)}}
+{% endif %}
 {% endblock %}
