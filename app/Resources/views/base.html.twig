@@ -17,9 +17,9 @@
 	<nav class="bg-dark">
 	    <div class="container">
 		<div class="row py-2">
-		    <div class="col-sm-9">
+		    <div class="col-sm-8">
 		    <a href="{{url('homepage')}}" class="text-light"><i class="fa fa-home"></i></a>
-		    {% if app.session.get('admin') is defined %}
+		    {% if app.session.get('admin') is not empty %}
 			<a class="btn btn-outline-primary btn-sm" href="{{url('users')}}">Użytkownicy</a> 
 			<a class="btn btn-outline-primary btn-sm" href="{{url('classes')}}">Klasy</a>
 			<a class="btn btn-outline-primary btn-sm" href="{{url('class')}}">Klasa</a>
@@ -30,18 +30,16 @@
 			<a class="btn btn-outline-primary btn-sm" href="{{url('settings')}}">Ustawienia</a>
 		    {% endif %}
 
-		    {#{% if app.session.get('teacher')['defined'] is defined %}#}
-		    {% if app.session.get('admin') is defined %}
+		    {% if app.session.get('teacher') is not empty %}
 			<a class="btn btn-outline-success btn-sm" href="{{url('presence')}}">Obecności</a>
-			<a class="btn btn-outline-success btn-sm" href="#">Oceny</a>
+			<a class="btn btn-outline-success btn-sm" href="{{url('rating')}}">Oceny</a>
 			<a class="btn btn-outline-success btn-sm" href="#">Spóźnienia</a>
 			<a class="btn btn-outline-success btn-sm" href="#">Plan zajęć</a>
 			<a class="btn btn-outline-success btn-sm" href="#">Uwagi i pochwały</a>
 			<a class="btn btn-outline-success btn-sm" href="#">Usprawiedliwianie</a>
 		    {% endif %}
 		    
-		    {#{% if app.session.get('student')['defined'] is defined %}#}
-		    {% if app.session.get('admin') is defined %}
+		    {% if app.session.get('student') is not empty %}
 			<a class="btn btn-outline-info btn-sm" href="#">Oceny</a>
 			<a class="btn btn-outline-info btn-sm" href="#">Plan zajęć</a>
 			<a class="btn btn-outline-info btn-sm" href="#">Uwagi i pochwały</a>
@@ -49,7 +47,7 @@
 		    {% endif %}
 		    </div>
 		    
-		    <div class="col-sm-3 text-right">
+		    <div class="col-sm-4 text-right">
 		    {% if app.session.get('user')['user'] is defined %}
 			    {% set sessionUser=app.session.get('user')['user'] %}
 			    <span class="text-light pr-1">Zalogowany jako: <b>{{ sessionUser.login }}</b></span>
@@ -70,7 +68,7 @@
 		</div>
 	    </div>
 	</nav>
-	<div class="container py-1 my-5 border rounded border-dark bg-light">{% block body %}{% endblock %}</div>
+	<div class="container py-1 my-5 border rounded border-dark bg-light main">{% block body %}{% endblock %}</div>
 	<footer class="bg-dark"><div class="container p-1 text-center text-light">Stopka strony</div></footer>
         {% block javascripts %}{% endblock %}
     </body>

@@ -8,12 +8,11 @@ use AppBundle\Entity\Terminarz;
 use AppBundle\Entity\Uczniowie;
 use AppBundle\Entity\Zajecia;
 use AppBundle\Form\PresenceType;
+use AppBundle\Form\RatingType;
+use AppBundle\Utils\Message;
 use DateTime;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -25,9 +24,16 @@ class TeacherControllerController extends Controller{
      * @Route("/obecnosci/{term}", name="presence", defaults={"term"="0"})
      */
     public function presenceAction(Request $request,$term){
+	(new Message($this))->count($this);
+	if(!$this->get('session')->has('teacher')) return $this->redirectToRoute('homepage',[],302);
+	if($this->get('session')->has('info')){
+	    $info=$this->get('session')->get('info');
+	    $this->get('session')->remove('info');
+	}
 	$em=$this->getDoctrine()->getManager();
-	$terms=$em->getRepository(Terminarz::class)->findAll();
 	
+	$terms=$em->getRepository(Terminarz::class)->findAll();
+		
 	if(!empty($term)){
 	    $form=$this->createForm(PresenceType::class,null,['id'=>$term]);
 	    $term=$em->getRepository(Terminarz::class)->find($term);
@@ -53,6 +59,7 @@ class TeacherControllerController extends Controller{
 
 	    $em->flush();
 	    
+	    $this->get('session')->set('info','Sprawdzono obecność.');
 	    return $this->redirectToRoute('presence');
 	}
 	
@@ -60,13 +67,13 @@ class TeacherControllerController extends Controller{
 	    return $this->render('teacher/presence.html.twig',[
 		'term'=>$term,
 		'terms'=>$terms,
-		'form'=>$form->createView()
+		'form'=>$form->createView(),
+		'info'=>@$info
 	    ]);
 	else
 	    return $this->render('teacher/presence.html.twig',[
-		'term'=>null,	
 		'terms'=>$terms,
-		'form'=>null
+		'info'=>@$info
 	    ]);
     }
     
@@ -76,12 +83,19 @@ class TeacherControllerController extends Controller{
     public function ratingAction($term,$student){
 	$em=$this->getDoctrine()->getManager();
 	
+	$form=$this->createForm(RatingType::class,null,['id'=>$student]);
+	$student=$em->getRepository(Uczniowie::class)->find($student);
+	$term=$em->getRepository(Terminarz::class)->find($term);
 	$terms=$em->getRepository(Terminarz::class)->findAll();
-	$students=$em->getRepository(Uczniowie::class)->findAll();
+	if(!empty($term)) 
+	    $students=$em->getRepository(Uczniowie::class)->findBy(['klasa'=>$term->getKlasa()]);
 	
 	return $this->render('teacher/rating.html.twig',[
+	    'term'=>@$term,
 	    'terms'=>$terms,
-	    'students'=>$students
+	    'student'=>$student,
+	    'students'=>@$students,
+	    'form'=>$form->createView()
 	]);
     }
 }

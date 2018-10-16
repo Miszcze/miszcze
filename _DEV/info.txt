@@ -1,5 +1,8 @@
 tutaj se możemy pisać info na temat całej pracy:
-MG: co do usprawiedliwienia proponuje, że opiekun będzie pisał wiadomość (można tam równierz dodać
+MG: jedna z najważniejszych rzeczy jest debugowanie... niektóre sytuacje ciężko przewidzieć, jak 
+wywali wam jakiś błąd z moich kontrollerów (z poziomu admina/nauczyciela) róbcie screena błedu i 
+plus możecie jedno zdanie powiedzieć w jakich okolicznościach powstał
+MG: co do usprawiedliwienia proponuje, że opiekun będzie pisał wiadomość (można tam również dodać
 załącznik) i wtedy może nauczyciel zdecydować czy go usprawiedliwić w swoim panelu.
 MG: nawigacja, są tutaj 3 kolory buttonów zależnie od roli, administrator ma niebieski, nauczyciel
 zielony a uczeń/opiekun jasnoniebieski, uczeń i opiekun chyba będą mieli te same widoki

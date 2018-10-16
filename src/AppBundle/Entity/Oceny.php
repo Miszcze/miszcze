@@ -13,9 +13,9 @@ use Doctrine\ORM\Mapping as ORM;
 class Oceny
 {
     /**
-     * @var integer
+     * @var string
      *
-     * @ORM\Column(name="ocena", type="integer", nullable=false)
+     * @ORM\Column(name="ocena", type="decimal", precision=2, scale=1, nullable=false)
      */
     private $ocena;
 
@@ -64,16 +64,6 @@ class Oceny
     private $id;
 
     /**
-     * @var \AppBundle\Entity\Uczniowie
-     *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Uczniowie")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="uczen", referencedColumnName="id")
-     * })
-     */
-    private $uczen;
-
-    /**
      * @var \AppBundle\Entity\Przedmioty
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Przedmioty")
@@ -83,12 +73,22 @@ class Oceny
      */
     private $przedmiot;
 
+    /**
+     * @var \AppBundle\Entity\Uczniowie
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Uczniowie")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="uczen", referencedColumnName="id")
+     * })
+     */
+    private $uczen;
+
 
 
     /**
      * Set ocena
      *
-     * @param integer $ocena
+     * @param string $ocena
      *
      * @return Oceny
      */
@@ -102,7 +102,7 @@ class Oceny
     /**
      * Get ocena
      *
-     * @return integer
+     * @return string
      */
     public function getOcena()
     {
@@ -240,30 +240,6 @@ class Oceny
     }
 
     /**
-     * Set uczen
-     *
-     * @param \AppBundle\Entity\Uczniowie $uczen
-     *
-     * @return Oceny
-     */
-    public function setUczen(\AppBundle\Entity\Uczniowie $uczen = null)
-    {
-        $this->uczen = $uczen;
-
-        return $this;
-    }
-
-    /**
-     * Get uczen
-     *
-     * @return \AppBundle\Entity\Uczniowie
-     */
-    public function getUczen()
-    {
-        return $this->uczen;
-    }
-
-    /**
      * Set przedmiot
      *
      * @param \AppBundle\Entity\Przedmioty $przedmiot
@@ -285,5 +261,29 @@ class Oceny
     public function getPrzedmiot()
     {
         return $this->przedmiot;
+    }
+
+    /**
+     * Set uczen
+     *
+     * @param \AppBundle\Entity\Uczniowie $uczen
+     *
+     * @return Oceny
+     */
+    public function setUczen(\AppBundle\Entity\Uczniowie $uczen = null)
+    {
+        $this->uczen = $uczen;
+
+        return $this;
+    }
+
+    /**
+     * Get uczen
+     *
+     * @return \AppBundle\Entity\Uczniowie
+     */
+    public function getUczen()
+    {
+        return $this->uczen;
     }
 }

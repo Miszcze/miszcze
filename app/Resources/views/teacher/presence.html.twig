@@ -12,7 +12,16 @@
 	</option>
     {% endfor %}
 </select>
-{% if form is not empty %}
+    
+<br><br>
+    
+{% if form is defined and form is not empty %}
     {{form(form)}}
+{% endif %}
+
+<br>
+
+{% if info is not empty %}
+    <div class="alert alert-info">{{info}}</div>
 {% endif %}
 {% endblock %}
