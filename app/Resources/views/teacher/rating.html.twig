@@ -2,29 +2,47 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-
-<h1>Oceny {% if term.ktoCo is defined %}dla {{term.ktoCo.przedmiot.nazwa}} {{term.klasa.poziom}}{{term.klasa.klasa}}{% endif %}</h1>
-{% if students is not empty %}
-<select onchange="location=this.value;" class="form-control custom-select border-dark text-primary">
-    <option value="{{url('time_table')}}">Wybierz ucznia</option>
-    {% for student in students %}
-	<option value="{{url('rating',{'term':app.request.get('term'),'student':student.id})}} ">
-	   {{student.imie}} {{student.nazwisko}}
-	</option>
-    {% endfor %}
-</select>
-{% else %}
-<select onchange="location=this.value;" class="form-control custom-select border-dark text-primary">
-    <option value="{{url('time_table')}}">Wybierz klasę</option>
-    {% for term in terms %}
-	<option value="{{url('rating',{'term':term.id,'student':app.request.get('student')})}} ">
-	   {{term.klasa.poziom}}{{term.klasa.klasa}} - {{term.ktoCo.przedmiot.nazwa}}
-	</option>
-    {% endfor %}
-</select>
-{% endif %}
-
-{{student.imie}}{{student.nazwisko}}
-{{form(form)}}
-
+    {% if students is not empty %}
+    <h1>Oceny {% if term.ktoCo is defined %}dla {{term.ktoCo.przedmiot.nazwa}} {{term.klasa.poziom}}{{term.klasa.klasa}}{% endif %}</h1>
+    <select onchange="location=this.value;" class="form-control custom-select border-dark text-primary">
+	<option value="{{url('time_table')}}">Wybierz ucznia</option>
+	{% for student in students %}
+	    <option value="{{url('rating',{'term':app.request.get('term'),'student':student.id})}} ">
+	       {{student.imie}} {{student.nazwisko}}
+	    </option>
+	{% endfor %}
+    </select>
+    {% else %}
+    <h1>Oceny</h1>
+    <select onchange="location=this.value;" class="form-control custom-select border-dark text-primary">
+	<option value="{{url('time_table')}}">Wybierz klasę</option>
+	{% for term in terms %}
+	    <option value="{{url('rating',{'term':term.id,'student':app.request.get('student')})}} ">
+	       {{term.klasa.poziom}}{{term.klasa.klasa}} - {{term.ktoCo.przedmiot.nazwa}}
+	    </option>
+	{% endfor %}
+    </select>
+    {% endif %}
+    {% if student is not empty %}
+	<h1>{{student.imie}} {{student.nazwisko}}</h1>
+	{{form_start(form)}}
+	<div class="form-group">
+	    <div class="input-group mb-2">
+		<div class="input-group-prepend">
+		    <div class="input-group-text">Ocena</div>
+		</div>
+		{{ form_widget(form.ocena,{'attr':{'class':'form-control custom-select'}}) }}
+	    </div>
+	</div>
+	<div class="form-group">
+	    <div class="input-group mb-2">
+		<div class="input-group-prepend">
+		    <div class="input-group-text">Typ</div>
+		</div>
+		{{ form_widget(form.typ,{'attr':{'class':'form-control custom-select'}}) }}
+	    </div>
+	</div>
+	{{form_widget(form.submit,{'attr':{'class':'btn btn-primary','label':'default'},'label':'Wyślij'})}}
+	{{form_end(form)}}
+    {% endif %}
 {% endblock %}

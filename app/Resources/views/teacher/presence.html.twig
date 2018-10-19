@@ -14,9 +14,41 @@
 </select>
     
 <br><br>
-    
+
 {% if form is defined and form is not empty %}
-    {{form(form)}}
+    {{form_start(form)}}
+    <div class="form-group">
+	<div class="input-group mb-2">
+	    <div class="input-group-prepend">
+		<div class="input-group-text">Temat</div>
+	    </div>
+	    {{ form_widget(form.temat,{'attr':{'class':'form-control'}}) }}
+	</div>
+    </div>
+    <div class="form-group">
+	<div class="input-group mb-2">
+	    <div class="input-group-prepend">
+		<div class="input-group-text">Opis</div>
+	    </div>
+	    {{ form_widget(form.opis,{'attr':{'class':'form-control'}}) }}
+	</div>
+    </div>
+    {% for prop,value in form %}
+	{% if (loop.last)!=true and prop!='submit' and prop!='opis' and prop!='temat' %}
+	<div class="form-group">
+	    <div class="input-group mb-2">
+		<div class="input-group-prepend">
+		    <div class="input-group-text">
+			{{prop|replace({'_': ' '})|title}}
+		    </div>
+		</div>
+		{{ form_widget(attribute(form,prop|replace({'_': ' '})|title|lower),{'attr':{'class':'custom-select form-control'}}) }}
+	    </div>
+	</div>
+	{% endif %}
+    {% endfor %}
+    {{form_widget(form.submit,{'attr':{'class':'btn btn-primary','label':'default'},'label':'Wyślij'})}}
+    {{form_end(form)}}
 {% endif %}
 
 <br>
