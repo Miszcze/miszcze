@@ -1,0 +1,17 @@
+{% block title %}Oceny{% endblock %}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <select onchange="location=this.value;" class="form-control custom-select border-dark text-primary">
+	<option value="{{url('time_table')}}">Wybierz klasę</option>
+	{% for term in terms %}
+	    <option value="{{url('teacher_school_note',{'term':term.id})}} ">
+		{{term.klasa.poziom}}{{term.klasa.klasa}} - {{term.dzienTygodnia}} {{term.godzina.poczatek|date('h-i')}}
+	    </option>
+	{% endfor %}
+    </select>
+
+    {% if form is defined %}
+	{{form(form)}}
+    {% endif %}
+{% endblock %}

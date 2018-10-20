@@ -7,11 +7,11 @@
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
 	<link rel="stylesheet" href="{{ asset('css/style.css') }}">
 	<!-- bootstrap -->
-	<link rel="stylesheet" crossorigin="anonymous"
-	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" 
-	integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B">
+	<link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}"/>
 	<!-- ikonki https://www.w3schools.com/icons/icons_reference.asp -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<!-- ładuje plik ale ikonki coś nie działają -->
+{#	<link rel="stylesheet" href="{{ asset('css/font-awensome.min.css') }}"/>#}
     </head>
     <body class="bg-white">
 	<nav class="bg-dark">
@@ -31,11 +31,11 @@
 		    {% endif %}
 
 		    {% if app.session.get('teacher') is not empty %}
-			<a class="btn btn-outline-success btn-sm" href="{{url('presence')}}">Obecności</a>
-			<a class="btn btn-outline-success btn-sm" href="{{url('rating')}}">Oceny</a>
+			<a class="btn btn-outline-success btn-sm" href="{{url('teacher_presence')}}">Obecności</a>
+			<a class="btn btn-outline-success btn-sm" href="{{url('teacher_rating')}}">Oceny</a>
 			<a class="btn btn-outline-success btn-sm" href="#">Spóźnienia</a>
-			<a class="btn btn-outline-success btn-sm" href="#">Plan zajęć</a>
-			<a class="btn btn-outline-success btn-sm" href="#">Uwagi i pochwały</a>
+			<a class="btn btn-outline-success btn-sm" href="{{url('teacher_time_table')}}">Plan zajęć</a>
+			<a class="btn btn-outline-success btn-sm" href="{{url('teacher_school_note')}}">Uwagi i pochwały</a>
 			<a class="btn btn-outline-success btn-sm" href="#">Usprawiedliwianie</a>
 		    {% endif %}
 		    
