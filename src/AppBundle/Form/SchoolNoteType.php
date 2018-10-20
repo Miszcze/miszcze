@@ -26,7 +26,7 @@ class SchoolNoteType extends AbstractType{
 	$students=$em->getRepository(Uczniowie::class)->findBy(['klasa'=>$term->getKlasa()]);
 	
 	foreach($students as $value)
-	    $choicesStudent[$value->getNazwisko()." ".$value->getImie()]=$value->getId();
+	    $choicesStudent[$value->getNumerLegitymacji()]=$value->getId();
 	
         $builder->setMethod('POST')
 	    ->add('uczen',ChoiceType::class,['choices'=>$choicesStudent])

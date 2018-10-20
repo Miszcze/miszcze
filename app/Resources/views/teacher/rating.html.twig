@@ -7,24 +7,24 @@
     <select onchange="location=this.value;" class="form-control custom-select border-dark text-primary">
 	<option value="{{url('time_table')}}">Wybierz ucznia</option>
 	{% for student in students %}
-	    <option value="{{url('rating',{'term':app.request.get('term'),'student':student.id})}} ">
-	       {{student.imie}} {{student.nazwisko}}
+	    <option value="{{url('teacher_rating',{'term':app.request.get('term'),'student':student.id})}} ">
+	       {{student.numerLegitymacji}}
 	    </option>
 	{% endfor %}
     </select>
     {% else %}
     <h1>Oceny</h1>
     <select onchange="location=this.value;" class="form-control custom-select border-dark text-primary">
-	<option value="{{url('time_table')}}">Wybierz klasę</option>
+	<option value="{{url('teacher_time_table')}}">Wybierz klasę</option>
 	{% for term in terms %}
-	    <option value="{{url('rating',{'term':term.id,'student':app.request.get('student')})}} ">
+	    <option value="{{url('teacher_rating',{'term':term.id,'student':app.request.get('student')})}} ">
 	       {{term.klasa.poziom}}{{term.klasa.klasa}} - {{term.ktoCo.przedmiot.nazwa}}
 	    </option>
 	{% endfor %}
     </select>
     {% endif %}
     {% if student is not empty %}
-	<h1>{{student.imie}} {{student.nazwisko}}</h1>
+	<h1>Uczeń {{student.numerLegitymacji}}</h1>
 	<table class="table">
 	<thead class="thead-dark">
 	<tr>

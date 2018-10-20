@@ -34,7 +34,7 @@ class PresenceType extends AbstractType{
 	    ->getForm();
 	
 	for($i=0;$i<count($students);$i++)
-	    $builder->add($students[$i]->getId(),ChoiceType::class,['label'=>$students[$i]->getImie()." ".$students[$i]->getNazwisko(),'data'=>1,'choices'=>$presenceArray]);
+	    $builder->add($students[$i]->getNumerLegitymacji(),ChoiceType::class,['data'=>1,'choices'=>$presenceArray]);
 	
 	$builder->add('submit',SubmitType::class);
     }

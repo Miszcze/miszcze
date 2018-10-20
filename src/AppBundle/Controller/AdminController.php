@@ -208,6 +208,7 @@ class AdminController extends Controller{
 		$student->setKontakt($form->get('kontakt')->getData());
 		$student->setStatus(0);
 		$student->setUzytkownik($user);
+		$student->setNumerLegitymacji(rand(10000,99999));
 
 		$saltConst=$entityManager->getRepository(Constant::class)->findOneBy(['name'=>'salt']);
 		$hashConst=$entityManager->getRepository(Constant::class)->findOneBy(['name'=>'hash']);
