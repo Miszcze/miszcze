@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Klasy;
 use AppBundle\Entity\Obecnosci;
+use AppBundle\Entity\Oceny;
 use AppBundle\Entity\Terminarz;
 use AppBundle\Entity\Uczniowie;
 use AppBundle\Entity\Zajecia;
@@ -80,7 +81,7 @@ class TeacherControllerController extends Controller{
     /**
      * @Route("/oceny/{term}/{student}", name="rating", defaults={"term"="0","student"="0"})
      */
-    public function ratingAction($term,$student){
+    public function ratingAction(Request $request,$term,$student){
 	$em=$this->getDoctrine()->getManager();
 	
 	$form=$this->createForm(RatingType::class,null,['id'=>$student]);
@@ -89,8 +90,25 @@ class TeacherControllerController extends Controller{
 	$terms=$em->getRepository(Terminarz::class)->findAll();
 	if(!empty($term)) 
 	    $students=$em->getRepository(Uczniowie::class)->findBy(['klasa'=>$term->getKlasa()]);
+	if(!empty($student))
+	    $ratings=$em->getRepository(Oceny::class)->findBy(['uczen'=>$student->getId()]);
+
+	if($request->isMethod('post')){
+	    $form->handleRequest($request);
+	    $rating=new Oceny;
+	    $rating->setKiedy(new DateTime());
+	    $rating->setOcena($form->get('ocena')->getData());
+	    $rating->setPrzedmiot($term->getKtoCo());
+	    $rating->setUczen($student);
+	    $rating->setTyp($form->get('typ')->getData());
+	    $rating->setStatus(0);
+	    
+	    $em->persist($rating);
+	    $em->flush();
+	}
 	
 	return $this->render('teacher/rating.html.twig',[
+	    'ratings'=>@$ratings,
 	    'term'=>@$term,
 	    'terms'=>$terms,
 	    'student'=>$student,

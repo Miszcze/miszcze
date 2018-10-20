@@ -25,6 +25,23 @@
     {% endif %}
     {% if student is not empty %}
 	<h1>{{student.imie}} {{student.nazwisko}}</h1>
+	<table class="table">
+	<thead class="thead-dark">
+	<tr>
+	    <th>Ocena</th>
+	    <th>Typ</th>
+	</tr>
+	</thead>
+	<tbody>
+	    
+	{% for rating in ratings %}<tr>
+	    <td>{{rating.ocena}}</td>
+	    <td>{{rating.typ}}</td>
+	    </tr>
+	{% endfor %}
+	    
+	</tbody>
+	</table>
 	{{form_start(form)}}
 	<div class="form-group">
 	    <div class="input-group mb-2">

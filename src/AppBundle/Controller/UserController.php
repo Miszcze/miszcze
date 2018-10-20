@@ -67,10 +67,10 @@ class UserController extends Controller{
 		    $session=$this->get('session');
 		    $session->set('user',['user'=>$user[0]]);
 		    
-		    $admin=$entityManager->createQuery(
+		    $student=$entityManager->createQuery(
 			"SELECT p ".
 			"FROM AppBundle\Entity\Pracownicy p ".
-			"WHERE p.uzytkownik=".$user[0]->getId()." AND p.role like '%dyrektor%'" 
+			"WHERE p.uzytkownik=".$user[0]->getId()." AND p.role like '%uczen%'" 
 		    )
 		    ->getResult();
 		    $teacher=$entityManager->createQuery(
@@ -79,10 +79,17 @@ class UserController extends Controller{
 			"WHERE p.uzytkownik=".$user[0]->getId()." AND p.role like '%nauczyciel%'" 
 		    )
 		    ->getResult();
+		    $admin=$entityManager->createQuery(
+			"SELECT p ".
+			"FROM AppBundle\Entity\Pracownicy p ".
+			"WHERE p.uzytkownik=".$user[0]->getId()." AND p.role like '%dyrektor%'" 
+		    )
+		    ->getResult();
 		    
 		    if(!empty($admin)) $session->set('admin',true);
 		    if(!empty($teacher)) $session->set('teacher',true);
-		    
+		    if(!empty($admin)) $session->set('student',true);
+		     
 		    return $this->redirectToRoute('homepage');
 		}
 	    }
@@ -108,6 +115,7 @@ class UserController extends Controller{
      */
     public function logoutAction(){
 	$this->get('session')->remove('user');
+	$this->get('session')->remove('student');
 	$this->get('session')->remove('admin');
 	$this->get('session')->remove('teacher');
 

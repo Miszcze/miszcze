@@ -1122,7 +1122,7 @@ class AdminController extends Controller{
     }
     
     /**
-     * @Route("/settings", name="settings")
+     * @Route("/ustawienia", name="settings")
      */
     public function settings(Request $request){
 	if(AdminController::checkAdmin()) return $this->redirectToRoute('homepage');
@@ -1134,6 +1134,7 @@ class AdminController extends Controller{
 	$entityManager=$this->getDoctrine()->getManager();
 	$arrayTechnicalBreak['nie']=0;
 	$arrayTechnicalBreak['tak']=1;
+	
 	$technicalBreak=$this
 	    ->getDoctrine()
 	    ->getRepository(Constant::class)
