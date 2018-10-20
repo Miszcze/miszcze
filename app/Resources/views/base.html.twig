@@ -4,14 +4,13 @@
         <meta charset="UTF-8" />
         <title>{% block title %}Welcome!{% endblock %}</title>
         {% block stylesheets %}{% endblock %}
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}"/>
 	<link rel="stylesheet" href="{{ asset('css/style.css') }}">
 	<!-- bootstrap -->
 	<link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}"/>
 	<!-- ikonki https://www.w3schools.com/icons/icons_reference.asp -->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<!-- ładuje plik ale ikonki coś nie działają -->
-{#	<link rel="stylesheet" href="{{ asset('css/font-awensome.min.css') }}"/>#}
+	<link rel="stylesheet" href="{{ asset('css/font-awensome.min.css') }}"/>
     </head>
     <body class="bg-white">
 	<nav class="bg-dark">
