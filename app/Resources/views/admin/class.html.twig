@@ -3,7 +3,7 @@
 
 {% block body %}
     {% if app.request.get('numberClass')!=0 and app.request.get('class')!='0' %}
-	<h1 class="text-center">{{class.poziom}}{{class.klasa}}
+	<h1 class="text-center">Brak
 	    <select onchange="location=this.value;">
 		<option value="{{url('class')}}">Wybierz klasę</option>
 		{% for class in classes %}
@@ -12,13 +12,32 @@
 		{% endfor %}
 	    </select>
 	</h1>
+	<select onchange="location=this.value;" class="form-control custom-select border-dark text-primary">
+	    <option value="{{url('class')}}">Wybierz klasę</option>
+	    {% for class in classes %}
+	    <option value="{{url('class',{'numberClass':class.poziom,'class':class.klasa})}} ">
+		{{class.poziom}}{{class.klasa}}</option>
+	    {% endfor %}
+	</select>
+	    
+	<br><br>
+	
+	<table class="table table-hover table-light">
+	<thead class="thead-dark">
+	    <tr>
+		<th>Poziom</th>
+		<th>Klasa</th>
+	    </tr>
+	</thead>
 	{% for student in students %}
-	    {{ student.imie }} {{ student.nazwisko }}
-	    <a class="btn btn-outline-danger" href="{{url('class',{'numberClass':class.poziom,'class':class.klasa,'id':student.id,'delete':1})}}">usuń</a>
-	    <br>
+	    <tr>
+	    <td>{{ student.imie }} {{ student.nazwisko }}</td>
+	    <td><a class="btn btn-outline-danger" href="{{url('class',{'numberClass':class.poziom,'class':class.klasa,'id':student.id,'delete':1})}}">usuń</a></td>
+	    </tr>
 	{% endfor %}
+	</table>
 	<br>
-	{{form(form)}}
+
     {% else %}
 	<h1 class="text-center">Brak
 	    <select onchange="location=this.value;">
