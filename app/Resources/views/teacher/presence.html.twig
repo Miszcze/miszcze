@@ -3,7 +3,8 @@
 
 {% block body %}
 
-<h1>Obecności {% if term.ktoCo is defined %}dla {{term.ktoCo.przedmiot.nazwa}} {{term.klasa.poziom}}{{term.klasa.klasa}}{% endif %}</h1>
+{# select klasy #}
+<h1 class="text-center my-3">Obecności {% if term.ktoCo is defined %}dla {{term.ktoCo.przedmiot.nazwa}} {{term.klasa.poziom}}{{term.klasa.klasa}}{% endif %}</h1>
 <select onchange="location=this.value;" class="form-control custom-select border-dark text-primary">
     <option value="{{url('time_table')}}">Wybierz klasę</option>
     {% for term in terms %}
@@ -12,43 +13,47 @@
 	</option>
     {% endfor %}
 </select>
-    
-<br><br>
 
 {% if form is defined and form is not empty %}
-    {{form_start(form)}}
-    <div class="form-group">
-	<div class="input-group mb-2">
-	    <div class="input-group-prepend">
-		<div class="input-group-text">Temat</div>
-	    </div>
-	    {{ form_widget(form.temat,{'attr':{'class':'form-control'}}) }}
-	</div>
-    </div>
-    <div class="form-group">
-	<div class="input-group mb-2">
-	    <div class="input-group-prepend">
-		<div class="input-group-text">Opis</div>
-	    </div>
-	    {{ form_widget(form.opis,{'attr':{'class':'form-control'}}) }}
-	</div>
-    </div>
-    {% for prop,value in form %}
-	{% if (loop.last)!=true and prop!='submit' and prop!='opis' and prop!='temat' %}
+    {# formularz #}
+    <div class="border border-dark mt-5">
+	<div class="form-header">Sprawdzanie obecności</div>
+	<div class="form-body">
+	{{form_start(form)}}
 	<div class="form-group">
 	    <div class="input-group mb-2">
 		<div class="input-group-prepend">
-		    <div class="input-group-text">
-			{{prop|replace({'_': ' '})|title}}
-		    </div>
+		    <div class="input-group-text">Temat</div>
 		</div>
-		{{ form_widget(attribute(form,prop|replace({'_': ' '})|title|lower),{'attr':{'class':'custom-select form-control'}}) }}
+		{{ form_widget(form.temat,{'attr':{'class':'form-control'}}) }}
 	    </div>
 	</div>
-	{% endif %}
-    {% endfor %}
-    {{form_widget(form.submit,{'attr':{'class':'btn btn-primary','label':'default'},'label':'Wyślij'})}}
-    {{form_end(form)}}
+	<div class="form-group">
+	    <div class="input-group mb-2">
+		<div class="input-group-prepend">
+		    <div class="input-group-text">Opis</div>
+		</div>
+		{{ form_widget(form.opis,{'attr':{'class':'form-control'}}) }}
+	    </div>
+	</div>
+	{% for prop,value in form %}
+	    {% if (loop.last)!=true and prop!='submit' and prop!='opis' and prop!='temat' %}
+	    <div class="form-group">
+		<div class="input-group mb-2">
+		    <div class="input-group-prepend">
+			<div class="input-group-text">
+			    {{prop|replace({'_': ' '})|title}}
+			</div>
+		    </div>
+		    {{ form_widget(attribute(form,prop|replace({'_': ' '})|title|lower),{'attr':{'class':'custom-select form-control'}}) }}
+		</div>
+	    </div>
+	    {% endif %}
+	{% endfor %}
+	{{form_widget(form.submit,{'attr':{'class':'btn btn-primary','label':'default'},'label':'Wyślij'})}}
+	{{form_end(form)}}
+	</div>
+    </div>
 {% endif %}
 
 <br>
