@@ -2,9 +2,10 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1 class="text-center">Słownik przedmiotów</h1>
+    {# dane do wyświetlenia #}
+    <h1 class="text-center my-3">Słownik przedmiotów</h1>
     {% if librarySubjects is not empty %}
-    <table class="table">
+    <table class="table table-hover table-light border border-dark">
 	<thead class="thead-dark">
 	<tr>
 	    <th>Nazwa</th>
@@ -27,14 +28,45 @@
 	</tbody>
     </table>
     {% else %}
-	brak
+	<div class="alert alert-info">Brak danych.</div>
     {% endif %}
-    <h2>Dodawanie/edytowanie</h2>
-    {{form(formLibrarySubjects)}}
     
-    <h1 class="text-center">Przedmioty</h1>
+    {# formylarz #}
+    <div class="border border-dark my-5">
+	<div class="form-header">
+	    {% if app.request.get('form')=='slownikPrzedmiotow' and app.request.get('id')!=0 %}
+		Edycja przedmiotu
+	    {% else %}
+		Dodawanie przedmiotu
+	    {% endif %}
+	</div>
+	<div class="form-body">
+	    {{form_start(formLibrarySubjects)}}
+	    <div class="form-group">
+		<div class="input-group mb-2">
+		    <div class="input-group-prepend">
+			<div class="input-group-text">Nazwa</div>
+		    </div>
+		    {{form_widget(formLibrarySubjects.nazwa,{'attr':{'class':'form-control'}})}}
+		</div>
+	    </div>
+	    <div class="form-group">
+		<div class="input-group mb-2">
+		    <div class="input-group-prepend">
+			<div class="input-group-text">Opis</div>
+		    </div>
+		    {{form_widget(formLibrarySubjects.opis,{'attr':{'class':'form-control'}})}}
+		</div>
+	    </div>
+	    {{form_widget(formLibrarySubjects.submitLibrarySubjects,{'attr':{'class':'btn btn-primary','label':'default'},'label':'Wyślij'})}}
+	    {{form_end(formLibrarySubjects)}}
+        </div>
+    </div>
+	
+    {# dane do wyświetlenia #}
+    <h1 class="text-center my-3">Przedmioty</h1>
     {% if subjects is not empty %}
-    <table class="table">
+    <table class="table table-hover table-light border border-dark">
 	<thead class="thead-dark">
 	<tr>
 	    <th>Prowadzący</th>
@@ -62,8 +94,38 @@
 	</tbody>
     </table>
     {% else %}
-	brak
+	<div class="alert alert-info">Brak danych.</div>
     {% endif %}
-    <h2>Dodawanie/edytowanie</h2>
-    {{form(formSubjects)}}
+    
+    {# formularz #}
+    <div class="border border-dark mt-5">
+	<div class="form-header">
+	    {% if app.request.get('form')=='przedmioty' and app.request.get('id')!=0 %}
+		Edycja przepisanie pracownika przedmiotu
+	    {% else %}
+		Dodawanie przepisanie pracownika przedmiotu
+	    {% endif %}
+	</div>
+	<div class="form-body">
+	    {{form_start(formSubjects)}}
+	    <div class="form-group">
+		<div class="input-group mb-2">
+		    <div class="input-group-prepend">
+			<div class="input-group-text">Prowadzący</div>
+		    </div>
+		    {{form_widget(formSubjects.prowadzacy,{'attr':{'class':'form-control'}})}}
+		</div>
+	    </div>
+	    <div class="form-group">
+		<div class="input-group mb-2">
+		    <div class="input-group-prepend">
+			<div class="input-group-text">Przedmiot</div>
+		    </div>
+		    {{form_widget(formSubjects.przedmiot,{'attr':{'class':'form-control'}})}}
+		</div>
+	    </div>
+	    {{form_widget(formSubjects.submitSubjects,{'attr':{'class':'btn btn-primary','label':'default'},'label':'Wyślij'})}}
+	    {{form_end(formSubjects)}}
+	</div>
+    </div>
 {% endblock %}

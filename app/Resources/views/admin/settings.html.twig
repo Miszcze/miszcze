@@ -2,15 +2,52 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1 class="text-center">Ustawienia administratora</h1>
-    Kopia bazy: <a href="{{url('database')}}">wykonaj</a>
-    {{form(formDatabase)}}
-    {% if technicalBreak==0 %}
-	Przerwa techczniną wyłączona
-    {% else %}
-	Przerwa techczniną włączona
-    {% endif %}
-    {{form(formTechnicalBreak)}}
+    <h1 class="text-center my-3">Ustawienia administratora</h1>
+    
+    {# kopia bazy #}
+    Kopia bazy: <a class="btn btn-success btn-sm" href="{{url('database')}}">wykonaj</a>
+    
+    {# formularz zmiana bazy #}
+    <div class="border border-dark mt-3">
+	<div class="form-header">Zmiana bazy danych</div>
+	<div class="form-body">
+	    {{form_start(formDatabase)}}
+	    <div class="form-group">
+		<div class="input-group mb-2">
+		    <div class="input-group-prepend">
+			<div class="input-group-text">Opis</div>
+		    </div>
+		    {{form_widget(formDatabase.database,{'attr':{'class':'form-control'}})}}
+		</div>
+	    </div>
+	    {{form_widget(formDatabase.submitDatabase,{'attr':{'class':'btn btn-primary','label':'default'},'label':'Zmień'})}}
+	    {{form_end(formDatabase)}}
+	</div>
+    </div>
+    
+    {# formularz przerwy techczninej #}
+    <div class="border border-dark mt-5">
+	<div class="form-header">
+	    {% if technicalBreak==0 %}
+		<span class="text-success">Przerwa techcznina wyłączona</span>
+	    {% else %}
+		<span class="text-danger">Przerwa techcznina włączona</span>
+	    {% endif %}
+	</div>
+	<div class="form-body">
+	    {{form_start(formTechnicalBreak)}}
+		<div class="form-group">
+		    <div class="input-group mb-2">
+			<div class="input-group-prepend">
+			    <div class="input-group-text">Przerwa techniczna</div>
+			</div>
+			{{form_widget(formTechnicalBreak.technicalBreak,{'attr':{'class':'form-control'}})}}
+		    </div>
+		</div>
+		{{form_widget(formTechnicalBreak.submitTechnicalBreak,{'attr':{'class':'btn btn-primary','label':'default'},'label':'Ustaw'})}}
+	    {{form_end(formTechnicalBreak)}}
+	</div>
+	</div>
 {% endblock %}
 
 

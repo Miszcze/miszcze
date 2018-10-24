@@ -1,3 +1,6 @@
+.body{
+    background: linear-gradient(to top left, #336699 0%, #0099dd 100%);
+}
 .fa{
     font-size:24px !important;
     position:relative;
@@ -12,4 +15,16 @@
 }
 .main{
     min-height:250px;
+}
+.form-header{
+    color:#fff;
+    background-color:#212529;
+    border-color:#32383e;
+    padding:.75rem;
+    font-weight:700;
+    text-align:center;
+}
+.form-body{
+    background-color:#fff;
+    padding:1.25rem;
 }

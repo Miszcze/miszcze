@@ -2,9 +2,10 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1 class="text-center">Użytkownicy:</h1>
+    {# dane do wyświetlenia #}
+    <h1 class="text-center my-3">Użytkownicy</h1>
     {% if users is not empty %}
-	<table class="table table-hover table-light">
+	<table class="table table-hover table-light border border-dark">
 	<thead class="thead-dark">
 	    <tr>
 		<th>Login</th>
@@ -16,7 +17,7 @@
 	</thead>
 	<tbody>
 	    {% for i in 0..users|length-1 %}
-		<tr {% if users[i].typ=='pracownik' %}class="text-success"{% endif %}>
+		<tr>
 		    <td>{{ users[i].login }}</td>
 		    <td>{{ users[i].typ }}</td>
 		    <td>{{ users[i].mail }}</td>
@@ -50,10 +51,8 @@
     </tbody>
     </table>
     
-    <h1>{% if app.request.get('id')==0 %} Dodawanie {% else %} Edycja {% endif %}
-       {{ app.request.get('formType') }}</h1>
-       
-    Wybór formularza:
+    {# wybór formularza #}
+    <div class="mt-5 font-weight-bold">Wybór formularza:</div>
     <select onchange="location=this.value;" class="form-control custom-select border-dark text-primary">
 	<option value="{{url('users',{'formType':'uczen'})}} "
 		{% if app.request.get('formType')=='uczen' %}selected{% endif %}>Uczeń</option>
@@ -61,212 +60,238 @@
 		{% if app.request.get('formType')=='opiekun' %}selected{% endif %}>Opiekun</option>
 	<option value="{{url('users',{'formType':'pracownik'})}}"
 		{% if app.request.get('formType')=='pracownik' %}selected{% endif %}>Pracownik</option>
-    </select><br><br>
+    </select>
     
+    {# formularz uczeń #}
     {% if app.request.get('formType')=='uczen' %}
-    {{ form_start(form) }}
-    <div class="form-group">
-	<div class="input-group mb-2">
-	    <div class="input-group-prepend">
-		<div class="input-group-text">Login</div>
-	    </div>
-	    {{form_widget(form.login,{'attr':{'class':'form-control'}})}}
+    <div class="border border-dark mt-3">
+	<div class="form-header">
+	    {% if app.request.get('id')==0 %}Dodawanie{% else %}Edycja{% endif %} ucznia
 	</div>
-    </div>
-    <div class="form-group">
-	<div class="input-group mb-2">
-	    <div class="input-group-prepend">
-		<div class="input-group-text">Mail</div>
+	<div class="form-body">
+	{{ form_start(form) }}
+	<div class="form-group">
+	    <div class="input-group mb-2">
+		<div class="input-group-prepend">
+		    <div class="input-group-text">Login</div>
+		</div>
+		{{form_widget(form.login,{'attr':{'class':'form-control'}})}}
 	    </div>
-	    {{form_widget(form.mail,{'attr':{'class':'form-control'}})}}
 	</div>
-    </div>
-    <div class="form-group">
-	<div class="input-group mb-2">
-	    <div class="input-group-prepend">
-		<div class="input-group-text">Imie</div>
+	<div class="form-group">
+	    <div class="input-group mb-2">
+		<div class="input-group-prepend">
+		    <div class="input-group-text">Mail</div>
+		</div>
+		{{form_widget(form.mail,{'attr':{'class':'form-control'}})}}
 	    </div>
-	    {{form_widget(form.imie,{'attr':{'class':'form-control'}})}}
 	</div>
-    </div>
-    <div class="form-group">
-	<div class="input-group mb-2">
-	    <div class="input-group-prepend">
-		<div class="input-group-text">Imie2</div>
+	<div class="form-group">
+	    <div class="input-group mb-2">
+		<div class="input-group-prepend">
+		    <div class="input-group-text">Imie</div>
+		</div>
+		{{form_widget(form.imie,{'attr':{'class':'form-control'}})}}
 	    </div>
-	    {{form_widget(form.imie2,{'attr':{'class':'form-control'}})}}
 	</div>
-    </div>
-    <div class="form-group">
-	<div class="input-group mb-2">
-	    <div class="input-group-prepend">
-		<div class="input-group-text">Nazwisko</div>
+	<div class="form-group">
+	    <div class="input-group mb-2">
+		<div class="input-group-prepend">
+		    <div class="input-group-text">Imie2</div>
+		</div>
+		{{form_widget(form.imie2,{'attr':{'class':'form-control'}})}}
 	    </div>
-	    {{form_widget(form.nazwisko,{'attr':{'class':'form-control'}})}}
 	</div>
-    </div>
-    <div class="form-group">
-	<div class="input-group mb-2">
-	    <div class="input-group-prepend">
-		<div class="input-group-text">Data urodzenia</div>
+	<div class="form-group">
+	    <div class="input-group mb-2">
+		<div class="input-group-prepend">
+		    <div class="input-group-text">Nazwisko</div>
+		</div>
+		{{form_widget(form.nazwisko,{'attr':{'class':'form-control'}})}}
 	    </div>
-	    {{form_widget(form.dataUrodzenia,{'attr':{'class':'form-control'}})}}
 	</div>
-    </div>
-    <div class="form-group">
-	<div class="input-group mb-2">
-	    <div class="input-group-prepend">
-		<div class="input-group-text">Pesel</div>
+	<div class="form-group">
+	    <div class="input-group mb-2">
+		<div class="input-group-prepend">
+		    <div class="input-group-text">Data urodzenia</div>
+		</div>
+		{{form_widget(form.dataUrodzenia,{'attr':{'class':'form-control'}})}}
 	    </div>
-	    {{form_widget(form.pesel,{'attr':{'class':'form-control'}})}}
 	</div>
-    </div>
-    <div class="form-group">
-	<div class="input-group mb-2">
-	    <div class="input-group-prepend">
-		<div class="input-group-text">Miejscowość</div>
+	<div class="form-group">
+	    <div class="input-group mb-2">
+		<div class="input-group-prepend">
+		    <div class="input-group-text">Pesel</div>
+		</div>
+		{{form_widget(form.pesel,{'attr':{'class':'form-control'}})}}
 	    </div>
-	    {{form_widget(form.miejscowosc,{'attr':{'class':'form-control'}})}}
 	</div>
-    </div>
-    <div class="form-group">
-	<div class="input-group mb-2">
-	    <div class="input-group-prepend">
-		<div class="input-group-text">Ulica</div>
+	<div class="form-group">
+	    <div class="input-group mb-2">
+		<div class="input-group-prepend">
+		    <div class="input-group-text">Miejscowość</div>
+		</div>
+		{{form_widget(form.miejscowosc,{'attr':{'class':'form-control'}})}}
 	    </div>
-	    {{form_widget(form.ulica,{'attr':{'class':'form-control'}})}}
 	</div>
-    </div>
-    <div class="form-group">
-	<div class="input-group mb-2">
-	    <div class="input-group-prepend">
-		<div class="input-group-text">Nr domu</div>
+	<div class="form-group">
+	    <div class="input-group mb-2">
+		<div class="input-group-prepend">
+		    <div class="input-group-text">Ulica</div>
+		</div>
+		{{form_widget(form.ulica,{'attr':{'class':'form-control'}})}}
 	    </div>
-	    {{form_widget(form.nrDomu,{'attr':{'class':'form-control'}})}}
 	</div>
-    </div>
-    <div class="form-group">
-	<div class="input-group mb-2">
-	    <div class="input-group-prepend">
-		<div class="input-group-text">Kod pocztowy</div>
+	<div class="form-group">
+	    <div class="input-group mb-2">
+		<div class="input-group-prepend">
+		    <div class="input-group-text">Nr domu</div>
+		</div>
+		{{form_widget(form.nrDomu,{'attr':{'class':'form-control'}})}}
 	    </div>
-	    {{form_widget(form.kodPocztowy,{'attr':{'class':'form-control'}})}}
 	</div>
-    </div>
-    <div class="form-group">
-	<div class="input-group mb-2">
-	    <div class="input-group-prepend">
-		<div class="input-group-text">Poczta</div>
+	<div class="form-group">
+	    <div class="input-group mb-2">
+		<div class="input-group-prepend">
+		    <div class="input-group-text">Kod pocztowy</div>
+		</div>
+		{{form_widget(form.kodPocztowy,{'attr':{'class':'form-control'}})}}
 	    </div>
-	    {{form_widget(form.poczta,{'attr':{'class':'form-control'}})}}
 	</div>
-    </div>
-    <div class="form-group">
-	<div class="input-group mb-2">
-	    <div class="input-group-prepend">
-		<div class="input-group-text">Kontakt</div>
+	<div class="form-group">
+	    <div class="input-group mb-2">
+		<div class="input-group-prepend">
+		    <div class="input-group-text">Poczta</div>
+		</div>
+		{{form_widget(form.poczta,{'attr':{'class':'form-control'}})}}
 	    </div>
-	    {{form_widget(form.kontakt,{'attr':{'class':'form-control'}})}}
 	</div>
+	<div class="form-group">
+	    <div class="input-group mb-2">
+		<div class="input-group-prepend">
+		    <div class="input-group-text">Kontakt</div>
+		</div>
+		{{form_widget(form.kontakt,{'attr':{'class':'form-control'}})}}
+	    </div>
+	</div>
+	{{form_widget(form.submit,{'attr':{'class':'btn btn-primary','label':'default'},'label':'Wyślij'})}}
+        </div>
     </div>
-    {{form_widget(form.submit,{'attr':{'class':'btn btn-primary','label':'default'},'label':'Wyślij'})}}
     {{ form_end(form) }}
+    
+    {# formularz opiekun #}
     {% elseif app.request.get('formType')=='opiekun' %}
-	{{ form_start(form) }}
-	<div class="form-group">
-	    <div class="input-group mb-2">
-		<div class="input-group-prepend">
-		    <div class="input-group-text">Login</div>
-		</div>
-		{{form_widget(form.login,{'attr':{'class':'form-control'}})}}
-	    </div>
+    <div class="border border-dark mt-3">
+	<div class="form-header">
+	    {% if app.request.get('id')==0 %}Dodawanie{% else %}Edycja{% endif %} opiekuna
 	</div>
-	<div class="form-group">
-	    <div class="input-group mb-2">
-		<div class="input-group-prepend">
-		    <div class="input-group-text">Mail</div>
+	<div class="form-body">
+	    {{ form_start(form) }}
+	    <div class="form-group">
+		<div class="input-group mb-2">
+		    <div class="input-group-prepend">
+			<div class="input-group-text">Login</div>
+		    </div>
+		    {{form_widget(form.login,{'attr':{'class':'form-control'}})}}
 		</div>
-		{{form_widget(form.mail,{'attr':{'class':'form-control'}})}}
 	    </div>
-	</div>
-	<div class="form-group">
-	    <div class="input-group mb-2">
-		<div class="input-group-prepend">
-		    <div class="input-group-text">Imię</div>
+	    <div class="form-group">
+		<div class="input-group mb-2">
+		    <div class="input-group-prepend">
+			<div class="input-group-text">Mail</div>
+		    </div>
+		    {{form_widget(form.mail,{'attr':{'class':'form-control'}})}}
 		</div>
-		{{form_widget(form.imie,{'attr':{'class':'form-control'}})}}
 	    </div>
-	</div>
-	<div class="form-group">
-	    <div class="input-group mb-2">
-		<div class="input-group-prepend">
-		    <div class="input-group-text">Nazwisko</div>
+	    <div class="form-group">
+		<div class="input-group mb-2">
+		    <div class="input-group-prepend">
+			<div class="input-group-text">Imię</div>
+		    </div>
+		    {{form_widget(form.imie,{'attr':{'class':'form-control'}})}}
 		</div>
-		{{form_widget(form.nazwisko,{'attr':{'class':'form-control'}})}}
 	    </div>
-	</div>
-	<div class="form-group">
-	    <div class="input-group mb-2">
-		<div class="input-group-prepend">
-		    <div class="input-group-text">Kontakt</div>
+	    <div class="form-group">
+		<div class="input-group mb-2">
+		    <div class="input-group-prepend">
+			<div class="input-group-text">Nazwisko</div>
+		    </div>
+		    {{form_widget(form.nazwisko,{'attr':{'class':'form-control'}})}}
 		</div>
-		{{form_widget(form.kontakt,{'attr':{'class':'form-control'}})}}
 	    </div>
+	    <div class="form-group">
+		<div class="input-group mb-2">
+		    <div class="input-group-prepend">
+			<div class="input-group-text">Kontakt</div>
+		    </div>
+		    {{form_widget(form.kontakt,{'attr':{'class':'form-control'}})}}
+		</div>
+	    </div>
+	    {{form_widget(form.submit,{'attr':{'class':'btn btn-primary','label':'default'},'label':'Wyślij'})}}
+	    {{ form_end(form) }}
 	</div>
-	{{form_widget(form.submit,{'attr':{'class':'btn btn-primary','label':'default'},'label':'Wyślij'})}}
-	{{ form_end(form) }}
+    </div>
+	
+    {# formularz pracownik #}
     {% else %}
-	{{ form_start(form) }}
-	<div class="form-group">
-	    <div class="input-group mb-2">
-		<div class="input-group-prepend">
-		    <div class="input-group-text">Login</div>
-		</div>
-		{{form_widget(form.login,{'attr':{'class':'form-control'}})}}
-	    </div>
+    <div class="border border-dark mt-3">
+	<div class="form-header">
+	    {% if app.request.get('id')==0 %}Dodawanie{% else %}Edycja{% endif %} pracownika
 	</div>
-	<div class="form-group">
-	    <div class="input-group mb-2">
-		<div class="input-group-prepend">
-		    <div class="input-group-text">Mail</div>
+	<div class="form-body">
+	    {{ form_start(form) }}
+	    <div class="form-group">
+		<div class="input-group mb-2">
+		    <div class="input-group-prepend">
+			<div class="input-group-text">Login</div>
+		    </div>
+		    {{form_widget(form.login,{'attr':{'class':'form-control'}})}}
 		</div>
-		{{form_widget(form.mail,{'attr':{'class':'form-control'}})}}
 	    </div>
-	</div>
-	<div class="form-group">
-	    <div class="input-group mb-2">
-		<div class="input-group-prepend">
-		    <div class="input-group-text">Imię</div>
+	    <div class="form-group">
+		<div class="input-group mb-2">
+		    <div class="input-group-prepend">
+			<div class="input-group-text">Mail</div>
+		    </div>
+		    {{form_widget(form.mail,{'attr':{'class':'form-control'}})}}
 		</div>
-		{{form_widget(form.imie,{'attr':{'class':'form-control'}})}}
 	    </div>
-	</div>
-	<div class="form-group">
-	    <div class="input-group mb-2">
-		<div class="input-group-prepend">
-		    <div class="input-group-text">Nazwisko</div>
+	    <div class="form-group">
+		<div class="input-group mb-2">
+		    <div class="input-group-prepend">
+			<div class="input-group-text">Imię</div>
+		    </div>
+		    {{form_widget(form.imie,{'attr':{'class':'form-control'}})}}
 		</div>
-		{{form_widget(form.nazwisko,{'attr':{'class':'form-control'}})}}
 	    </div>
-	</div>
-	<div class="form-group">
-	    <div class="input-group mb-2">
-		<div class="input-group-prepend">
-		    <div class="input-group-text">Role</div>
+	    <div class="form-group">
+		<div class="input-group mb-2">
+		    <div class="input-group-prepend">
+			<div class="input-group-text">Nazwisko</div>
+		    </div>
+		    {{form_widget(form.nazwisko,{'attr':{'class':'form-control'}})}}
 		</div>
-		{{form_widget(form.role,{'attr':{'class':'form-control'}})}}
 	    </div>
-	</div>
-	<div class="form-group">
-	    <div class="input-group mb-2">
-		<div class="input-group-prepend">
-		    <div class="input-group-text">Kontakt</div>
+	    <div class="form-group">
+		<div class="input-group mb-2">
+		    <div class="input-group-prepend">
+			<div class="input-group-text">Role</div>
+		    </div>
+		    {{form_widget(form.role,{'attr':{'class':'form-control'}})}}
 		</div>
-		{{form_widget(form.kontakt,{'attr':{'class':'form-control'}})}}
 	    </div>
+	    <div class="form-group">
+		<div class="input-group mb-2">
+		    <div class="input-group-prepend">
+			<div class="input-group-text">Kontakt</div>
+		    </div>
+		    {{form_widget(form.kontakt,{'attr':{'class':'form-control'}})}}
+		</div>
+	    </div>
+	    {{form_widget(form.submit,{'attr':{'class':'btn btn-primary','label':'default'},'label':'Wyślij'})}}
+	    {{ form_end(form) }}
 	</div>
-	{{form_widget(form.submit,{'attr':{'class':'btn btn-primary','label':'default'},'label':'Wyślij'})}}
-	{{ form_end(form) }}
+    </div>
     {% endif %}
     
     {% for error in errors %}

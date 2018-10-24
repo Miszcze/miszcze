@@ -2,9 +2,10 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1 class="text-center">Godziny lekcyjne</h1>
+    {# dane do wyświetlenia #}
+    <h1 class="text-center my-3">Godziny lekcyjne</h1>
     {% if lessonHours is not empty %}
-    <table class="table">
+    <table class="table table-hover table-light border border-dark">
 	<thead class="thead-dark">
 	<tr>
 	    <th>Początek</th>
@@ -21,8 +22,30 @@
 	{% endfor %}
     </table>
     {% else %}
-	brak
+	<div class="alert alert-info">Brak danych.</div>
     {% endif %}
-    <h2>Dodawanie/edytowanie</h2>
-    {{form(form)}}
+    
+    {# formularz #}
+    <div class="border border-dark mt-5">
+	<div class="form-header">
+	    {% if app.request.get('id')==0 %}
+		Dodawanie godziny lekcyjnej
+	    {% else %}
+		Edytowanie godziny lekcyjnej
+	    {% endif %}
+	</div>
+	<div class="form-body">
+	    {{form_start(form)}}
+	    <div class="form-group">
+		<div class="input-group mb-2">
+		    <div class="input-group-prepend">
+			<div class="input-group-text">Godzina lekcyjna</div>
+		    </div>
+		    {{form_widget(form.poczatek,{'attr':{'class':'form-control'}})}}
+		</div>
+	    </div>
+	    {{form_widget(form.submit,{'attr':{'class':'btn btn-primary','label':'default'},'label':'Wyślij'})}}
+	    {{form_end(form)}}
+	</div>
+    </div>
 {% endblock %}

@@ -2,9 +2,10 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1 class="text-center">Terminarz</h1>
+    {# dane do wyświetlenia #}
+    <h1 class="text-center my-3">Terminarz</h1>
     {% if timeTable is not empty %}
-    <table class="table">
+    <table class="table table-hover table-light border border-dark">
 	<thead class="thead-dark">
 	<tr>
 	    <th>Sala</th>
@@ -42,10 +43,11 @@
 	</tbody>
     </table>
     {% else %}
-	brak
+	<div class="alert alert-info">Brak danych.</div>
     {% endif %}
     
-    <div class="col-sm-3 p-0">
+    {# select klasy #}
+    <div class="col-sm-3 p-0 my-5">
 	<div class="input-group mb-2">
 	    <div class="input-group-prepend">
 		<div class="input-group-text border-dark text-dark">Plan lekcji</div>
@@ -60,18 +62,18 @@
 	</div>
     </div>
     
-    
+    {# plan lekcji #}
     {% if lessons is not empty %}
 	<h2>Klasa {{ app.request.get('numberClass') }}{{ app.request.get('class') }}</h2>
-	<table class="table table-striped">
-	    <thead class="">
+	<table class="table table-hover table-light border border-dark">
+	    <thead class="thead-dark">
 	    <tr>
 		<th>Godz.</th>
 		<th>Poniedziałek</th>
 		<th>Wtorek</th>
 		<th>Środa</th>
 		<th>Czwartek</th>
-		<th>Piątek piąteczek piątunio</th>
+		<th>Piątek</th>
 		<th>Sobota</th>
 	    </tr>
 	    </thead>
@@ -85,14 +87,14 @@
 		    <td>
 			{% if lessons[i]['poniedzialek'] is not null %}
 			    {{ lessons[i]['poniedzialek'].ktoCo.przedmiot.nazwa }}
-			    {#<br>
+			    <br>
 			    <a href="{{ url('time_table',{'id':lessons[i]['poniedzialek'].id} ) }}">
 				edytuj
 			    </a>
 			    /
-			    <a href="{{ url('time_table',{'id':lessons[i]['poniedzialek'].id,'delete':1} ) }}">
+			    <a class="text-danger" href="{{ url('time_table',{'id':lessons[i]['poniedzialek'].id,'delete':1} ) }}">
 				usuń
-			    </a>#}
+			    </a>
 			{% endif %}
 		    </td>
 		    <td>
@@ -130,85 +132,92 @@
 	</div>
     {% endif %}
     
-    <br>
-    <h2>{% if app.request.get('id')==0 %}Dodawanie {% else %}Edytowanie {% endif %} terminu</h2>
-    {{form_start(form)}}
-    <div class="form-group">
-	<div class="input-group mb-2">
-	    <div class="input-group-prepend">
-		<div class="input-group-text">Sala</div>
-	    </div>
-	    {{form_widget(form.sala,{'attr':{'class':'form-control custom-select '}})}}
+    {# formularz terminarzu #}
+    <div class="border border-dark mt-5">
+	<div class="form-header">
+	    {% if app.request.get('id')==0 %}
+		Dodawanie terminu
+	    {% else %}
+		Edytowanie terminu
+	    {% endif %}
 	</div>
-    </div>
-    <div class="form-group">
-	<div class="input-group mb-2">
-	    <div class="input-group-prepend">
-		<div class="input-group-text">Godzina</div>
-	    </div>
-	    {{form_widget(form.godzina,{'attr':{'class':'form-control custom-select '}})}}
-	</div>
-    </div>
+	<div class="form-body">
+	    {{form_start(form)}}
 	    <div class="form-group">
-	<div class="input-group mb-2">
-	    <div class="input-group-prepend">
-		<div class="input-group-text">Dzień tygodnia</div>
+		<div class="input-group mb-2">
+		    <div class="input-group-prepend">
+			<div class="input-group-text">Sala</div>
+		    </div>
+		    {{form_widget(form.sala,{'attr':{'class':'form-control custom-select '}})}}
+		</div>
 	    </div>
-	    {{form_widget(form.dzienTygodnia,{'attr':{'class':'form-control custom-select '}})}}
+	    <div class="form-group">
+		<div class="input-group mb-2">
+		    <div class="input-group-prepend">
+			<div class="input-group-text">Godzina</div>
+		    </div>
+		    {{form_widget(form.godzina,{'attr':{'class':'form-control custom-select '}})}}
+		</div>
+	    </div>
+		    <div class="form-group">
+		<div class="input-group mb-2">
+		    <div class="input-group-prepend">
+			<div class="input-group-text">Dzień tygodnia</div>
+		    </div>
+		    {{form_widget(form.dzienTygodnia,{'attr':{'class':'form-control custom-select '}})}}
+		</div>
+	    </div>
+	    <div class="form-group">
+		<div class="input-group mb-2">
+		    <div class="input-group-prepend">
+			<div class="input-group-text">Przedmiot prowadzący</div>
+		    </div>
+		    {{form_widget(form.ktoCo,{'attr':{'class':'form-control custom-select '}})}}
+		</div>
+	    </div>
+	    <div class="form-group">
+		<div class="input-group mb-2">
+		    <div class="input-group-prepend">
+			<div class="input-group-text">Klasa</div>
+		    </div>
+		    {{form_widget(form.klasa,{'attr':{'class':'form-control custom-select '}})}}
+		</div>
+	    </div>
+	    <div class="form-group">
+		<div class="input-group mb-2">
+		    <div class="input-group-prepend">
+			<div class="input-group-text">Typ</div>
+		    </div>
+		    {{form_widget(form.typ,{'attr':{'class':'form-control custom-select '}})}}
+		</div>
+	    </div>
+	    <div class="form-group">
+		<div class="input-group mb-2">
+		    <div class="input-group-prepend">
+			<div class="input-group-text">Początek</div>
+		    </div>
+		    {{form_widget(form.poczatek,{'attr':{'class':'form-control'}})}}
+		</div>
+	    </div>
+	    <div class="form-group">
+		<div class="input-group mb-2">
+		    <div class="input-group-prepend">
+			<div class="input-group-text">Koniec</div>
+		    </div>
+		    {{form_widget(form.koniec,{'attr':{'class':'form-control'}})}}
+		</div>
+	    </div>    
+	    <div class="form-group">
+		<div class="input-group mb-2">
+		    <div class="input-group-prepend">
+			<div class="input-group-text">Opis</div>
+		    </div>
+		    {{form_widget(form.opis,{'attr':{'class':'form-control'}})}}
+		</div>
+	    </div>
+	    {{form_widget(form.submit,{'attr':{'class':'btn btn-primary','label':'default'},'label':'Wyślij'})}}
+	    {{form_end(form)}}
 	</div>
     </div>
-    <div class="form-group">
-	<div class="input-group mb-2">
-	    <div class="input-group-prepend">
-		<div class="input-group-text">Przedmiot prowadzący</div>
-	    </div>
-	    {{form_widget(form.ktoCo,{'attr':{'class':'form-control custom-select '}})}}
-	</div>
-    </div>
-    <div class="form-group">
-	<div class="input-group mb-2">
-	    <div class="input-group-prepend">
-		<div class="input-group-text">Klasa</div>
-	    </div>
-	    {{form_widget(form.klasa,{'attr':{'class':'form-control custom-select '}})}}
-	</div>
-    </div>
-    <div class="form-group">
-	<div class="input-group mb-2">
-	    <div class="input-group-prepend">
-		<div class="input-group-text">Typ</div>
-	    </div>
-	    {{form_widget(form.typ,{'attr':{'class':'form-control custom-select '}})}}
-	</div>
-    </div>
-    <div class="form-group">
-	<div class="input-group mb-2">
-	    <div class="input-group-prepend">
-		<div class="input-group-text">Początek</div>
-	    </div>
-	    {{form_widget(form.poczatek,{'attr':{'class':'form-control'}})}}
-	</div>
-    </div>
-    <div class="form-group">
-	<div class="input-group mb-2">
-	    <div class="input-group-prepend">
-		<div class="input-group-text">Koniec</div>
-	    </div>
-	    {{form_widget(form.koniec,{'attr':{'class':'form-control'}})}}
-	</div>
-    </div>    
-    <div class="form-group">
-	<div class="input-group mb-2">
-	    <div class="input-group-prepend">
-		<div class="input-group-text">Opis</div>
-	    </div>
-	    {{form_widget(form.opis,{'attr':{'class':'form-control'}})}}
-	</div>
-    </div>
-    {{form_widget(form.submit,{'attr':{'class':'btn btn-primary','label':'default'},'label':'Wyślij'})}}
-    {{form_end(form)}}
-    
-    
-    <br>
     {% if error is not empty %}<div class="alert alert-danger">{{error}}</div>{% endif %}
 {% endblock %}

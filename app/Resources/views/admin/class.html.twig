@@ -3,15 +3,8 @@
 
 {% block body %}
     {% if app.request.get('numberClass')!=0 and app.request.get('class')!='0' %}
-	<h1 class="text-center">Brak
-	    <select onchange="location=this.value;">
-		<option value="{{url('class')}}">Wybierz klasę</option>
-		{% for class in classes %}
-		<option value="{{url('class',{'numberClass':class.poziom,'class':class.klasa})}} ">
-		    {{class.poziom}}{{class.klasa}}</option>
-		{% endfor %}
-	    </select>
-	</h1>
+	{# select klasy #}
+	<h1 class="text-center my-3">Klasa {{app.request.get('numberClass')}}{{app.request.get('class')}}</h1>  
 	<select onchange="location=this.value;" class="form-control custom-select border-dark text-primary">
 	    <option value="{{url('class')}}">Wybierz klasę</option>
 	    {% for class in classes %}
@@ -19,35 +12,57 @@
 		{{class.poziom}}{{class.klasa}}</option>
 	    {% endfor %}
 	</select>
-	    
-	<br><br>
-	
-	<table class="table table-hover table-light">
-	<thead class="thead-dark">
-	    <tr>
-		<th>Poziom</th>
-		<th>Klasa</th>
-	    </tr>
-	</thead>
-	{% for student in students %}
-	    <tr>
-	    <td>{{ student.imie }} {{ student.nazwisko }}</td>
-	    <td><a class="btn btn-outline-danger" href="{{url('class',{'numberClass':class.poziom,'class':class.klasa,'id':student.id,'delete':1})}}">usuń</a></td>
-	    </tr>
-	{% endfor %}
-	</table>
-	<br>
 
+	{# dane do wyświetlenia #}
+	{% if students is not empty %}
+	<table class="table table-hover table-light border border-dark mt-3">
+	    <thead class="thead-dark">
+		<tr>
+		    <th>Poziom</th>
+		    <th>Klasa</th>
+		</tr>
+	    </thead>
+	    <tbody>
+	    {% for student in students %}
+		<tr>
+		    <td>{{ student.imie }} {{ student.nazwisko }}</td>
+		    <td><a class="btn btn-outline-danger" href="{{url('class',{'numberClass':class.poziom,'class':class.klasa,'id':student.id,'delete':1})}}">usuń</a></td>
+		</tr>
+	    {% endfor %}
+	    </tbody>
+	</table>
+	{% else %}
+	    <div class="alert alert-info">Brak danych.</div>
+	{% endif %}
+
+	{# formularz #}
+	<div class="border border-dark mt-5">
+	    <div class="form-header">Dodawanie ucznia</div>
+	    <div class="form-body">
+		{{ form_start(form) }}
+		<div class="form-group">
+		    <div class="input-group mb-2">
+			<div class="input-group-prepend">
+			    <div class="input-group-text">Uczeń</div>
+			</div>
+			{{form_widget(form.uczen,{'attr':{'class':'form-control'}})}}
+		    </div>
+		</div>
+		{{form_widget(form.submit,{'attr':{'class':'btn btn-primary','label':'default'},'label':'Wyślij'})}}
+		{{ form_end(form) }}
+	    </div>
+	</div>
     {% else %}
-	<h1 class="text-center">Brak
-	    <select onchange="location=this.value;">
-		<option value="{{url('class')}}">Wybierz klasę</option>
-		{% for class in classes %}
-		<option value="{{url('class',{'numberClass':class.poziom,'class':class.klasa})}} ">
-		    {{class.poziom}}{{class.klasa}}</option>
-		{% endfor %}
-	    </select>
-	</h1>
+	
+	{# select klasy #}
+	<h1 class="text-center my-3">Nie wybrano klasy</h1>
+	<select onchange="location=this.value;" class="form-control custom-select border-dark text-primary">
+	    <option value="{{url('class')}}">Wybierz klasę</option>
+	    {% for class in classes %}
+	    <option value="{{url('class',{'numberClass':class.poziom,'class':class.klasa})}} ">
+		{{class.poziom}}{{class.klasa}}</option>
+	    {% endfor %}
+	</select>
     {% endif %}
 {% endblock %}
 
