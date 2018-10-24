@@ -23,8 +23,18 @@
 		    <td>{{ classes[i].klasa }}</td>
 		    <td>{{ classes[i].rocznik }}</td>
 		    <td>{{ classes[i].wychowawca.imie }} {{ classes[i].wychowawca.nazwisko }}</td>
-		    <td><a class="btn btn-outline-primary" href="{{ url('classes',{'id':classes[i].id}) }}">edytuj</a></td>
-		    <td><a class="btn btn-outline-danger" href="{{ url('classes',{'id':classes[i].id,'delete':1}) }}">usuń</a></td>
+		    <td>
+			<a class="btn btn-outline-primary" 
+			   href="{{ url('classes',{'id':classes[i].id}) }}">
+			    edytuj
+			</a>
+		    </td>
+		    <td>
+			<a class="btn btn-outline-danger" 
+			   href="{{ url('classes',{'id':classes[i].id,'delete':1}) }}">
+			    usuń
+			</a>
+		    </td>
 		</tr>
 	    {% endfor %}
 	</tbody>

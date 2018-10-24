@@ -4,7 +4,10 @@
 {% block body %}
 
 {# select klasy #}
-<h1 class="text-center my-3">Obecności {% if term.ktoCo is defined %}dla {{term.ktoCo.przedmiot.nazwa}} {{term.klasa.poziom}}{{term.klasa.klasa}}{% endif %}</h1>
+<h1 class="text-center my-3">
+    Obecności {% if term.ktoCo is defined %}dla {{term.ktoCo.przedmiot.nazwa}} 
+    {{term.klasa.poziom}}{{term.klasa.klasa}}{% endif %}
+</h1>
 <select onchange="location=this.value;" class="form-control custom-select border-dark text-primary">
     <option value="{{url('time_table')}}">Wybierz klasę</option>
     {% for term in terms %}
@@ -45,7 +48,8 @@
 			    {{prop|replace({'_': ' '})|title}}
 			</div>
 		    </div>
-		    {{ form_widget(attribute(form,prop|replace({'_': ' '})|title|lower),{'attr':{'class':'custom-select form-control'}}) }}
+		    {{ form_widget(attribute(form,prop|replace({'_': ' '})|title|lower),
+			{'attr':{'class':'custom-select form-control'}}) }}
 		</div>
 	    </div>
 	    {% endif %}

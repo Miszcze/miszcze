@@ -19,8 +19,18 @@
 	    <tr>
 		<td>{{ rooms[i].nrSali }}</td>
 		<td>{{ rooms[i].opis }}</td>
-		<td><a class="btn btn-outline-primary" href="{{ url('rooms',{'id':rooms[i].id} ) }}">edytuj</a></td>
-		<td><a class="btn btn-outline-danger" href="{{ url('rooms',{'id':rooms[i].id,'delete':1} ) }}">usuń</a></td>
+		<td>
+		    <a class="btn btn-outline-primary" 
+		       href="{{ url('rooms',{'id':rooms[i].id} ) }}">
+			edytuj
+		    </a>
+		</td>
+		<td>
+		    <a class="btn btn-outline-danger" 
+		       href="{{ url('rooms',{'id':rooms[i].id,'delete':1} ) }}">
+			usuń
+		    </a>
+		</td>
 	    </tr>
 	{% endfor %}
     </tbody>

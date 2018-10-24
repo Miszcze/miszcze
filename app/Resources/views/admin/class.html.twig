@@ -26,7 +26,12 @@
 	    {% for student in students %}
 		<tr>
 		    <td>{{ student.imie }} {{ student.nazwisko }}</td>
-		    <td><a class="btn btn-outline-danger" href="{{url('class',{'numberClass':class.poziom,'class':class.klasa,'id':student.id,'delete':1})}}">usuń</a></td>
+		    <td>
+			<a class="btn btn-outline-danger" href="{{url('class',
+			{'numberClass':class.poziom,'class':class.klasa,'id':student.id,'delete':1})}}">
+			    usuń
+			</a>
+		    </td>
 		</tr>
 	    {% endfor %}
 	    </tbody>

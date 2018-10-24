@@ -3,7 +3,10 @@
 
 {% block body %}
     {% if students is not empty %}
-	<h1 class="text-center my-3">Oceny {% if term.ktoCo is defined %}dla {{term.ktoCo.przedmiot.nazwa}} {{term.klasa.poziom}}{{term.klasa.klasa}}{% endif %}</h1>
+	<h1 class="text-center my-3">
+	    Oceny {% if term.ktoCo is defined %}dla {{term.ktoCo.przedmiot.nazwa}} 
+	    {{term.klasa.poziom}}{{term.klasa.klasa}}{% endif %}
+	</h1>
 	<select onchange="location=this.value;" class="form-control custom-select border-dark text-primary">
 	    <option value="{{url('time_table')}}">Wybierz ucznia</option>
 	    {% for student in students %}

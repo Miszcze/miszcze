@@ -16,8 +16,18 @@
 	{% for i in 0..lessonHours|length-1 %}
 	    <tr>
 		<td>{{ lessonHours[i].poczatek|date("G:i") }}</td>
-		<td><a class="btn btn-outline-primary" href="{{ url('lesson_hours',{'id':lessonHours[i].id} ) }}">edytuj</a></td>
-		<td><a class="btn btn-outline-danger" href="{{ url('lesson_hours',{'id':lessonHours[i].id,'delete':1} ) }}">usuń</a></td>
+		<td>
+		    <a class="btn btn-outline-primary" 
+		       href="{{ url('lesson_hours',{'id':lessonHours[i].id} ) }}">
+			edytuj
+		    </a>
+		</td>
+		<td>
+		    <a class="btn btn-outline-danger" 
+		       href="{{ url('lesson_hours',{'id':lessonHours[i].id,'delete':1} ) }}">
+			usuń
+		    </a>
+		</td>
 	    </tr>
 	{% endfor %}
     </table>

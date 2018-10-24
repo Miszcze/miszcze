@@ -36,8 +36,17 @@
 		<td>{{ timeTable[i].poczatek|date("Y-m-d") }}</td>
 		<td>{{ timeTable[i].koniec|date("Y-m-d") }}</td>
 		<td>{{ timeTable[i].opis }}</td>
-		<td><a class="btn btn-outline-primary" href="{{ url('time_table',{'id':timeTable[i].id} ) }}">edytuj</a></td>
-		<td><a class="btn btn-outline-danger" href="{{ url('time_table',{'id':timeTable[i].id,'delete':1} ) }}">usuń</a></td>
+		<td>
+		    <a class="btn btn-outline-primary" 
+		       href="{{ url('time_table',{'id':timeTable[i].id} ) }}">
+			edytuj</a>
+		</td>
+		<td>
+		    <a class="btn btn-outline-danger" 
+		       href="{{ url('time_table',{'id':timeTable[i].id,'delete':1} ) }}">
+			usuń
+		    </a>
+		</td>
 	    </tr>
 	{% endfor %}
 	</tbody>
@@ -74,7 +83,6 @@
 		<th>Środa</th>
 		<th>Czwartek</th>
 		<th>Piątek</th>
-		<th>Sobota</th>
 	    </tr>
 	    </thead>
 	    <tbody>
@@ -92,7 +100,8 @@
 				edytuj
 			    </a>
 			    /
-			    <a class="text-danger" href="{{ url('time_table',{'id':lessons[i]['poniedzialek'].id,'delete':1} ) }}">
+			    <a class="text-danger" href="{{ url('time_table',
+				{'id':lessons[i]['poniedzialek'].id,'delete':1} ) }}">
 				usuń
 			    </a>
 			{% endif %}
@@ -100,28 +109,64 @@
 		    <td>
 			{% if lessons[i]['wtorek'] is not null %}
 			    {{ lessons[i]['wtorek'].ktoCo.przedmiot.nazwa }}
+			    <br>
+			    <a href="{{ url('time_table',{'id':lessons[i]['wtorek'].id} ) }}">
+				edytuj
+			    </a>
+			    /
+			    <a class="text-danger" href="{{ url('time_table',
+				{'id':lessons[i]['wtorek'].id,'delete':1} ) }}">
+				usuń
+			    </a>
 			{% endif %}
 		    </td>
 		    <td>
 			{% if lessons[i]['sroda'] is not null %}
 			    {{ lessons[i]['sroda'].ktoCo.przedmiot.nazwa }}
+			    <br>
+			    <a href="{{ url('time_table',{'id':lessons[i]['sroda'].id} ) }}">
+				edytuj
+			    </a>
+			    /
+			    <a class="text-danger" href="{{ url('time_table',
+				{'id':lessons[i]['sroda'].id,'delete':1} ) }}">
+				usuń
+			    </a>
 			{% endif %}
 		    </td>
 		    <td>
 			{% if lessons[i]['czwartek'] is not null %}
 			    {{ lessons[i]['czwartek'].ktoCo.przedmiot.nazwa }}
+			    <br>
+			    <a href="{{ url('time_table',{'id':lessons[i]['czwartek'].id} ) }}">
+				edytuj
+			    </a>
+			    /
+			    <a class="text-danger" href="{{ url('time_table',
+				{'id':lessons[i]['czwartek'].id,'delete':1} ) }}">
+				usuń
+			    </a>
 			{% endif %}
 		    </td>
 		    <td>
 			{% if lessons[i]['piatek'] is not null %}
 			    {{ lessons[i]['piatek'].ktoCo.przedmiot.nazwa }}
+			    <br>
+			    <a href="{{ url('time_table',{'id':lessons[i]['piatek'].id} ) }}">
+				edytuj
+			    </a>
+			    /
+			    <a class="text-danger" href="{{ url('time_table',
+				{'id':lessons[i]['piatek'].id,'delete':1} ) }}">
+				usuń
+			    </a>
 			{% endif %}
 		    </td>
-		    <td>
+		    {#<td>
 			{% if lessons[i]['sobota'] is not null %}
 			    {{ lessons[i]['sobota'].ktoCo.przedmiot.nazwa }}
 			{% endif %}
-		    </td>
+		    </td>#}
 		</tr>
 	    {% endfor %}
 	    </tbody>

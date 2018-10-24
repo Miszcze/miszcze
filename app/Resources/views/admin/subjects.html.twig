@@ -19,9 +19,17 @@
 	    <tr>
 		<td>{{ librarySubjects[i].nazwa }}</td>
 		<td>{{ librarySubjects[i].opis }}</td>
-		<td><a class="btn btn-outline-primary" href="{{ url('subjects',{'id':librarySubjects[i].id} ) }}">edytuj</a></td>
 		<td>
-		    <a class="btn btn-outline-danger" href="{{ url('subjects',{'id':librarySubjects[i].id,'delete':1} ) }}">usuń</a>
+		    <a class="btn btn-outline-primary" 
+		       href="{{ url('subjects',{'id':librarySubjects[i].id} ) }}">
+			edytuj
+		    </a>
+		</td>
+		<td>
+		    <a class="btn btn-outline-danger" 
+		       href="{{ url('subjects',{'id':librarySubjects[i].id,'delete':1} ) }}">
+			usuń
+		    </a>
 		</td>
 	    </tr>
 	{% endfor %}
@@ -58,7 +66,8 @@
 		    {{form_widget(formLibrarySubjects.opis,{'attr':{'class':'form-control'}})}}
 		</div>
 	    </div>
-	    {{form_widget(formLibrarySubjects.submitLibrarySubjects,{'attr':{'class':'btn btn-primary','label':'default'},'label':'Wyślij'})}}
+	    {{form_widget(formLibrarySubjects.submitLibrarySubjects,
+		{'attr':{'class':'btn btn-primary','label':'default'},'label':'Wyślij'})}}
 	    {{form_end(formLibrarySubjects)}}
         </div>
     </div>
@@ -81,7 +90,8 @@
 		<td>{{ subjects[i].prowadzacy.imie }} {{ subjects[i].prowadzacy.nazwisko }}</td>
 		<td>{{ subjects[i].przedmiot.nazwa }}</td>
 		<td>
-		    <a class="btn btn-outline-primary" href="{{ url('subjects',{'id':subjects[i].id,'form':'przedmioty'} ) }}">
+		    <a class="btn btn-outline-primary" 
+		       href="{{ url('subjects',{'id':subjects[i].id,'form':'przedmioty'} ) }}">
 			edytuj
 		    </a>
 		</td>
@@ -124,7 +134,8 @@
 		    {{form_widget(formSubjects.przedmiot,{'attr':{'class':'form-control'}})}}
 		</div>
 	    </div>
-	    {{form_widget(formSubjects.submitSubjects,{'attr':{'class':'btn btn-primary','label':'default'},'label':'Wyślij'})}}
+	    {{form_widget(formSubjects.submitSubjects,
+		{'attr':{'class':'btn btn-primary','label':'default'},'label':'Wyślij'})}}
 	    {{form_end(formSubjects)}}
 	</div>
     </div>

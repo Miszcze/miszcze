@@ -23,22 +23,26 @@
 		    <td>{{ users[i].mail }}</td>
 		    <td>
 			{% if users[i].typ=='uczeń' %}
-			<a class="btn btn-outline-primary" href="{{ url('users',{'formType':'uczen','id':users[i].id} ) }}">
+			<a class="btn btn-outline-primary" 
+			   href="{{ url('users',{'formType':'uczen','id':users[i].id} ) }}">
 			    edytuj
 			</a>
 			{% else %}
-			<a class="btn btn-outline-primary" href="{{ url('users',{'formType':users[i].typ,'id':users[i].id} ) }}">
+			<a class="btn btn-outline-primary" 
+			   href="{{ url('users',{'formType':users[i].typ,'id':users[i].id} ) }}">
 			    edytuj
 			</a>
 			{% endif %}
 		    </td>
 		    <td>
 			{% if users[i].typ=='uczeń' %}
-			<a class="btn btn-outline-danger" href="{{ url('users',{'formType':'uczen','id':users[i].id,'delete':1} ) }}">
+			<a class="btn btn-outline-danger" 
+			   href="{{ url('users',{'formType':'uczen','id':users[i].id,'delete':1} ) }}">
 			    usuń
 			</a>
 			{% else %}
-			<a class="btn btn-outline-danger" href="{{ url('users',{'formType':users[i].typ,'id':users[i].id,'delete':1} ) }}">
+			<a class="btn btn-outline-danger" 
+			   href="{{ url('users',{'formType':users[i].typ,'id':users[i].id,'delete':1} ) }}">
 			    usuń
 			</a>
 			{% endif %}
