@@ -12,7 +12,7 @@
     <option value="{{url('time_table')}}">Wybierz klasę</option>
     {% for term in terms %}
 	<option value="{{url('teacher_presence',{'term':term.id})}} ">
-	    {{term.klasa.poziom}}{{term.klasa.klasa}} - {{term.dzienTygodnia}} {{term.godzina.poczatek|date('h-i')}}
+	    {{term.klasa.poziom}}{{term.klasa.klasa}} - {{term.dzienTygodnia}} {{term.godzina.poczatek|date('h:i')}}
 	</option>
     {% endfor %}
 </select>
