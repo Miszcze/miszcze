@@ -29,7 +29,7 @@
 		    {% endif %}
 
 		    {% if app.session.get('teacher') is not empty %}
-			<a class="btn btn-outline-success btn-sm" href="{{url('teacher_presence')}}">Obecności</a>
+			<a class="btn btn-outline-success btn-sm" href="{{url('teacher_check_presence')}}">Sprawdzanie obecności</a>
 			<a class="btn btn-outline-success btn-sm" href="{{url('teacher_rating')}}">Oceny</a>
 			<a class="btn btn-outline-success btn-sm" href="#">Spóźnienia</a>
 			<a class="btn btn-outline-success btn-sm" href="{{url('teacher_time_table')}}">Plan zajęć</a>

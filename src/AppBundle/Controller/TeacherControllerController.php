@@ -26,7 +26,7 @@ use Symfony\Component\HttpFoundation\Request;
 class TeacherControllerController extends Controller{
     
     /**
-     * @Route("/obecnosci/{term}", name="teacher_presence", defaults={"term"="0"})
+     * @Route("/obecnosci/{term}", name="teacher_check_presence", defaults={"term"="0"})
      */
     public function presenceAction(Request $request,$term){
 	(new Message($this))->count($this);
@@ -37,23 +37,18 @@ class TeacherControllerController extends Controller{
 	}
 	$em=$this->getDoctrine()->getManager();
 	
-//	$terms=$em->getRepository(Terminarz::class)->findAll();
 	$sessionTeacherId=$this->get('session')->get('user')['user']->getId();
 	$teacherLogged=$em
 	    ->getRepository(Pracownicy::class)
 	    ->findOneBy(['uzytkownik'=>$sessionTeacherId]);
-	
-//	echo $teacherLogged->getId();die;
-	
+
 	$terms=$em
 	    ->getRepository(Terminarz::class)
 	    ->createQueryBuilder('t')
 	    ->select('t')
 	    ->join('t.ktoCo','p')
 	    ->join('p.prowadzacy','tt')
-//	    ->where('tt.prowadzacy=1')
 	    ->where('tt.id='.$teacherLogged->getId())
-//	    ->where('t.id<10')
 	    ->getQuery()
 	    ->getResult();
 		
@@ -109,7 +104,23 @@ class TeacherControllerController extends Controller{
 	$form=$this->createForm(RatingType::class,null,['id'=>$student]);
 	$student=$em->getRepository(Uczniowie::class)->find($student);
 	$term=$em->getRepository(Terminarz::class)->find($term);
-	$terms=$em->getRepository(Terminarz::class)->findAll();
+	
+	$sessionTeacherId=$this->get('session')->get('user')['user']->getId();
+	$teacherLogged=$em
+	    ->getRepository(Pracownicy::class)
+	    ->findOneBy(['uzytkownik'=>$sessionTeacherId]);
+
+	$terms=$em
+	    ->getRepository(Terminarz::class)
+	    ->createQueryBuilder('t')
+	    ->select('t')
+	    ->join('t.ktoCo','p')
+	    ->join('p.prowadzacy','tt')
+	    ->where('tt.id='.$teacherLogged->getId())
+	    ->groupBy('t.ktoCo')
+	    ->getQuery()
+	    ->getResult();
+	
 	if(!empty($term)) 
 	    $students=$em->getRepository(Uczniowie::class)->findBy(['klasa'=>$term->getKlasa()]);
 	if(!empty($student))
@@ -148,19 +159,24 @@ class TeacherControllerController extends Controller{
 	
 	$lessonHours=$em->getRepository(GodzLek::class)->findAll();
 	$teacher=$em->getRepository(Pracownicy::class)->findOneBy(['uzytkownik'=>$this->get('session')->get('user')['user']]);
-	$subject=$em->getRepository(Przedmioty::class)->findOneBy(['prowadzacy'=>$teacher]);
-	//$timeTable=$em->getRepository(Terminarz::class)->findBy(['ktoCo'=>$subject]);
+	$subject=$em->getRepository(Przedmioty::class)->findBy(['prowadzacy'=>$teacher]);
 	
 	$arrayWeek=['poniedzialek','wtorek','sroda','czwartek','piatek','sobota'];
+	for($k=0;$k<count($subject);$k++)
 	for($j=0;$j<count($arrayWeek);$j++)
-	for($i=0;$i<count($lessonHours);$i++)
-	$lessons[$i][$arrayWeek[$j]]=$em
-	    ->getRepository(Terminarz::class)
-	    ->findOneBy([
-		'dzienTygodnia'=>$arrayWeek[$j],
-		'godzina'=>$lessonHours[$i],
-		'ktoCo'=>$subject
-	    ]);
+	for($i=0;$i<count($lessonHours);$i++){
+	    $lesson=$em
+		->getRepository(Terminarz::class)
+		->findOneBy([
+		    'dzienTygodnia'=>$arrayWeek[$j],
+		    'godzina'=>$lessonHours[$i],
+		    'ktoCo'=>$subject[$k]
+		]);
+	    
+	    if($k==0) $lessons[$i][$arrayWeek[$j]]=$lesson;
+	    elseif(!empty($lesson)) $lessons[$i][$arrayWeek[$j]]=$lesson;
+	}
+	
 	
 	return $this->render('teacher/time_table.html.twig',[
 	    'lessonHours'=>$lessonHours,
