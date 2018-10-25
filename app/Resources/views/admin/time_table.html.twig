@@ -5,7 +5,7 @@
     {# dane do wyświetlenia #}
     <h1 class="text-center my-3">Terminarz</h1>
     {% if timeTable is not empty %}
-    <table class="table table-hover table-light border border-dark">
+    <table class="table table-hover table-light border border-dark table-responsive">
 	<thead class="thead-dark">
 	<tr>
 	    <th>Sala</th>
@@ -74,7 +74,7 @@
     {# plan lekcji #}
     {% if lessons is not empty %}
 	<h2>Klasa {{ app.request.get('numberClass') }}{{ app.request.get('class') }}</h2>
-	<table class="table table-hover table-light border border-dark">
+	<table class="table table-hover table-light border border-dark table-responsive">
 	    <thead class="thead-dark">
 	    <tr>
 		<th>Godz.</th>

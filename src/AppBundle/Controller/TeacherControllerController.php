@@ -37,7 +37,25 @@ class TeacherControllerController extends Controller{
 	}
 	$em=$this->getDoctrine()->getManager();
 	
-	$terms=$em->getRepository(Terminarz::class)->findAll();
+//	$terms=$em->getRepository(Terminarz::class)->findAll();
+	$sessionTeacherId=$this->get('session')->get('user')['user']->getId();
+	$teacherLogged=$em
+	    ->getRepository(Pracownicy::class)
+	    ->findOneBy(['uzytkownik'=>$sessionTeacherId]);
+	
+//	echo $teacherLogged->getId();die;
+	
+	$terms=$em
+	    ->getRepository(Terminarz::class)
+	    ->createQueryBuilder('t')
+	    ->select('t')
+	    ->join('t.ktoCo','p')
+	    ->join('p.prowadzacy','tt')
+//	    ->where('tt.prowadzacy=1')
+	    ->where('tt.id='.$teacherLogged->getId())
+//	    ->where('t.id<10')
+	    ->getQuery()
+	    ->getResult();
 		
 	if(!empty($term)){
 	    $form=$this->createForm(PresenceType::class,null,['id'=>$term]);
