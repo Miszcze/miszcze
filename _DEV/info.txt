@@ -7,3 +7,5 @@ załącznik) i wtedy może nauczyciel zdecydować czy go usprawiedliwić w swoim
 MG: nawigacja, są tutaj 3 kolory buttonów zależnie od roli, administrator ma niebieski, nauczyciel
 zielony a uczeń/opiekun jasnoniebieski, uczeń i opiekun chyba będą mieli te same widoki
 MG: był update w strukturze bazy, więc pamietajcie, żeby używać bazy 16.10.2018r+
+MG: nauczyciel odwołuję się do ucznia po numerze pesel, żeby aplikacja była zgodna z RODO, trzeba 
+spytać Dr Kozieła co o tym myśli

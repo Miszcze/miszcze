@@ -14,6 +14,7 @@ use AppBundle\Entity\Zajecia;
 use AppBundle\Form\PresenceType;
 use AppBundle\Form\RatingType;
 use AppBundle\Form\SchoolNoteType;
+use AppBundle\Form\SchoolLateType;
 use AppBundle\Utils\Message;
 use DateTime;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -23,7 +24,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * @Route("/nauczyciel")
  */
-class TeacherControllerController extends Controller{
+class TeacherController extends Controller{
     
     /**
      * @Route("/obecnosci/{term}", name="teacher_check_presence", defaults={"term"="0"})
@@ -70,7 +71,7 @@ class TeacherControllerController extends Controller{
 	    for($i=0;$i<count($students);$i++){
 		$presence=new Obecnosci();
 		$presence->setUczen($students[$i]);
-		$presence->setObecny($form->get($students[$i]->getId())->getData());
+		$presence->setObecny($form->get($students[$i]->getNumerLegitymacji())->getData());
 		$presence->setZajecia($lesson);
 		$em->persist($presence);
 	    }
@@ -78,7 +79,7 @@ class TeacherControllerController extends Controller{
 	    $em->flush();
 	    
 	    $this->get('session')->set('info','Sprawdzono obecność.');
-	    return $this->redirectToRoute('presence');
+	    return $this->redirectToRoute('teacher_check_presence');
 	}
 	
 	if(isset($form))
@@ -124,7 +125,12 @@ class TeacherControllerController extends Controller{
 	if(!empty($term)) 
 	    $students=$em->getRepository(Uczniowie::class)->findBy(['klasa'=>$term->getKlasa()]);
 	if(!empty($student))
-	    $ratings=$em->getRepository(Oceny::class)->findBy(['uczen'=>$student->getId()]);
+	    $ratings=$em
+	    ->getRepository(Oceny::class)
+	    ->findBy([
+		'uczen'=>$student->getId(),
+		'przedmiot'=>$term->getKtoCo()->getPrzedmiot()->getId()
+	    ]);
 
 	if($request->isMethod('post')){
 	    $form->handleRequest($request);
@@ -149,7 +155,6 @@ class TeacherControllerController extends Controller{
 	    'form'=>$form->createView()
 	]);
     }
-    
     
     /**
      * @Route("/plan-zajec", name="teacher_time_table")
@@ -184,14 +189,27 @@ class TeacherControllerController extends Controller{
 	]);
     }
     
-    
     /**
      * @Route("/uwagi/{term}/{student}", name="teacher_school_note", defaults={"term"="0","student"="0"})
      */
     public function schoolNoteAction(Request $request,$term,$student){
 	$em=$this->getDoctrine()->getManager();
 	
-	$terms=$em->getRepository(Terminarz::class)->findAll();
+	$sessionTeacherId=$this->get('session')->get('user')['user']->getId();
+	$teacherLogged=$em
+	    ->getRepository(Pracownicy::class)
+	    ->findOneBy(['uzytkownik'=>$sessionTeacherId]);
+
+	$terms=$em
+	    ->getRepository(Terminarz::class)
+	    ->createQueryBuilder('t')
+	    ->select('t')
+	    ->join('t.ktoCo','p')
+	    ->join('p.prowadzacy','tt')
+	    ->where('tt.id='.$teacherLogged->getId())
+	    ->groupBy('t.ktoCo')
+	    ->getQuery()
+	    ->getResult();
 	
 	if(!empty($term)){
 	    $form=$this->createForm(SchoolNoteType::class,null,['id'=>$term]);
@@ -214,5 +232,47 @@ class TeacherControllerController extends Controller{
 		'terms'=>$terms,
 		'form'=>$form->createView() 
 	    ]);
+    }
+    
+    /**
+     * @Route("/spoznienia/{term}", name="teacher_school_late", defaults={"term"="0"})
+     */
+    public function schoolLateAction(Request $request,$term){
+	$em=$this->getDoctrine()->getManager();
+	
+	$sessionTeacherId=$this->get('session')->get('user')['user']->getId();
+	$teacherLogged=$em
+	    ->getRepository(Pracownicy::class)
+	    ->findOneBy(['uzytkownik'=>$sessionTeacherId]);
+
+	$terms=$em
+	    ->getRepository(Terminarz::class)
+	    ->createQueryBuilder('t')
+	    ->select('t')
+	    ->join('t.ktoCo','p')
+	    ->join('p.prowadzacy','tt')
+	    ->where('tt.id='.$teacherLogged->getId())
+	    ->groupBy('t.ktoCo')
+	    ->getQuery()
+	    ->getResult();
+	
+	$form=$this->createForm(SchoolLateType::class,null,['id'=>$term]);
+	
+	if($request->isMethod('post')){
+	    $form->handleRequest($request);
+	    
+	    $presence=$em->getRepository(Obecnosci::class)->findOneBy(['uczen'=>$form->get('uczen')->getData()]);
+	    $presence->setObecny(2);
+	    $em->persist($presence);
+	    $em->flush();
+	    
+	    $this->get('session')->set('info','Wstawiono spóźnienie.');
+	    return $this->redirectToRoute('teacher_school_late');
+	}
+	
+	return $this->render('teacher/school_late.html.twig',[
+	    'terms'=>$terms,
+	    'form'=>$form->createView()
+	]);
     }
 }

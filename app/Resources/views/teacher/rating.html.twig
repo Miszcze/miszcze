@@ -30,22 +30,26 @@
     {% if student is not empty %}
 	{# dane do wyświetlenia #}
 	<h2 class="mt-5">Uczeń {{student.numerLegitymacji}}</h2>
-	<table class="table table-hover table-light border border-dark">
-	    <thead class="thead-dark">
-	    <tr>
-		<th>Ocena</th>
-		<th>Typ</th>
-	    </tr>
-	    </thead>
-	    <tbody> 
-	    {% for rating in ratings %}
+	{% if ratings is not empty %}
+	    <table class="table table-hover table-light border border-dark">
+		<thead class="thead-dark">
 		<tr>
-		    <td>{{rating.ocena}}</td>
-		    <td>{{rating.typ}}</td>
+		    <th>Ocena</th>
+		    <th>Typ</th>
 		</tr>
-	    {% endfor %}
-	    </tbody>
-	</table>
+		</thead>
+		<tbody> 
+		{% for rating in ratings %}
+		    <tr>
+			<td>{{rating.ocena}}</td>
+			<td>{{rating.typ}}</td>
+		    </tr>
+		{% endfor %}
+		</tbody>
+	    </table>
+	{% else %}
+	    <div class="alert alert-info">Brak ocen.</div>
+	{% endif %}
 	
 	{# formularz #}
 	<div class="border border-dark mt-5">
