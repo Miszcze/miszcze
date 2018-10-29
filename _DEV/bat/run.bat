@@ -1,0 +1,1 @@
+php C:/wamp64/www/miszcze/bin/console server:run
