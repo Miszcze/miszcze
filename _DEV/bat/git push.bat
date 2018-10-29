@@ -1,4 +1,5 @@
 @echo off
+color 0a
 echo podaj nazwe commita:
 SET /P commit=
 @echo on
