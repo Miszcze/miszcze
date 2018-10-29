@@ -283,13 +283,38 @@ class TeacherController extends Controller{
     }
     
     /**
-     * @Route("/obecnosci/{term}", name="teacher_select_presence", defaults={"term"="0"})
+     * @Route("/obecnosci", name="teacher_select_presence")
      */
-    public function selectPresenceAction(Request $request,$term){
+    public function selectPresenceAction(Request $request){
+	$em=$this->getDoctrine()->getManager();
+	
+	$sessionTeacherId=$this->get('session')->get('user')['user']->getId();
+	$teacherLogged=$em
+	    ->getRepository(Pracownicy::class)
+	    ->findOneBy(['uzytkownik'=>$sessionTeacherId]);
+	
+	$get=$request->query->get('select_presence');
+	
+	$presence=$em
+	    ->getRepository(Obecnosci::class)
+	    ->createQueryBuilder('o')
+	    ->select('o')
+	    ->join('o.zajecia','z')
+	    ->join('z.termin','t')
+	    ->join('t.ktoCo','p')
+	    ->join('p.prowadzacy','tt')
+	    ->where('tt.id='.$teacherLogged->getId())
+	    ->andWhere('z.data>:get_data')
+	    ->andWhere('z.data<:get_data_end')
+	    ->setParameter('get_data',$get['dzien'].' 00:00')
+	    ->setParameter('get_data_end',$get['dzien'].' 59:59')
+	    ->getQuery()
+	    ->getResult();
 	
 	$form=$this->createForm(SelectPresenceType::class);
 	
 	return $this->render('teacher/select_presence.html.twig',[
+	    'presences'=>$presence,
 	    'form'=>$form->createView()
 	]);
     }
