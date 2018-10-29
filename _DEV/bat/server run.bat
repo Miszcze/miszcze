@@ -1,5 +1,5 @@
 @echo off
-color 0a
+color 9f
 cd C:\wamp64\www\miszcze
 @echo on
 php bin/console server:run

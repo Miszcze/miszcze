@@ -1,5 +1,5 @@
 @echo off
-color 0a
+color 02
 cd C:\wamp64\www\miszcze
 @echo on
 git pull
