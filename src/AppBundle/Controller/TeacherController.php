@@ -13,8 +13,9 @@ use AppBundle\Entity\Uwagi;
 use AppBundle\Entity\Zajecia;
 use AppBundle\Form\PresenceType;
 use AppBundle\Form\RatingType;
-use AppBundle\Form\SchoolNoteType;
 use AppBundle\Form\SchoolLateType;
+use AppBundle\Form\SchoolNoteType;
+use AppBundle\Form\SelectPresenceType;
 use AppBundle\Utils\Message;
 use DateTime;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -27,7 +28,7 @@ use Symfony\Component\HttpFoundation\Request;
 class TeacherController extends Controller{
     
     /**
-     * @Route("/obecnosci/{term}", name="teacher_check_presence", defaults={"term"="0"})
+     * @Route("/sprawdzanie-obecnosci/{term}", name="teacher_check_presence", defaults={"term"="0"})
      */
     public function presenceAction(Request $request,$term){
 	(new Message($this))->count($this);
@@ -97,7 +98,7 @@ class TeacherController extends Controller{
     }
     
     /**
-     * @Route("/oceny/{term}/{student}", name="teacher_rating", defaults={"term"="0","student"="0"})
+     * @Route("/wstawienie-oceny/{term}/{student}", name="teacher_insert_rating", defaults={"term"="0","student"="0"})
      */
     public function ratingAction(Request $request,$term,$student){
 	$em=$this->getDoctrine()->getManager();
@@ -245,6 +246,10 @@ class TeacherController extends Controller{
 	    ->getRepository(Pracownicy::class)
 	    ->findOneBy(['uzytkownik'=>$sessionTeacherId]);
 
+	$thisTerm=$em
+	    ->getRepository(Terminarz::class)
+	    ->find($term);
+	
 	$terms=$em
 	    ->getRepository(Terminarz::class)
 	    ->createQueryBuilder('t')
@@ -272,7 +277,27 @@ class TeacherController extends Controller{
 	
 	return $this->render('teacher/school_late.html.twig',[
 	    'terms'=>$terms,
+	    'term'=>$thisTerm,
 	    'form'=>$form->createView()
 	]);
+    }
+    
+    /**
+     * @Route("/obecnosci/{term}", name="teacher_select_presence", defaults={"term"="0"})
+     */
+    public function selectPresenceAction(Request $request,$term){
+	
+	$form=$this->createForm(SelectPresenceType::class);
+	
+	return $this->render('teacher/select_presence.html.twig',[
+	    'form'=>$form->createView()
+	]);
+    }
+    
+    /**
+     * @Route("/oceny/{term}", name="teacher_select_rating", defaults={"term"="0"})
+     */
+    public function selectRatingAction(Request $request,$term){
+	return 0;
     }
 }

@@ -1,0 +1,26 @@
+{% block title %}Obecności{% endblock %}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1 class="text-center my-3">Obecności</h1>
+     
+    {{form_start(form)}}
+    <div class="form-group">
+	<div class="input-group mb-2">
+	    <div class="input-group-prepend">
+		<div class="input-group-text">Dzień</div>
+	    </div>
+	    {{ form_widget(form.dzien,{'attr':{'class':'form-control custom-select'}}) }}
+	</div>
+    </div>
+    <div class="form-group">
+	<div class="input-group mb-2">
+	    <div class="input-group-prepend">
+		<div class="input-group-text">Zajęcia</div>
+	    </div>
+	    {{ form_widget(form.zajecia,{'attr':{'class':'form-control'}}) }}
+	</div>
+    </div>
+    {{form_widget(form.submit,{'attr':{'class':'btn btn-primary','label':'default'},'label':'Wyślij'})}}
+    {{form_end(form)}}
+{% endblock %}

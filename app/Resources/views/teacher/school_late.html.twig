@@ -2,7 +2,12 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1 class="text-center my-3">Spóźnienia</h1>
+    <h1 class="text-center my-3">
+	{% if term is not empty %}
+	    Spóźnienia {{term.klasa.poziom}}{{term.klasa.klasa}} - 
+	    {{term.dzienTygodnia}} {{term.godzina.poczatek|date('h:i')}}
+	{% endif %}
+    </h1>
     <select onchange="location=this.value;" class="form-control custom-select border-dark text-primary">
     <option value="{{url('time_table')}}">Wybierz klasę</option>
 	{% for term in terms %}
@@ -12,5 +17,20 @@
 	{% endfor %}
     </select>
 	
-    {{form(form)}}
+    	<div class="border border-dark mt-5">
+	    <div class="form-header">Wstawianie spóźnienia</div>
+	    <div class="form-body">
+	    {{form_start(form)}}
+	    <div class="form-group">
+		<div class="input-group mb-2">
+		    <div class="input-group-prepend">
+			<div class="input-group-text">Uczeń</div>
+		    </div>
+		    {{ form_widget(form.uczen,{'attr':{'class':'form-control custom-select'}}) }}
+		</div>
+	    </div>
+	    {{form_widget(form.submit,{'attr':{'class':'btn btn-primary','label':'default'},'label':'Wyślij'})}}
+	    {{form_end(form)}}
+	    </div>
+	</div>
 {% endblock %}
