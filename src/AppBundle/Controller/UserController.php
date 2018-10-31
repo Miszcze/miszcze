@@ -67,12 +67,6 @@ class UserController extends Controller{
 		    $session=$this->get('session');
 		    $session->set('user',['user'=>$user[0]]);
 		    
-		    $student=$entityManager->createQuery(
-			"SELECT p ".
-			"FROM AppBundle\Entity\Pracownicy p ".
-			"WHERE p.uzytkownik=".$user[0]->getId()." AND p.role like '%uczen%'" 
-		    )
-		    ->getResult();
 		    $teacher=$entityManager->createQuery(
 			"SELECT p ".
 			"FROM AppBundle\Entity\Pracownicy p ".
@@ -88,7 +82,6 @@ class UserController extends Controller{
 		    
 		    if(!empty($admin)) $session->set('admin',true);
 		    if(!empty($teacher)) $session->set('teacher',true);
-		    if(!empty($admin)) $session->set('student',true);
 		     
 		    return $this->redirectToRoute('homepage');
 		}

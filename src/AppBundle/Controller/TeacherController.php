@@ -16,6 +16,7 @@ use AppBundle\Form\RatingType;
 use AppBundle\Form\SchoolLateType;
 use AppBundle\Form\SchoolNoteType;
 use AppBundle\Form\SelectPresenceType;
+use AppBundle\Form\SelectRatingType;
 use AppBundle\Utils\Message;
 use DateTime;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -323,6 +324,49 @@ class TeacherController extends Controller{
      * @Route("/oceny/{term}", name="teacher_select_rating", defaults={"term"="0"})
      */
     public function selectRatingAction(Request $request,$term){
-	return 0;
+	$em=$this->getDoctrine()->getManager();
+	
+	$sessionTeacherId=$this->get('session')->get('user')['user']->getId();
+	$teacherLogged=$em
+	    ->getRepository(Pracownicy::class)
+	    ->findOneBy(['uzytkownik'=>$sessionTeacherId]);
+	
+	$get=$request->query->get('select_rating');
+	
+//	$presence=$em
+//	    ->getRepository(Obecnosci::class)
+//	    ->createQueryBuilder('o')
+//	    ->select('o')
+//	    ->join('o.zajecia','z')
+//	    ->join('z.termin','t')
+//	    ->join('t.ktoCo','p')
+//	    ->join('p.prowadzacy','tt')
+//	    ->where('tt.id='.$teacherLogged->getId())
+//	    ->andWhere('z.data>:get_data')
+//	    ->andWhere('z.data<:get_data_end')
+//	    ->setParameter('get_data',$get['dzien'].' 00:00')
+//	    ->setParameter('get_data_end',$get['dzien'].' 59:59')
+//	    ->getQuery()
+//	    ->getResult();
+	
+	$rating=$em
+	    ->getRepository(Oceny::class)
+	    ->createQueryBuilder('o')
+	    ->select('o')
+	    ->join('o.uczen','u')
+	    ->join('o.przedmiot','p')
+	    ->where('u.id=:student')
+	    ->andWhere('p.id=:subject')
+	    ->setParameter('student',$get['uczen'])
+	    ->setParameter('subject',$get['przedmiot'])
+	    ->getQuery()
+	    ->getResult();
+	
+	$form=$this->createForm(SelectRatingType::class);
+	
+	return $this->render('teacher/select_rating.html.twig',[
+	    'rating'=>$rating,
+	    'form'=>$form->createView()
+	]);
     }
 }
