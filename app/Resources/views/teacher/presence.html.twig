@@ -1,15 +1,14 @@
-{% block title %}Obecności{% endblock %}
+{% block title %}Sprawdzanie obecności{% endblock %}
 {% extends 'base.html.twig' %}
 
 {% block body %}
-
 {# select klasy #}
 <h1 class="text-center my-3">
     Sprawdzanie obecności {% if term.ktoCo is defined %}dla {{term.ktoCo.przedmiot.nazwa}} 
     {{term.klasa.poziom}}{{term.klasa.klasa}}{% endif %}
 </h1>
 <select onchange="location=this.value;" class="form-control custom-select border-dark text-primary">
-    <option value="{{url('time_table')}}">Wybierz klasę</option>
+    <option value="{{url('teacher_check_presence')}}">Wybierz klasę</option>
     {% for term in terms %}
 	<option value="{{url('teacher_check_presence',{'term':term.id})}} ">
 	    {{term.klasa.poziom}}{{term.klasa.klasa}} - {{term.dzienTygodnia}} {{term.godzina.poczatek|date('h:i')}}
@@ -62,7 +61,7 @@
 
 <br>
 
-{% if info is not empty %}
-    <div class="alert alert-info">{{info}}</div>
+{% if info is defined %}
+    <div class="alert alert-info mt-3">{{info}}</div>
 {% endif %}
 {% endblock %}

@@ -16,16 +16,19 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
+use Doctrine\ORM\EntityManagerInterface;
 
 class UserController extends Controller{
+    
+    public function __construct(EntityManagerInterface $em){
+	(new Message($em))->count();
+    }
     
     /**
      * @Route("/", name="homepage")
      */
     public function homepageAction(){
 	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break');
-	$message=new Message;
-	$message->count($this);
 	return $this->render('user/homepage.html.twig');
     }
     
@@ -33,8 +36,6 @@ class UserController extends Controller{
      * @Route("/login", name="login")
      */
     public function loginAction(Request $request){
-	$message=new Message;
-	$message->count($this);
 	$entityManager=$this->getDoctrine()->getManager();
 	$error=null;
 
@@ -73,6 +74,14 @@ class UserController extends Controller{
 			"WHERE p.uzytkownik=".$user[0]->getId()." AND p.role like '%nauczyciel%'" 
 		    )
 		    ->getResult();
+		    
+		    $classTeacher=$entityManager->createQuery(
+			"SELECT p ".
+			"FROM AppBundle\Entity\Pracownicy p ".
+			"WHERE p.uzytkownik=".$user[0]->getId()." AND p.role like '%wychowawca%'" 
+		    )
+		    ->getResult();
+		    
 		    $admin=$entityManager->createQuery(
 			"SELECT p ".
 			"FROM AppBundle\Entity\Pracownicy p ".
@@ -82,6 +91,7 @@ class UserController extends Controller{
 		    
 		    if(!empty($admin)) $session->set('admin',true);
 		    if(!empty($teacher)) $session->set('teacher',true);
+		    if(!empty($classTeacher)) $session->set('classTeacher',true);
 		     
 		    return $this->redirectToRoute('homepage');
 		}
@@ -119,8 +129,6 @@ class UserController extends Controller{
      * @Route("/messages/{id}", name="messages", defaults={"id"="0"})
      */
     public function messagesAction(Request $request,$id){
-	$message=new Message;
-	$message->count($this);
 	$entityManager=$this->getDoctrine()->getManager();
 	$users=$entityManager->getRepository(Uzytkownicy::class)->findAll();
 	
@@ -203,8 +211,6 @@ class UserController extends Controller{
      * defaults={"id"="0","delete"="0","idRoute"="0"})
      */
     public function messageAction($id,$delete,$idRoute){
-	$message=new Message;
-	$message->count($this);
 	$entityManager=$this->getDoctrine()->getManager();
 	
 	$sessionUserId=$this->get('session')->get('user')['user']->getId();
@@ -237,6 +243,7 @@ class UserController extends Controller{
 		"WHERE w.id=".$id
 	    )
 	    ->getResult();
+	
 	$message=$entityManager->getRepository(Wiadomosci::class)->find($id);
 	
 	if($message->getNadawca()->getId()==$sessionUserId || $message->getOdbiorca()->getId()==$sessionUserId)

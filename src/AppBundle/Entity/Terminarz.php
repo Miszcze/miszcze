@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Terminarz
  *
  * @ORM\Table(name="terminarz", indexes={@ORM\Index(name="FK_godz_lek_rezerwacje_idx", columns={"godzina"}), @ORM\Index(name="FK_sale_rezerwacje_idx", columns={"sala"}), @ORM\Index(name="FK_terminarz_przedmioty_idx", columns={"kto_co"}), @ORM\Index(name="FK_terminarz_klasy_idx", columns={"klasa"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\TerminarzRepository")
  */
 class Terminarz
 {

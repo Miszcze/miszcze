@@ -55,8 +55,8 @@
 			    <a href="{{url('login')}}" class="text-light"><i class="fa fa-sign-in"></i></a>
 			{% else %}
 			    <a href="{{url('messages')}}" class="text-light">
-				{% if newMessages is defined %}
-				    <i class="fa fa-envelope"></i> <span class="message">({{ newMessages }})</span>
+				{% if app.session.get('newMessages') is defined and app.session.get('newMessages')>0 %}
+				    <i class="fa fa-envelope"></i> <span class="message">({{ app.session.get('newMessages') }})</span>
 				{% else %}
 				    <i class="fa fa-envelope-o"></i>
 				{% endif %} 

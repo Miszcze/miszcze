@@ -32,11 +32,16 @@ use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * @Route("/admin")
  */
 class AdminController extends Controller{
+    
+    public function __construct(EntityManagerInterface $em){
+	(new Message($em))->count();
+    }
     
     public function setAdminForTest(){
 	$session=new Session();
@@ -56,8 +61,6 @@ class AdminController extends Controller{
      */
     public function usersAction(Request $request,$formType,$id,$delete){
 	if(AdminController::checkAdmin()) return $this->redirectToRoute('homepage');
-	$message=new Message;
-	$message->count($this);
 	$entityManager=$this->getDoctrine()->getManager();
 	$errors=null;
 
@@ -473,8 +476,6 @@ class AdminController extends Controller{
      */
     public function classesAction(Request $request,$id,$delete){
 	if(AdminController::checkAdmin()) return $this->redirectToRoute('homepage');
-	$message=new Message;
-	$message->count($this);
 	$entityManager=$this->getDoctrine()->getManager();
 	$classes=$this->getDoctrine()->getRepository(Klasy::class)->findBy(['status'=>0]);
 	
@@ -583,8 +584,6 @@ class AdminController extends Controller{
      */
     public function classAction(Request $request,$numberClass,$class,$id,$delete){
 	if(AdminController::checkAdmin()) return $this->redirectToRoute('homepage');
-	$message=new Message;
-	$message->count($this);
 	$entityManager=$this->getDoctrine()->getManager();
 	$classes=$entityManager->getRepository(Klasy::class)->findBy(['status'=>0]);
 	
@@ -650,8 +649,6 @@ class AdminController extends Controller{
      */
     public function subjectsAction(Request $request,$form,$id,$delete){
 	if(AdminController::checkAdmin()) return $this->redirectToRoute('homepage');
-	$message=new Message;
-	$message->count($this);
 	$entityManager=$this->getDoctrine()->getManager();
 	$librarySubjects=$this->getDoctrine()->getRepository(SlownikPrzedmiotow::class)->findAll();
 	$subjects=$this->getDoctrine()->getRepository(Przedmioty::class)->findBy(['status'=>0]);
@@ -789,8 +786,6 @@ class AdminController extends Controller{
      */
     public function lessonHoursAction(Request $request,$id,$delete){
 	if(AdminController::checkAdmin()) return $this->redirectToRoute('homepage');
-	$message=new Message;
-	$message->count($this);
 	$entityManager=$this->getDoctrine()->getManager();
 	$lessonHours=$this->getDoctrine()->getRepository(GodzLek::class)->findAll();
 	$formValue=null;
@@ -846,8 +841,6 @@ class AdminController extends Controller{
      */
     public function roomsAction(Request $request,$id,$delete){
 	if(AdminController::checkAdmin()) return $this->redirectToRoute('homepage');
-	$message=new Message;
-	$message->count($this);
 	$entityManager=$this->getDoctrine()->getManager();
 	
 	$rooms=$this->getDoctrine()->getRepository(Sale::class)->findAll();
@@ -1127,8 +1120,6 @@ class AdminController extends Controller{
      */
     public function settings(Request $request){
 	if(AdminController::checkAdmin()) return $this->redirectToRoute('homepage');
-	$message=new Message;
-	$message->count($this);
 	$dir=$this->get('kernel')->getRootDir().'/../web/backup/';
 	$files=array_diff(scandir($dir),[".",".."]);
 	foreach($files as $file) $arrayFiles[$file]=$file;
@@ -1184,8 +1175,6 @@ class AdminController extends Controller{
      */
     public function database(){
 	if(AdminController::checkAdmin()) return $this->redirectToRoute('homepage');
-	$message=new Message;
-	$message->count($this);
 	AdminController::database_export();
 	return $this->redirectToRoute('settings');
     }

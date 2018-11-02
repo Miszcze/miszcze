@@ -19,6 +19,7 @@ use AppBundle\Form\SelectPresenceType;
 use AppBundle\Form\SelectRatingType;
 use AppBundle\Utils\Message;
 use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,18 +29,37 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class TeacherController extends Controller{
     
+    public function __construct(EntityManagerInterface $em){
+	(new Message($em))->count();
+    }
+    
     /**
      * @Route("/sprawdzanie-obecnosci/{term}", name="teacher_check_presence", defaults={"term"="0"})
      */
     public function presenceAction(Request $request,$term){
-	(new Message($this))->count($this);
-	if(!$this->get('session')->has('teacher')) return $this->redirectToRoute('homepage',[],302);
-	if($this->get('session')->has('info')){
-	    $info=$this->get('session')->get('info');
-	    $this->get('session')->remove('info');
-	}
 	$em=$this->getDoctrine()->getManager();
 	
+	//sprawdzawdzanie czy użytkownik to nauczyciel
+	if(!$this->get('session')->has('teacher')){
+	    $this->get('session')->set('danger','Nie jesteś nauczycielem.');
+	    return $this->redirectToRoute('homepage',[],302);
+	}
+	
+	//tworzenie kominikatu info
+	if($this->get('session')->has('info')){
+	    $this->get('session')->get('info');
+	    $this->get('twig')->addGlobal('info',$this->get('session')->get('info'));
+	    $this->get('session')->remove('info');
+	}
+	
+	//utworzenie kominikatu danger
+	if($this->get('session')->has('danger')){
+	    $this->get('session')->get('danger');
+	    $this->get('twig')->addGlobal('danger',$this->get('session')->get('danger'));
+	    $this->get('session')->remove('danger');
+	}
+	
+	//pobranie sesji nauczyciela
 	$sessionTeacherId=$this->get('session')->get('user')['user']->getId();
 	$teacherLogged=$em
 	    ->getRepository(Pracownicy::class)
@@ -47,13 +67,7 @@ class TeacherController extends Controller{
 
 	$terms=$em
 	    ->getRepository(Terminarz::class)
-	    ->createQueryBuilder('t')
-	    ->select('t')
-	    ->join('t.ktoCo','p')
-	    ->join('p.prowadzacy','tt')
-	    ->where('tt.id='.$teacherLogged->getId())
-	    ->getQuery()
-	    ->getResult();
+	    ->termWhereTeacher($teacherLogged->getId());
 		
 	if(!empty($term)){
 	    $form=$this->createForm(PresenceType::class,null,['id'=>$term]);
@@ -77,7 +91,6 @@ class TeacherController extends Controller{
 		$presence->setZajecia($lesson);
 		$em->persist($presence);
 	    }
-
 	    $em->flush();
 	    
 	    $this->get('session')->set('info','Sprawdzono obecność.');
@@ -88,13 +101,11 @@ class TeacherController extends Controller{
 	    return $this->render('teacher/presence.html.twig',[
 		'term'=>$term,
 		'terms'=>$terms,
-		'form'=>$form->createView(),
-		'info'=>@$info
+		'form'=>$form->createView()
 	    ]);
 	else
 	    return $this->render('teacher/presence.html.twig',[
-		'terms'=>$terms,
-		'info'=>@$info
+		'terms'=>$terms
 	    ]);
     }
     
@@ -103,6 +114,23 @@ class TeacherController extends Controller{
      */
     public function ratingAction(Request $request,$term,$student){
 	$em=$this->getDoctrine()->getManager();
+	
+	if(!$this->get('session')->has('teacher')){
+	    $this->get('session')->set('danger','Nie jesteś nauczycielem.');
+	    return $this->redirectToRoute('homepage',[],302);
+	}
+	
+	if($this->get('session')->has('info')){
+	    $this->get('session')->get('info');
+	    $this->get('twig')->addGlobal('info',$this->get('session')->get('info'));
+	    $this->get('session')->remove('info');
+	}
+	
+	if($this->get('session')->has('danger')){
+	    $this->get('session')->get('danger');
+	    $this->get('twig')->addGlobal('danger',$this->get('session')->get('danger'));
+	    $this->get('session')->remove('danger');
+	}
 	
 	$form=$this->createForm(RatingType::class,null,['id'=>$student]);
 	$student=$em->getRepository(Uczniowie::class)->find($student);
@@ -115,14 +143,7 @@ class TeacherController extends Controller{
 
 	$terms=$em
 	    ->getRepository(Terminarz::class)
-	    ->createQueryBuilder('t')
-	    ->select('t')
-	    ->join('t.ktoCo','p')
-	    ->join('p.prowadzacy','tt')
-	    ->where('tt.id='.$teacherLogged->getId())
-	    ->groupBy('t.ktoCo')
-	    ->getQuery()
-	    ->getResult();
+	    ->groupByTermWhereTeacher($teacherLogged->getId());
 	
 	if(!empty($term)) 
 	    $students=$em->getRepository(Uczniowie::class)->findBy(['klasa'=>$term->getKlasa()]);
@@ -131,12 +152,12 @@ class TeacherController extends Controller{
 	    ->getRepository(Oceny::class)
 	    ->findBy([
 		'uczen'=>$student->getId(),
-		'przedmiot'=>$term->getKtoCo()->getPrzedmiot()->getId()
+		'przedmiot'=>$term->getKtoCo()->getId()
 	    ]);
-
+	
 	if($request->isMethod('post')){
 	    $form->handleRequest($request);
-	    $rating=new Oceny;
+	    $rating=new Oceny();
 	    $rating->setKiedy(new DateTime());
 	    $rating->setOcena($form->get('ocena')->getData());
 	    $rating->setPrzedmiot($term->getKtoCo());
@@ -146,6 +167,12 @@ class TeacherController extends Controller{
 	    
 	    $em->persist($rating);
 	    $em->flush();
+	    
+	    $this->get('session')->set('info','Wstawiono ocenę.');
+	    return $this->redirectToRoute('teacher_insert_rating',[
+		'term'=>$term->getId(),
+		'student'=>$student->getId()
+	    ]);
 	}
 	
 	return $this->render('teacher/rating.html.twig',[
@@ -163,6 +190,23 @@ class TeacherController extends Controller{
      */
     public function timeTableAction(){
 	$em=$this->getDoctrine()->getManager();
+	
+	if(!$this->get('session')->has('teacher')){
+	    $this->get('session')->set('danger','Nie jesteś nauczycielem.');
+	    return $this->redirectToRoute('homepage',[],302);
+	}
+	
+	if($this->get('session')->has('info')){
+	    $this->get('session')->get('info');
+	    $this->get('twig')->addGlobal('info',$this->get('session')->get('info'));
+	    $this->get('session')->remove('info');
+	}
+	
+	if($this->get('session')->has('danger')){
+	    $this->get('session')->get('danger');
+	    $this->get('twig')->addGlobal('danger',$this->get('session')->get('danger'));
+	    $this->get('session')->remove('danger');
+	}
 	
 	$lessonHours=$em->getRepository(GodzLek::class)->findAll();
 	$teacher=$em->getRepository(Pracownicy::class)->findOneBy(['uzytkownik'=>$this->get('session')->get('user')['user']]);
@@ -196,6 +240,23 @@ class TeacherController extends Controller{
      */
     public function schoolNoteAction(Request $request,$term,$student){
 	$em=$this->getDoctrine()->getManager();
+	
+	if(!$this->get('session')->has('teacher')){
+	    $this->get('session')->set('danger','Nie jesteś nauczycielem.');
+	    return $this->redirectToRoute('homepage',[],302);
+	}
+	
+	if($this->get('session')->has('info')){
+	    $this->get('session')->get('info');
+	    $this->get('twig')->addGlobal('info',$this->get('session')->get('info'));
+	    $this->get('session')->remove('info');
+	}
+	
+	if($this->get('session')->has('danger')){
+	    $this->get('session')->get('danger');
+	    $this->get('twig')->addGlobal('danger',$this->get('session')->get('danger'));
+	    $this->get('session')->remove('danger');
+	}
 	
 	$sessionTeacherId=$this->get('session')->get('user')['user']->getId();
 	$teacherLogged=$em
@@ -242,6 +303,23 @@ class TeacherController extends Controller{
     public function schoolLateAction(Request $request,$term){
 	$em=$this->getDoctrine()->getManager();
 	
+	if(!$this->get('session')->has('teacher')){
+	    $this->get('session')->set('danger','Nie jesteś nauczycielem.');
+	    return $this->redirectToRoute('homepage',[],302);
+	}
+	
+	if($this->get('session')->has('info')){
+	    $this->get('session')->get('info');
+	    $this->get('twig')->addGlobal('info',$this->get('session')->get('info'));
+	    $this->get('session')->remove('info');
+	}
+	
+	if($this->get('session')->has('danger')){
+	    $this->get('session')->get('danger');
+	    $this->get('twig')->addGlobal('danger',$this->get('session')->get('danger'));
+	    $this->get('session')->remove('danger');
+	}
+	
 	$sessionTeacherId=$this->get('session')->get('user')['user']->getId();
 	$teacherLogged=$em
 	    ->getRepository(Pracownicy::class)
@@ -267,13 +345,17 @@ class TeacherController extends Controller{
 	if($request->isMethod('post')){
 	    $form->handleRequest($request);
 	    
-	    $presence=$em->getRepository(Obecnosci::class)->findOneBy(['uczen'=>$form->get('uczen')->getData()]);
+	    //obecnosci poprawić!
+	    $presence=$em->getRepository(Obecnosci::class)->findOneBy([
+		'uczen'=>$form->get('uczen')->getData()
+	    ]);
+	    
 	    $presence->setObecny(2);
 	    $em->persist($presence);
 	    $em->flush();
 	    
 	    $this->get('session')->set('info','Wstawiono spóźnienie.');
-	    return $this->redirectToRoute('teacher_school_late');
+	    return $this->redirectToRoute('teacher_school_late',['term'=>$term]);
 	}
 	
 	return $this->render('teacher/school_late.html.twig',[
@@ -288,6 +370,23 @@ class TeacherController extends Controller{
      */
     public function selectPresenceAction(Request $request){
 	$em=$this->getDoctrine()->getManager();
+	
+	if(!$this->get('session')->has('teacher')){
+	    $this->get('session')->set('danger','Nie jesteś nauczycielem.');
+	    return $this->redirectToRoute('homepage',[],302);
+	}
+	
+	if($this->get('session')->has('info')){
+	    $this->get('session')->get('info');
+	    $this->get('twig')->addGlobal('info',$this->get('session')->get('info'));
+	    $this->get('session')->remove('info');
+	}
+	
+	if($this->get('session')->has('danger')){
+	    $this->get('session')->get('danger');
+	    $this->get('twig')->addGlobal('danger',$this->get('session')->get('danger'));
+	    $this->get('session')->remove('danger');
+	}
 	
 	$sessionTeacherId=$this->get('session')->get('user')['user']->getId();
 	$teacherLogged=$em
@@ -325,6 +424,23 @@ class TeacherController extends Controller{
      */
     public function selectRatingAction(Request $request,$term){
 	$em=$this->getDoctrine()->getManager();
+	
+	if(!$this->get('session')->has('teacher')){
+	    $this->get('session')->set('danger','Nie jesteś nauczycielem.');
+	    return $this->redirectToRoute('homepage',[],302);
+	}
+	
+	if($this->get('session')->has('info')){
+	    $this->get('session')->get('info');
+	    $this->get('twig')->addGlobal('info',$this->get('session')->get('info'));
+	    $this->get('session')->remove('info');
+	}
+	
+	if($this->get('session')->has('danger')){
+	    $this->get('session')->get('danger');
+	    $this->get('twig')->addGlobal('danger',$this->get('session')->get('danger'));
+	    $this->get('session')->remove('danger');
+	}
 	
 	$sessionTeacherId=$this->get('session')->get('user')['user']->getId();
 	$teacherLogged=$em

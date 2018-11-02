@@ -1,80 +1,86 @@
-{% block title %}Oceny{% endblock %}
+{% block title %}Wstawianie oceny{% endblock %}
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    {% if students is not empty %}
-	<h1 class="text-center my-3">
-	    Oceny {% if term.ktoCo is defined %}dla {{term.ktoCo.przedmiot.nazwa}} 
-	    {{term.klasa.poziom}}{{term.klasa.klasa}}{% endif %}
-	</h1>
-	<select onchange="location=this.value;" class="form-control custom-select border-dark text-primary">
-	    <option value="{{url('teacher_time_table')}}">Wybierz ucznia</option>
-	    {% for student in students %}
-		<option value="{{url('teacher_insert_rating',{'term':app.request.get('term'),'student':student.id})}} ">
-		   {{student.numerLegitymacji}}
-		</option>
-	    {% endfor %}
-	</select>
-    {% else %}
-	<h1 class="text-center my-3">Oceny</h1>
-	<select onchange="location=this.value;" class="form-control custom-select border-dark text-primary">
-	    <option value="{{url('teacher_time_table')}}">Wybierz klasę</option>
-	    {% for term in terms %}
-		<option value="{{url('teacher_insert_rating',{'term':term.id,'student':app.request.get('student')})}} ">
-		   {{term.klasa.poziom}}{{term.klasa.klasa}} - {{term.ktoCo.przedmiot.nazwa}}
-		</option>
-	    {% endfor %}
-	</select>
-    {% endif %}
-    
-    {% if student is not empty %}
-	{# dane do wyświetlenia #}
-	<h2 class="mt-5">Uczeń {{student.numerLegitymacji}}</h2>
-	{% if ratings is not empty %}
-	    <table class="table table-hover table-light border border-dark">
-		<thead class="thead-dark">
+{% if students is not empty %}
+    <h1 class="text-center my-3">
+	Oceny {% if term.ktoCo is defined %}dla {{term.ktoCo.przedmiot.nazwa}} 
+	{{term.klasa.poziom}}{{term.klasa.klasa}}{% endif %}
+    </h1>
+    <select onchange="location=this.value;" class="form-control custom-select border-dark text-primary">
+	<option value="{{url('teacher_insert_rating')}}">Wybierz ucznia</option>
+	{% for student in students %}
+	    <option value="{{url('teacher_insert_rating',{'term':app.request.get('term'),'student':student.id})}} ">
+	       {{student.numerLegitymacji}}
+	    </option>
+	{% endfor %}
+    </select>
+{% else %}
+    <h1 class="text-center my-3">Oceny</h1>
+    <select onchange="location=this.value;" class="form-control custom-select border-dark text-primary">
+	<option value="{{url('teacher_time_table')}}">Wybierz klasę</option>
+	{% for term in terms %}
+	    <option value="{{url('teacher_insert_rating',{'term':term.id,'student':app.request.get('student')})}} ">
+	       {{term.klasa.poziom}}{{term.klasa.klasa}} - {{term.ktoCo.przedmiot.nazwa}}
+	    </option>
+	{% endfor %}
+    </select>
+{% endif %}
+
+{% if student is not empty %}
+    {# dane do wyświetlenia #}
+    <h2 class="mt-5">Uczeń {{student.numerLegitymacji}}</h2>
+    {% if ratings is not empty %}
+	<table class="table table-hover table-light border border-dark">
+	    <thead class="thead-dark">
+	    <tr>
+		<th>Ocena</th>
+		<th>Typ</th>
+	    </tr>
+	    </thead>
+	    <tbody> 
+	    {% for rating in ratings %}
 		<tr>
-		    <th>Ocena</th>
-		    <th>Typ</th>
+		    <td>{{rating.ocena}}</td>
+		    <td>{{rating.typ}}</td>
 		</tr>
-		</thead>
-		<tbody> 
-		{% for rating in ratings %}
-		    <tr>
-			<td>{{rating.ocena}}</td>
-			<td>{{rating.typ}}</td>
-		    </tr>
-		{% endfor %}
-		</tbody>
-	    </table>
-	{% else %}
-	    <div class="alert alert-info">Brak ocen.</div>
-	{% endif %}
-	
-	{# formularz #}
-	<div class="border border-dark mt-5">
-	    <div class="form-header">Wstawianie oceny</div>
-	    <div class="form-body">
-	    {{form_start(form)}}
-	    <div class="form-group">
-		<div class="input-group mb-2">
-		    <div class="input-group-prepend">
-			<div class="input-group-text">Ocena</div>
-		    </div>
-		    {{ form_widget(form.ocena,{'attr':{'class':'form-control custom-select'}}) }}
+	    {% endfor %}
+	    </tbody>
+	</table>
+    {% else %}
+	<div class="alert alert-info">Brak ocen.</div>
+    {% endif %}
+
+    {# formularz #}
+    <div class="border border-dark mt-5">
+	<div class="form-header">Wstawianie oceny</div>
+	<div class="form-body">
+	{{form_start(form)}}
+	<div class="form-group">
+	    <div class="input-group mb-2">
+		<div class="input-group-prepend">
+		    <div class="input-group-text">Ocena</div>
 		</div>
-	    </div>
-	    <div class="form-group">
-		<div class="input-group mb-2">
-		    <div class="input-group-prepend">
-			<div class="input-group-text">Typ</div>
-		    </div>
-		    {{ form_widget(form.typ,{'attr':{'class':'form-control custom-select'}}) }}
-		</div>
-	    </div>
-	    {{form_widget(form.submit,{'attr':{'class':'btn btn-primary','label':'default'},'label':'Wyślij'})}}
-	    {{form_end(form)}}
+		{{ form_widget(form.ocena,{'attr':{'class':'form-control custom-select'}}) }}
 	    </div>
 	</div>
-    {% endif %}
+	<div class="form-group">
+	    <div class="input-group mb-2">
+		<div class="input-group-prepend">
+		    <div class="input-group-text">Typ</div>
+		</div>
+		{{ form_widget(form.typ,{'attr':{'class':'form-control custom-select'}}) }}
+	    </div>
+	</div>
+	{{form_widget(form.submit,{'attr':{'class':'btn btn-primary','label':'default'},'label':'Wyślij'})}}
+	{{form_end(form)}}
+	</div>
+    </div>
+{% endif %}
+
+<br>
+
+{% if info is defined %}
+    <div class="alert alert-info mt-3">{{info}}</div>
+{% endif %}
 {% endblock %}
