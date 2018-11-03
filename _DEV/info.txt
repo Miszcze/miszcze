@@ -1,4 +1,5 @@
 tutaj se możemy pisać info na temat całej pracy:
+MG: baza jest w web/backup
 MG: logowanie: admin admin
 MG: jedna z najważniejszych rzeczy jest debugowanie... niektóre sytuacje ciężko przewidzieć, jak 
 wywali wam jakiś błąd z moich kontrollerów (z poziomu admina/nauczyciela) róbcie screena błedu i 
@@ -12,9 +13,3 @@ MG: był update w strukturze bazy, więc pamietajcie, żeby używać bazy 16.10.
 MG: nauczyciel odwołuję się do ucznia po numerze legitymacji, żeby aplikacja była zgodna z RODO, 
 trzeba spytać Dr Kozieła co o tym myśli
 MG: dopytać koziołka matołka czy można ciągnąć naszą prace na mag'istrze
-
-
-
-
-
-uruchomienie testów: ./vendor/bin/simple-phpunit

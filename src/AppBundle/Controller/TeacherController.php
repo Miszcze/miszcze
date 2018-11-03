@@ -438,6 +438,18 @@ class TeacherController extends Controller{
 	
 	$form=$this->createForm(SelectPresenceType::class);
 	
+//	if(isset($_POST['presence_id'])) echo $_POST['presence_id'];die;
+	if($request->isMethod('post')){
+	    $presence=$em->getRepository(Obecnosci::class)->find($request->get('presence_id'));
+	    $presence->setObecny(4);
+	    $em->persist($presence);
+	    $em->flush();
+
+	    $this->get('session')->set('info','Usprawiedliwono.');
+
+	    return $this->redirectToRoute('teacher_select_presence');
+	}
+	
 	return $this->render('teacher/select_presence.html.twig',[
 	    'presences'=>$presence,
 	    'form'=>$form->createView()

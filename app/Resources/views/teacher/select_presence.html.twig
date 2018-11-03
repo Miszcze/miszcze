@@ -40,7 +40,14 @@
 			{{presence.zajecia.termin.ktoCo.przedmiot.nazwa}}<br>
 			{{presence.zajecia.termin.ktoCo.prowadzacy.nazwisko}}
 		    </td>
-		    <td>[usprawiedliw]</td>
+		    <td>
+			{% if presence.obecny==1 %}
+			    <form method="post">
+				<input type="hidden" value="{{presence.id}}" name="presence_id">
+				<input type="submit" class="btn btn-outline-primary" value="usprawiedliw">
+			    </form>
+			{% endif %}
+		    </td>
 		</tr>
 	    {% endfor %}
 	    </tbody>
@@ -60,4 +67,8 @@
     </div>
     {{form_widget(form.submit,{'attr':{'class':'btn btn-primary','label':'default'},'label':'Wyślij'})}}
     {{form_end(form)}}
+    
+    {% if info is defined %}
+	<div class="alert alert-info mt-3">{{info}}</div>
+    {% endif %}
 {% endblock %}
