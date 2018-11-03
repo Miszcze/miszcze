@@ -5,8 +5,9 @@ wywali wam jakiś błąd z moich kontrollerów (z poziomu admina/nauczyciela) r�
 plus możecie jedno zdanie powiedzieć w jakich okolicznościach powstał
 MG: co do usprawiedliwienia proponuje, że opiekun będzie pisał wiadomość (można tam również dodać
 załącznik) i wtedy może nauczyciel zdecydować czy go usprawiedliwić w swoim panelu.
-MG: nawigacja, są tutaj 3 kolory buttonów zależnie od roli, administrator ma niebieski, nauczyciel
-zielony a uczeń/opiekun jasnoniebieski, uczeń i opiekun chyba będą mieli te same widoki
+MG: nawigacja, są tutaj 3 kolory buttonów zależnie od roli, administrator ma zielony, nauczyciel
+niebieski, wychowawca jasnoniebieski a uczeń/opiekun bały, uczeń i opiekun chyba będą mieli te same 
+widoki
 MG: był update w strukturze bazy, więc pamietajcie, żeby używać bazy 16.10.2018r+
 MG: nauczyciel odwołuję się do ucznia po numerze legitymacji, żeby aplikacja była zgodna z RODO, 
 trzeba spytać Dr Kozieła co o tym myśli

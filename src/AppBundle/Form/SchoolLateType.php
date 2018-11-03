@@ -2,18 +2,14 @@
 
 namespace AppBundle\Form;
 
-use AppBundle\Entity\Obecnosci;
 use AppBundle\Entity\Terminarz;
 use AppBundle\Entity\Uczniowie;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Doctrine\ORM\Query\Expr\Join;
 
 class SchoolLateType extends AbstractType{
     
@@ -28,18 +24,9 @@ class SchoolLateType extends AbstractType{
 	$term=$em->getRepository(Terminarz::class)->find($options['id']);
 
 	if(isset($term)){
-	    $students=$em
+	     $students=$em
 		->getRepository(Uczniowie::class)
-		->createQueryBuilder('u')
-		->select('u')
-		->innerJoin('AppBundle:Obecnosci','o',Join::WITH,'o.uczen=u.id')
-		->join('o.zajecia','z')
-		->where('z.data>:now')
-		->andWhere('o.obecny=0')
-		->andWhere('z.termin='.$term->getId())
-		->setParameter('now',new DateTime('-15 minutes'))
-		->getQuery()
-		->getResult();
+		->studentsWhere15minLastTerm($term->getId());
 
 	    foreach($students as $value)
 		$choicesStudent[$value->getNumerLegitymacji()]=$value->getId();

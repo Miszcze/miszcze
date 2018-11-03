@@ -58,14 +58,6 @@
 	    {{ form_widget(form.dzien,{'attr':{'class':'form-control'}}) }}
 	</div>
     </div>
-{#    <div class="form-group">
-	<div class="input-group mb-2">
-	    <div class="input-group-prepend">
-		<div class="input-group-text">Zajęcia</div>
-	    </div>
-	    {{ form_widget(form.zajecia,{'attr':{'class':'form-control custom-select'}}) }}
-	</div>
-    </div>#}
     {{form_widget(form.submit,{'attr':{'class':'btn btn-primary','label':'default'},'label':'Wyślij'})}}
     {{form_end(form)}}
 {% endblock %}

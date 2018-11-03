@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Obecnosci
  *
  * @ORM\Table(name="obecnosci", indexes={@ORM\Index(name="fk_uczniowe_has_zajecia_uczniowe1_idx", columns={"uczen"}), @ORM\Index(name="fk_uczniowe_has_zajecia_zajecia1_idx", columns={"zajecia"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\ObecnosciRepository")
  */
 class Obecnosci
 {

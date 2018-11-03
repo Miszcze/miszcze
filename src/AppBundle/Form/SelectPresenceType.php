@@ -2,16 +2,11 @@
 
 namespace AppBundle\Form;
 
-use AppBundle\Entity\Terminarz;
-use AppBundle\Entity\Uczniowie;
-use Doctrine\ORM\EntityManagerInterface;
+use DateTime;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SelectPresenceType extends AbstractType{
     
@@ -30,7 +25,7 @@ class SelectPresenceType extends AbstractType{
 	$builder
 	    ->setMethod('GET')
 //	    ->setAction($this->generateUrl('teacher_select_presence'))
-	    ->add('dzien',DateType::class,['widget'=>'single_text'])
+	    ->add('dzien',DateType::class,['widget'=>'single_text','data'=>new DateTime()])
 //	    ->add('zajecia',ChoiceType::class,['choices'=>$choices])
 	    ->add('submit',SubmitType::class)
 	    ->getForm();

@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Oceny
  *
  * @ORM\Table(name="oceny", indexes={@ORM\Index(name="fk_uczniowe_has_pracownik_na_przedmiot_pracownik_na_przedmi_idx", columns={"przedmiot"}), @ORM\Index(name="fk_uczniowe_has_pracownik_na_przedmiot_uczniowe1_idx", columns={"uczen"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\OcenyRepository")
  */
 class Oceny
 {
