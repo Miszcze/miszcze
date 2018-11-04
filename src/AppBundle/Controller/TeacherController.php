@@ -51,14 +51,12 @@ class TeacherController extends Controller{
 	
 	//tworzenie kominikatu info
 	if($this->get('session')->has('info')){
-	    $this->get('session')->get('info');
 	    $this->get('twig')->addGlobal('info',$this->get('session')->get('info'));
 	    $this->get('session')->remove('info');
 	}
 	
 	//utworzenie kominikatu danger
 	if($this->get('session')->has('danger')){
-	    $this->get('session')->get('danger');
 	    $this->get('twig')->addGlobal('danger',$this->get('session')->get('danger'));
 	    $this->get('session')->remove('danger');
 	}
@@ -132,14 +130,12 @@ class TeacherController extends Controller{
 	
 	//tworzenie kominikatu info
 	if($this->get('session')->has('info')){
-	    $this->get('session')->get('info');
 	    $this->get('twig')->addGlobal('info',$this->get('session')->get('info'));
 	    $this->get('session')->remove('info');
 	}
 	
 	//utworzenie kominikatu danger
 	if($this->get('session')->has('danger')){
-	    $this->get('session')->get('danger');
 	    $this->get('twig')->addGlobal('danger',$this->get('session')->get('danger'));
 	    $this->get('session')->remove('danger');
 	}
@@ -218,14 +214,12 @@ class TeacherController extends Controller{
 	
 	//tworzenie kominikatu info
 	if($this->get('session')->has('info')){
-	    $this->get('session')->get('info');
 	    $this->get('twig')->addGlobal('info',$this->get('session')->get('info'));
 	    $this->get('session')->remove('info');
 	}
 	
 	//utworzenie kominikatu danger
 	if($this->get('session')->has('danger')){
-	    $this->get('session')->get('danger');
 	    $this->get('twig')->addGlobal('danger',$this->get('session')->get('danger'));
 	    $this->get('session')->remove('danger');
 	}
@@ -276,14 +270,12 @@ class TeacherController extends Controller{
 	
 	//tworzenie kominikatu info
 	if($this->get('session')->has('info')){
-	    $this->get('session')->get('info');
 	    $this->get('twig')->addGlobal('info',$this->get('session')->get('info'));
 	    $this->get('session')->remove('info');
 	}
 	
 	//utworzenie kominikatu danger
 	if($this->get('session')->has('danger')){
-	    $this->get('session')->get('danger');
 	    $this->get('twig')->addGlobal('danger',$this->get('session')->get('danger'));
 	    $this->get('session')->remove('danger');
 	}
@@ -338,14 +330,12 @@ class TeacherController extends Controller{
 	
 	//tworzenie kominikatu info
 	if($this->get('session')->has('info')){
-	    $this->get('session')->get('info');
 	    $this->get('twig')->addGlobal('info',$this->get('session')->get('info'));
 	    $this->get('session')->remove('info');
 	}
 	
 	//utworzenie kominikatu danger
 	if($this->get('session')->has('danger')){
-	    $this->get('session')->get('danger');
 	    $this->get('twig')->addGlobal('danger',$this->get('session')->get('danger'));
 	    $this->get('session')->remove('danger');
 	}
@@ -411,14 +401,12 @@ class TeacherController extends Controller{
 	
 	//tworzenie kominikatu info
 	if($this->get('session')->has('info')){
-	    $this->get('session')->get('info');
 	    $this->get('twig')->addGlobal('info',$this->get('session')->get('info'));
 	    $this->get('session')->remove('info');
 	}
 	
 	//utworzenie kominikatu danger
 	if($this->get('session')->has('danger')){
-	    $this->get('session')->get('danger');
 	    $this->get('twig')->addGlobal('danger',$this->get('session')->get('danger'));
 	    $this->get('session')->remove('danger');
 	}
@@ -438,7 +426,6 @@ class TeacherController extends Controller{
 	
 	$form=$this->createForm(SelectPresenceType::class);
 	
-//	if(isset($_POST['presence_id'])) echo $_POST['presence_id'];die;
 	if($request->isMethod('post')){
 	    $presence=$em->getRepository(Obecnosci::class)->find($request->get('presence_id'));
 	    $presence->setObecny(4);
@@ -473,14 +460,12 @@ class TeacherController extends Controller{
 	
 	//tworzenie kominikatu info
 	if($this->get('session')->has('info')){
-	    $this->get('session')->get('info');
 	    $this->get('twig')->addGlobal('info',$this->get('session')->get('info'));
 	    $this->get('session')->remove('info');
 	}
 	
 	//utworzenie kominikatu danger
 	if($this->get('session')->has('danger')){
-	    $this->get('session')->get('danger');
 	    $this->get('twig')->addGlobal('danger',$this->get('session')->get('danger'));
 	    $this->get('session')->remove('danger');
 	}

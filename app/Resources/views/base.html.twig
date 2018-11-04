@@ -18,31 +18,34 @@
 		    <div class="col-sm-8">
 		    <a href="{{url('homepage')}}" class="text-light"><i class="fa fa-home"></i></a>
 		    {% if app.session.get('admin') is not empty %}
-			<a class="btn btn-outline-success btn-sm" href="{{url('users')}}">Użytkownicy</a> 
-			<a class="btn btn-outline-success btn-sm" href="{{url('classes')}}">Klasy</a>
-			<a class="btn btn-outline-success btn-sm" href="{{url('class')}}">Klasa</a>
-			<a class="btn btn-outline-success btn-sm" href="{{url('subjects')}}">Przedmioty</a>
-			<a class="btn btn-outline-success btn-sm" href="{{url('lesson_hours')}}">Godziny lekcyjne</a>
-			<a class="btn btn-outline-success btn-sm" href="{{url('rooms')}}">Sale</a>
-			<a class="btn btn-outline-success btn-sm" href="{{url('time_table')}}">Plan zajęć</a>
-			<a class="btn btn-outline-success btn-sm" href="{{url('settings')}}">Ustawienia</a>
+			<a class="btn btn-outline-success btn-sm mt-1" href="{{url('users')}}">Użytkownicy</a> 
+			<a class="btn btn-outline-success btn-sm mt-1" href="{{url('classes')}}">Klasy</a>
+			<a class="btn btn-outline-success btn-sm mt-1" href="{{url('class')}}">Klasa</a>
+			<a class="btn btn-outline-success btn-sm mt-1" href="{{url('subjects')}}">Przedmioty</a>
+			<a class="btn btn-outline-success btn-sm mt-1" href="{{url('lesson_hours')}}">Godziny lekcyjne</a>
+			<a class="btn btn-outline-success btn-sm mt-1" href="{{url('rooms')}}">Sale</a>
+			<a class="btn btn-outline-success btn-sm mt-1" href="{{url('time_table')}}">Plan zajęć</a>
+			<a class="btn btn-outline-success btn-sm mt-1" href="{{url('settings')}}">Ustawienia</a>
 		    {% endif %}
 
 		    {% if app.session.get('teacher') is not empty %}
-			<a class="btn btn-outline-primary btn-sm" href="{{url('teacher_check_presence')}}">Sprawdzanie obecności</a>
-			<a class="btn btn-outline-primary btn-sm" href="{{url('teacher_insert_rating')}}">Wstawienie oceny</a>
-			<a class="btn btn-outline-primary btn-sm" href="{{url('teacher_school_late')}}">Spóźnienia</a>
-			<a class="btn btn-outline-primary btn-sm" href="{{url('teacher_time_table')}}">Plan zajęć</a>
-			<a class="btn btn-outline-primary btn-sm" href="{{url('teacher_school_note')}}">Uwagi i pochwały</a>
-			<a class="btn btn-outline-info btn-sm" href="{{url('teacher_select_presence')}}">Obecności</a>
-			<a class="btn btn-outline-info btn-sm" href="{{url('teacher_select_rating')}}">Oceny</a>
+			<a class="btn btn-outline-primary btn-sm mt-1" href="{{url('teacher_check_presence')}}">Sprawdzanie obecności</a>
+			<a class="btn btn-outline-primary btn-sm mt-1" href="{{url('teacher_insert_rating')}}">Wstawienie oceny</a>
+			<a class="btn btn-outline-primary btn-sm mt-1" href="{{url('teacher_school_late')}}">Spóźnienia</a>
+			<a class="btn btn-outline-primary btn-sm mt-1" href="{{url('teacher_time_table')}}">Plan zajęć</a>
+			<a class="btn btn-outline-primary btn-sm mt-1" href="{{url('teacher_school_note')}}">Uwagi i pochwały</a>
+		    {% endif %}
+			
+		    {% if app.session.get('classTeacher') is not empty %}
+			<a class="btn btn-outline-info btn-sm mt-1" href="{{url('teacher_select_presence')}}">Obecności</a>
+			<a class="btn btn-outline-info btn-sm mt-1" href="{{url('teacher_select_rating')}}">Oceny</a>
 		    {% endif %}
 		    
 		    {% if app.session.get('student') is not empty %}
-			<a class="btn btn-outline-light btn-sm" href="#">Oceny</a>
-			<a class="btn btn-outline-light btn-sm" href="#">Plan zajęć</a>
-			<a class="btn btn-outline-light btn-sm" href="#">Uwagi i pochwały</a>
-			<a class="btn btn-outline-light btn-sm" href="#">Obecności</a>
+			<a class="btn btn-outline-light btn-sm mt-1" href="#">Oceny</a>
+			<a class="btn btn-outline-light btn-sm mt-1" href="#">Plan zajęć</a>
+			<a class="btn btn-outline-light btn-sm mt-1" href="#">Uwagi i pochwały</a>
+			<a class="btn btn-outline-light btn-sm mt-1" href="#">Obecności</a>
 		    {% endif %}
 		    </div>
 		    

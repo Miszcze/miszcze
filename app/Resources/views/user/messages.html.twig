@@ -2,29 +2,39 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Gadu Gadu</h1>
+    <h1 class="text-center my-3">Wiadomości</h1>
     {% if messages is not empty %}
-	<table>
-	    <tr><td>Nadawca</td><td>Tytuł</td><td>Wiadomość</td><td>Wiadomość</td></tr>
+	<table class="table table-hover table-light border border-dark">
+	    <thead class="thead-dark">
+	    <tr>
+		<th>Nadawca</th>
+		<th>Tytuł</th>
+		<th>Wiadomość</th>
+		<th>Wiadomość</th>
+	    </tr>
+	    </thead>
 	{% for message in messages %}
 	    <tr>
 		<td>{{message.nadawca.login}}</td>
 		<td>{{message.tytul}}</td>
-		<td><a href="{{url('message',{'id':message.id})}}">czytaj</a></td>
+		<td>
+		    <a href="{{url('message',{'id':message.id})}}" class="btn btn-outline-success">czytaj</a>
+		</td>
 		<td>
 		    <a href="{{url('message',{'id':message.id,'delete':1,
-		    'idRoute':app.request.get('id')})}}">usuń</a>
+		    'idRoute':app.request.get('id')})}}" class="btn btn-outline-danger">usuń</a>
 		</td>
 	    </tr>
 	{% endfor %}
 	</table>
     {% elseif app.request.get('id')!=0 %}
-	Brak wiadomości.<br>
+	<div class="alert alert-info">Brak wiadomości.</div>
     {% elseif app.request.get('id')==0 %}
-	Brak nowych wiadomości.<br>
+	<div class="alert alert-info">Brak nowych wiadomości</div>
     {% endif %}
     
-    Użytkownik:<select onchange="location=this.value;">
+    <b>Użytkownik:</b>
+    <select onchange="location=this.value;" class="form-control custom-select border-dark text-primary">
 	<option value="{{url('messages')}}">Wybierz użytkownika</option>
 	{% for user in users %}
 	<option value="{{url('messages',{'id':user.id})}}" 
@@ -34,6 +44,37 @@
     </select>
     
     {% if app.request.get('id')!=0 %}
-	{{form(form)}}
+    <div class="border border-dark mt-5">
+	<div class="form-header">Pisanie wiadomości</div>
+	<div class="form-body">
+	{{form_start(form)}}
+	<div class="form-group">
+	    <div class="input-group mb-2">
+		<div class="input-group-prepend">
+		    <div class="input-group-text">Tytuł</div>
+		</div>
+		{{ form_widget(form.tytul,{'attr':{'class':'form-control'}}) }}
+	    </div>
+	</div>
+	<div class="form-group">
+	    <div class="input-group mb-2">
+		<div class="input-group-prepend">
+		    <div class="input-group-text">Wiadomość</div>
+		</div>
+		{{ form_widget(form.tresc,{'attr':{'class':'form-control'}}) }}
+	    </div>
+	</div>
+	<div class="form-group">
+	    <div class="input-group mb-2">
+		<div class="input-group-prepend">
+		    <div class="input-group-text">Załącznik</div>
+		</div>
+		{{ form_widget(form.zalacznik,{'attr':{'class':'form-control '}}) }}
+	    </div>
+	</div>
+	{{form_widget(form.submit,{'attr':{'class':'btn btn-primary','label':'default'},'label':'Wyślij'})}}
+	{{form_end(form)}}
+	</div>
+    </div>
     {% endif %}
 {% endblock %}

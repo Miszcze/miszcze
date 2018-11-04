@@ -3,20 +3,18 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Constant;
-use AppBundle\Entity\Pracownicy;
 use AppBundle\Entity\Uzytkownicy;
 use AppBundle\Entity\Wiadomosci;
 use AppBundle\Utils\Message;
+use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
-use Doctrine\ORM\EntityManagerInterface;
 
 class UserController extends Controller{
     
@@ -28,7 +26,21 @@ class UserController extends Controller{
      * @Route("/", name="homepage")
      */
     public function homepageAction(){
+	//sprawdzanie przerwy techicznej
 	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break');
+	
+	//tworzenie kominikatu info
+	if($this->get('session')->has('info')){
+	    $this->get('twig')->addGlobal('info',$this->get('session')->get('info'));
+	    $this->get('session')->remove('info');
+	}
+	
+	//utworzenie kominikatu danger
+	if($this->get('session')->has('danger')){
+	    $this->get('twig')->addGlobal('danger',$this->get('session')->get('danger'));
+	    $this->get('session')->remove('danger');
+	}
+	
 	return $this->render('user/homepage.html.twig');
     }
     
@@ -37,8 +49,23 @@ class UserController extends Controller{
      */
     public function loginAction(Request $request){
 	$entityManager=$this->getDoctrine()->getManager();
-	$error=null;
+	
+	//sprawdzanie przerwy techicznej
+	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break');
+	
+	//tworzenie kominikatu info
+	if($this->get('session')->has('info')){
+	    $this->get('twig')->addGlobal('info',$this->get('session')->get('info'));
+	    $this->get('session')->remove('info');
+	}
+	
+	//utworzenie kominikatu danger
+	if($this->get('session')->has('danger')){
+	    $this->get('twig')->addGlobal('danger',$this->get('session')->get('danger'));
+	    $this->get('session')->remove('danger');
+	}
 
+	//logowanie
 	if($request->isMethod('post')){
 	    $user=$entityManager->createQuery(
 		    "SELECT u ".
@@ -65,6 +92,7 @@ class UserController extends Controller{
 		    );
 		
 		if($formPassword==$passwordUser[0]->getHaslo()){
+		    //ustawienie w sesji użytkownika
 		    $session=$this->get('session');
 		    $session->set('user',['user'=>$user[0]]);
 		    
@@ -89,15 +117,18 @@ class UserController extends Controller{
 		    )
 		    ->getResult();
 		    
+		    //ustawienie w sesji ról użytkownika
 		    if(!empty($admin)) $session->set('admin',true);
 		    if(!empty($teacher)) $session->set('teacher',true);
 		    if(!empty($classTeacher)) $session->set('classTeacher',true);
 		     
+		    $this->get('session')->set('info','Zalogowano.');
+		    
 		    return $this->redirectToRoute('homepage');
 		}
 	    }
 
-	    $error='błędny login lub hasło';
+	    $this->get('session')->set('danger','Błędny login lub hasło.');
 	}
 
 	$form=$this->createFormBuilder()
@@ -108,8 +139,7 @@ class UserController extends Controller{
 	    ->getForm();
 
 	return $this->render('user/index.html.twig',[
-		'form'=>$form->createView(),
-		'error'=>$error
+	    'form'=>$form->createView()
 	]);
     }
         
@@ -121,6 +151,9 @@ class UserController extends Controller{
 	$this->get('session')->remove('student');
 	$this->get('session')->remove('admin');
 	$this->get('session')->remove('teacher');
+	$this->get('session')->remove('classTeacher');
+	
+	$this->get('session')->set('info','Wylogowano.');
 
 	return $this->redirectToRoute('login');
     }
@@ -130,6 +163,22 @@ class UserController extends Controller{
      */
     public function messagesAction(Request $request,$id){
 	$entityManager=$this->getDoctrine()->getManager();
+	
+	//sprawdzanie przerwy techicznej
+	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break');
+	
+	//tworzenie kominikatu info
+	if($this->get('session')->has('info')){
+	    $this->get('twig')->addGlobal('info',$this->get('session')->get('info'));
+	    $this->get('session')->remove('info');
+	}
+	
+	//utworzenie kominikatu danger
+	if($this->get('session')->has('danger')){
+	    $this->get('twig')->addGlobal('danger',$this->get('session')->get('danger'));
+	    $this->get('session')->remove('danger');
+	}
+	
 	$users=$entityManager->getRepository(Uzytkownicy::class)->findAll();
 	
 	$form=$this->createFormBuilder()
@@ -140,6 +189,7 @@ class UserController extends Controller{
 	    ->add('submit',SubmitType::class)
 	    ->getForm();
 
+	//wysyłanie wiadomości
 	if($request->isMethod('post')){
 	    $form->handleRequest($request);
 	   
@@ -159,6 +209,7 @@ class UserController extends Controller{
 	    $messege->setStatusOdbiorcy(0);
 	    $messege->setOdczytana(0);
 	    
+	    //upload załącznika
 	    if(!empty($form['zalacznik']->getData())){
 		$directory=$this->get('kernel')->getRootDir().'/../web/upload/';
 		$file=$form['zalacznik']->getData();
@@ -213,8 +264,24 @@ class UserController extends Controller{
     public function messageAction($id,$delete,$idRoute){
 	$entityManager=$this->getDoctrine()->getManager();
 	
+	//sprawdzanie przerwy techicznej
+	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break');
+	
+	//tworzenie kominikatu info
+	if($this->get('session')->has('info')){
+	    $this->get('twig')->addGlobal('info',$this->get('session')->get('info'));
+	    $this->get('session')->remove('info');
+	}
+	
+	//utworzenie kominikatu danger
+	if($this->get('session')->has('danger')){
+	    $this->get('twig')->addGlobal('danger',$this->get('session')->get('danger'));
+	    $this->get('session')->remove('danger');
+	}
+	
 	$sessionUserId=$this->get('session')->get('user')['user']->getId();
 	
+	//usuwanie wiadomości
 	if($delete==true){
 	    $entityManager->createQuery(
 	        "UPDATE AppBundle\Entity\Wiadomosci w ".

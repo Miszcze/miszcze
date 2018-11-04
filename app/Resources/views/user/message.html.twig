@@ -2,9 +2,11 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>{{message.tytul}}</h1>
-    <div>From: <b>{{message.nadawca.login}}</b> to <b>{{message.odbiorca.login}}</b></div>
-    <p>{{message.tresc}}</p>
+    <h1 class="text-center my-3">Temat: <small>{{message.tytul}}</small></h1>
+    
+    <div>Od: <b>{{message.nadawca.login}}</b> do: <b>{{message.odbiorca.login}}</b></div>
+    <div class="alert alert-dark my-1"><p>{{message.tresc}}</p></div>
+    
     {% if message.zalacznik is not empty %}
 	<a href="{{url('download',{'file':message.zalacznik})}}">Załącznik</a>
     {% endif %}

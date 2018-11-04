@@ -22,11 +22,8 @@
     </div>
 	{{form_widget(form.submit,{'attr':{'class':'btn btn-primary','label':'default'},'label':'Wyślij'})}} 
     {{form_end(form)}}
-{#    {{ form(form) }}#}
-    {{ error }}
-{% endblock %}
-
-{% block stylesheets %}
-<style>
-</style>
+    
+    {% if danger is defined %}
+	<div class="alert alert-danger mt-3">{{danger}}</div>
+    {% endif %}
 {% endblock %}
