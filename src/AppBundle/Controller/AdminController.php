@@ -417,9 +417,7 @@ class AdminController extends Controller{
 	if($request->isMethod('post') && $formType=='uczen' && $id!=0 && $delete==0){
 	    $entityManager->createQuery(
 	        "UPDATE AppBundle\Entity\Uzytkownicy u ".
-	        "SET ".
-	        "   u.login='".$_POST['form']['login']."', ".
-	        "   u.mail='".$_POST['form']['mail']."' ".
+	        "SET u.mail='".$form->get('mail')->getData()."' ".
 		"WHERE u.id=".$id
 	    )
 	    ->getResult();
@@ -427,31 +425,30 @@ class AdminController extends Controller{
 	    $entityManager->createQuery(
 	        "UPDATE AppBundle\Entity\Uczniowie uc ".
 	        "SET ".
-	        "   uc.imie='".$_POST['form']['imie']."', ".
-	        "   uc.imie2='".$_POST['form']['imie2']."', ".
-	        "   uc.nazwisko='".$_POST['form']['nazwisko']."', ".
-	        "   uc.dataUrodzenia='".
-		    (new DateTime($_POST['form']['dataUrodzenia']))->format('Y-m-d')."', ".
-		"   uc.pesel='".$_POST['form']['pesel']."', ".
-		"   uc.miejscowosc='".$_POST['form']['miejscowosc']."', ".
-		"   uc.ulica='".$_POST['form']['ulica']."', ".
-		"   uc.nrDomu='".$_POST['form']['nrDomu']."', ".
-		"   uc.kodPocztowy='".$_POST['form']['kodPocztowy']."', ".
-		"   uc.poczta='".$_POST['form']['poczta']."', ".
-		"   uc.kontakt='".$_POST['form']['kontakt']."' ".
+	        "   uc.imie='".$form->get('imie')->getData()."', ".
+	        "   uc.imie2='".$form->get('imie2')->getData()."', ".
+	        "   uc.nazwisko='".$form->get('nazwisko')->getData()."', ".
+	        "   uc.dataUrodzenia='".$form->get('dataUrodzenia')->getData()->format('Y-m-d')."', ".
+		"   uc.pesel='".$form->get('pesel')->getData()."', ".
+		"   uc.miejscowosc='".$form->get('miejscowosc')->getData()."', ".
+		"   uc.ulica='".$form->get('ulica')->getData()."', ".
+		"   uc.nrDomu='".$form->get('nrDomu')->getData()."', ".
+		"   uc.kodPocztowy='".$form->get('kodPocztowy')->getData()."', ".
+		"   uc.poczta='".$form->get('poczta')->getData()."', ".
+		"   uc.kontakt='".$form->get('kontakt')->getData()."' ".
 		"WHERE uc.uzytkownik IN ".
 		"   (SELECT u.id FROM AppBundle\Entity\Uzytkownicy u ".
 		"   WHERE u.id=".$id.")"
 	    )
 	    ->getResult();
 	    
+	    $this->get('session')->set('info','Zedytowano ucznia.');
+	    
 	    return $this->redirectToRoute('users');
 	}else if($request->isMethod('post') && $formType=='opiekun' && $id!=0 && $delete==0){
 	    $entityManager->createQuery(
 	        "UPDATE AppBundle\Entity\Uzytkownicy u ".
-	        "SET ".
-	        "   u.login='".$_POST['form']['login']."', ".
-	        "   u.mail='".$_POST['form']['mail']."' ".
+	        "SET u.mail='".$form->get('mail')->getData()."' ".
 		"WHERE u.id=".$id
 	    )
 	    ->getResult();
@@ -459,43 +456,54 @@ class AdminController extends Controller{
 	    $entityManager->createQuery(
 	        "UPDATE AppBundle\Entity\Opiekunowie o ".
 	        "SET ".
-	        "   o.imie='".$_POST['form']['imie']."', ".
-	        "   o.nazwisko='".$_POST['form']['nazwisko']."', ".
-	        "   o.kontakt='".$_POST['form']['kontakt']."' ".
+	        "   o.imie='".$form->get('imie')->getData()."', ".
+	        "   o.nazwisko='".$form->get('nazwisko')->getData()."', ".
+	        "   o.kontakt='".$form->get('kontakt')->getData()."' ".
 		"WHERE o.uzytkownik IN ".
 		"   (SELECT u.id FROM AppBundle\Entity\Uzytkownicy u ".
 		"   WHERE u.id=".$id.")"
 	    )
 	    ->getResult();
 	    
+	    $o=$entityManager->getRepository(Opiekunowie::class)->findOneBy(['uzytkownik'=>$id]);
+	    
+	    $entityManager->createQuery(
+	        "UPDATE AppBundle\Entity\Uczniowie u ".
+	        "SET u.opiekun='".$o->getId()."' ".
+		"WHERE u.id='".$form->get('uczen')->getData()."'"
+	    )
+	    ->getResult();
+	    
+	    $this->get('session')->set('info','Zedytowano opiekuna.');
+	    
 	    return $this->redirectToRoute('users');
 	}else if($request->isMethod('post') && $formType=='pracownik' && $id!=0 && $delete==0){
 	    $entityManager->createQuery(
 	        "UPDATE AppBundle\Entity\Uzytkownicy u ".
-	        "SET ".
-	        "   u.login='".$_POST['form']['login']."', ".
-	        "   u.mail='".$_POST['form']['mail']."' ".
+	        "SET u.mail='".$form->get('mail')->getData()."' ".
 		"WHERE u.id=".$id
 	    )
 	    ->getResult();
 	    
 	$role='';    
-	foreach($_POST['form']['role'] as $value)
+	foreach($form->get('role')->getData() as $value)
 	    $role.=$value.",";
 	$role=substr($role,0,-1);
 	    
 	    $entityManager->createQuery(
 	        "UPDATE AppBundle\Entity\Pracownicy p ".
 	        "SET ".
-	        "   p.imie='".$_POST['form']['imie']."', ".
-	        "   p.nazwisko='".$_POST['form']['nazwisko']."', ".
-	        "   p.kontakt='".$_POST['form']['kontakt']."', ".
+	        "   p.imie='".$form->get('imie')->getData()."', ".
+	        "   p.nazwisko='".$form->get('nazwisko')->getData()."', ".
+	        "   p.kontakt='".$form->get('kontakt')->getData()."', ".
 	        "   p.role='".$role."' ".
 		"WHERE p.uzytkownik IN ".
 		"   (SELECT u.id FROM AppBundle\Entity\Uzytkownicy u ".
 		"   WHERE u.id=".$id.")"
 	    )
 	    ->getResult();
+	    
+	    $this->get('session')->set('info','Zedytowano pracownika.');
 	    
 	    return $this->redirectToRoute('users');
 	}
@@ -516,6 +524,8 @@ class AdminController extends Controller{
 	    )
 	    ->getResult();
 	    
+	    $this->get('session')->set('info','Usunięto ucznia.');
+	    
 	    return $this->redirectToRoute('users');
 	}else if($formType=='opiekun' && $id!=0 && $delete==1){
 	    $entityManager->createQuery(
@@ -532,6 +542,8 @@ class AdminController extends Controller{
 	    )
 	    ->getResult();
 	    
+	    $this->get('session')->set('info','Usunięto opiekuna.');
+	    
 	    return $this->redirectToRoute('users');
 	}if($formType=='pracownik' && $id!=0 && $delete==1){
 	    $entityManager->createQuery(
@@ -547,6 +559,8 @@ class AdminController extends Controller{
 		"WHERE p.id=".$id
 	    )
 	    ->getResult();
+	    
+	    $this->get('session')->set('info','Usunięto pracownika.');
 	    
 	    return $this->redirectToRoute('users');
 	}
