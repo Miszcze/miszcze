@@ -10,4 +10,8 @@
     {% if message.zalacznik is not empty %}
 	<a href="{{url('download',{'file':message.zalacznik})}}">Załącznik</a>
     {% endif %}
+    
+    {% if info is defined %}
+	<div class="alert alert-info mt-3">{{info}}</div>
+    {% endif %}
 {% endblock %}

@@ -1,4 +1,4 @@
-{% block title %}Gadu Gadu{% endblock %}
+{% block title %}Wiadomości{% endblock %}
 {% extends 'base.html.twig' %}
 
 {% block body %}
@@ -76,5 +76,9 @@
 	{{form_end(form)}}
 	</div>
     </div>
+    {% endif %}
+    
+    {% if info is defined %}
+	<div class="alert alert-info mt-3">{{info}}</div>
     {% endif %}
 {% endblock %}

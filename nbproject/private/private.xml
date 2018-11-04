@@ -4,13 +4,12 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/wamp64/www/miszcze/src/AppBundle/Controller/TeacherController.php</file>
-            <file>file:/C:/wamp64/www/miszcze/app/Resources/views/teacher/rating.html.twig</file>
-            <file>file:/C:/wamp64/www/miszcze/src/AppBundle/Form/SchoolLateType.php</file>
-            <file>file:/C:/wamp64/www/miszcze/src/AppBundle/Entity/Terminarz.php</file>
-            <file>file:/C:/wamp64/www/miszcze/app/Resources/views/teacher/presence.html.twig</file>
-            <file>file:/C:/wamp64/www/miszcze/app/Resources/views/teacher/school_late.html.twig</file>
-            <file>file:/C:/wamp64/www/miszcze/src/AppBundle/Repository/TerminarzRepository.php</file>
-            <file>file:/C:/wamp64/www/miszcze/src/AppBundle/Form/PresenceType.php</file>
+            <file>file:/C:/wamp64/www/miszcze/app/Resources/views/user/message.html.twig</file>
+            <file>file:/C:/wamp64/www/miszcze/app/Resources/views/user/index.html.twig</file>
+            <file>file:/C:/wamp64/www/miszcze/app/Resources/views/base.html.twig</file>
+            <file>file:/C:/wamp64/www/miszcze/app/Resources/views/user/messages.html.twig</file>
+            <file>file:/C:/wamp64/www/miszcze/src/AppBundle/Controller/UserController.php</file>
+            <file>file:/C:/wamp64/www/miszcze/app/Resources/views/user/homepage.html.twig</file>
         </group>
     </open-files>
 </project-private>

@@ -159,7 +159,7 @@ class UserController extends Controller{
     }
     
     /**
-     * @Route("/messages/{id}", name="messages", defaults={"id"="0"})
+     * @Route("/wiadomosci/{id}", name="messages", defaults={"id"="0"})
      */
     public function messagesAction(Request $request,$id){
 	$entityManager=$this->getDoctrine()->getManager();
@@ -224,6 +224,8 @@ class UserController extends Controller{
 	    $entityManager->persist($messege);
 	    $entityManager->flush();
 	    
+	    $this->get('session')->set('info','Wysłano wiadomość.');
+	    
 	    return $this->redirectToRoute('messages',['id'=>$id]);
 	}
 	
@@ -235,9 +237,9 @@ class UserController extends Controller{
 		"FROM AppBundle\Entity\Wiadomosci w ".
 		"JOIN AppBundle\Entity\Uzytkownicy u ".
 		"WITH w.nadawca=u.id OR w.odbiorca=u.id ".
-		"WHERE w.odbiorca=".$sessionUserId." AND w.odczytana=0"
-		)
-		->getResult();
+		"WHERE w.odbiorca=".$sessionUserId." AND w.odczytana=0 AND w.statusOdbiorcy=0" 
+	    )
+	    ->getResult();
 	else
 	    $messages=$entityManager->createQuery(
 		"SELECT w ".
@@ -247,8 +249,8 @@ class UserController extends Controller{
 		"WHERE ".
 		"	(w.nadawca=".$sessionUserId." AND w.odbiorca=".$id." AND w.statusNadawcy=0) OR ".
 		"	(w.odbiorca=".$sessionUserId." AND w.nadawca=".$id." AND w.statusOdbiorcy=0)"
-		)
-		->getResult();
+	    )
+	    ->getResult();
 	
 	return $this->render('user/messages.html.twig',[
 		'form'=>$form->createView(),
@@ -258,7 +260,7 @@ class UserController extends Controller{
     }
     
     /**
-     * @Route("/message/{id}/{delete}/{idRoute}", name="message", 
+     * @Route("/wiadomosc/{id}/{delete}/{idRoute}", name="message", 
      * defaults={"id"="0","delete"="0","idRoute"="0"})
      */
     public function messageAction($id,$delete,$idRoute){
@@ -300,6 +302,8 @@ class UserController extends Controller{
 		"   WHERE u.id=".$sessionUserId.")"
 	    )
 	    ->getResult();
+	    
+	    $this->get('session')->set('info','Usunięto wiadomość.');
 	    
 	    return $this->redirectToRoute('messages',['id'=>$idRoute]);
 	}

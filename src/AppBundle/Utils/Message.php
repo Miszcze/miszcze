@@ -27,7 +27,7 @@ class Message{
 		"FROM AppBundle\Entity\Wiadomosci w ".
 		"JOIN AppBundle\Entity\Uzytkownicy u ".
 		"WITH w.odbiorca=u.id ".
-		"WHERE w.odbiorca=".$sessionUserId." AND w.odczytana=0"
+		"WHERE w.odbiorca=".$sessionUserId." AND w.odczytana=0 AND w.statusOdbiorcy=0"
 	    )
 	    ->getResult();
 		
