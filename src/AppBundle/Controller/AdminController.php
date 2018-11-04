@@ -51,7 +51,7 @@ class AdminController extends Controller{
 //    }
     
     /**
-     * @Route("/uzytkownicy/{formType}/{id}/{delete}", name="users", 
+     * @Route("/uzytkownicy/{formType}/{id}/{delete}", name="admin_users", 
      * defaults={"formType"="pracownik","id"="0","delete"="0"})
      */
     public function usersAction(Request $request,$formType,$id,$delete){
@@ -287,7 +287,7 @@ class AdminController extends Controller{
 		
 		$this->get('session')->set('info','Dodano ucznia.');
 		
-		return $this->redirectToRoute('users');
+		return $this->redirectToRoute('admin_users');
 	    }
 	}else if($request->isMethod('post') && $formType=='opiekun' && $id==0){
 	    $createLogin='O'.substr($form->get('imie')->getData(),0,3)
@@ -352,7 +352,7 @@ class AdminController extends Controller{
 	    
 	    $this->get('session')->set('info','Dodano opiekuna.');
 	    
-	    return $this->redirectToRoute('users');
+	    return $this->redirectToRoute('admin_users');
 	}else if($request->isMethod('post') && $formType=='pracownik' && $id==0){
 	    $createLogin='P'.substr($form->get('imie')->getData(),0,3)
 			    .substr($form->get('nazwisko')->getData(),0,3);
@@ -410,10 +410,10 @@ class AdminController extends Controller{
 	    
 	    $this->get('session')->set('info','Dodano pracownika.');
 	    
-	    return $this->redirectToRoute('users');
+	    return $this->redirectToRoute('admin_users');
 	}
 	
-	//edytowanie
+	//edytowanie ucznia
 	if($request->isMethod('post') && $formType=='uczen' && $id!=0 && $delete==0){
 	    $entityManager->createQuery(
 	        "UPDATE AppBundle\Entity\Uzytkownicy u ".
@@ -444,7 +444,8 @@ class AdminController extends Controller{
 	    
 	    $this->get('session')->set('info','Zedytowano ucznia.');
 	    
-	    return $this->redirectToRoute('users');
+	    return $this->redirectToRoute('admin_users');
+	//edytowanie opiekuna
 	}else if($request->isMethod('post') && $formType=='opiekun' && $id!=0 && $delete==0){
 	    $entityManager->createQuery(
 	        "UPDATE AppBundle\Entity\Uzytkownicy u ".
@@ -476,7 +477,8 @@ class AdminController extends Controller{
 	    
 	    $this->get('session')->set('info','Zedytowano opiekuna.');
 	    
-	    return $this->redirectToRoute('users');
+	    return $this->redirectToRoute('admin_users');
+	//edytowanie pracownika
 	}else if($request->isMethod('post') && $formType=='pracownik' && $id!=0 && $delete==0){
 	    $entityManager->createQuery(
 	        "UPDATE AppBundle\Entity\Uzytkownicy u ".
@@ -505,10 +507,10 @@ class AdminController extends Controller{
 	    
 	    $this->get('session')->set('info','Zedytowano pracownika.');
 	    
-	    return $this->redirectToRoute('users');
+	    return $this->redirectToRoute('admin_users');
 	}
 	
-	//usuwanie
+	//usuwanie ucznia
 	if($formType=='uczen' && $id!=0 && $delete==1){
 	    $entityManager->createQuery(
 	        "UPDATE AppBundle\Entity\Uzytkownicy u ".
@@ -526,7 +528,8 @@ class AdminController extends Controller{
 	    
 	    $this->get('session')->set('info','Usunięto ucznia.');
 	    
-	    return $this->redirectToRoute('users');
+	    return $this->redirectToRoute('admin_users');
+	//usuwanie opiekuna
 	}else if($formType=='opiekun' && $id!=0 && $delete==1){
 	    $entityManager->createQuery(
 	        "UPDATE AppBundle\Entity\Uzytkownicy u ".
@@ -544,7 +547,8 @@ class AdminController extends Controller{
 	    
 	    $this->get('session')->set('info','Usunięto opiekuna.');
 	    
-	    return $this->redirectToRoute('users');
+	    return $this->redirectToRoute('admin_users');
+	//usuwanie pracownika
 	}if($formType=='pracownik' && $id!=0 && $delete==1){
 	    $entityManager->createQuery(
 	        "UPDATE AppBundle\Entity\Uzytkownicy u ".
@@ -562,7 +566,7 @@ class AdminController extends Controller{
 	    
 	    $this->get('session')->set('info','Usunięto pracownika.');
 	    
-	    return $this->redirectToRoute('users');
+	    return $this->redirectToRoute('admin_users');
 	}
 	
 	//dane do wyświetlenia
@@ -581,11 +585,32 @@ class AdminController extends Controller{
     }
     
     /**
-     * @Route("/klasy/{id}/{delete}", name="classes", defaults={"id"="0","delete"="0"})
+     * @Route("/klasy/{id}/{delete}", name="admin_classes", defaults={"id"="0","delete"="0"})
      */
     public function classesAction(Request $request,$id,$delete){
-	if(AdminController::checkAdmin()) return $this->redirectToRoute('homepage');
 	$entityManager=$this->getDoctrine()->getManager();
+	
+	//sprawdzanie przerwy techicznej
+	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break');
+	
+	//sprawdzawdzanie czy użytkownik to nauczyciel
+	if(!$this->get('session')->has('admin')){
+	    $this->get('session')->set('danger','Nie jesteś adminem.');
+	    return $this->redirectToRoute('homepage',[],302);
+	}
+	
+	//tworzenie kominikatu info
+	if($this->get('session')->has('info')){
+	    $this->get('twig')->addGlobal('info',$this->get('session')->get('info'));
+	    $this->get('session')->remove('info');
+	}
+	
+	//utworzenie kominikatu danger
+	if($this->get('session')->has('danger')){
+	    $this->get('twig')->addGlobal('danger',$this->get('session')->get('danger'));
+	    $this->get('session')->remove('danger');
+	}
+	
 	$classes=$this->getDoctrine()->getRepository(Klasy::class)->findBy(['status'=>0]);
 	
 	$formValue=null;
@@ -603,6 +628,7 @@ class AdminController extends Controller{
 	for($i=0;$i<count($teachers);$i++)
 	$choicesTeacher[$teachers[$i]->getImie()]=$teachers[$i]->getId();
 	
+	//dane do formularza
 	if($id!=0){
 	    $formValue=$this->getDoctrine()->getRepository(Klasy::class)->find($id);
 	    $formValueDate=new DateTime($formValue->getRocznik().'-01-01');
@@ -619,6 +645,7 @@ class AdminController extends Controller{
 	    $teacherValue=$teacher[0]->getId();
 	}
 	
+	//formularz
 	$form=$this->createFormBuilder($formValue)
 	    ->setMethod('POST')
 	    ->add('poziom',IntegerType::class)
@@ -638,7 +665,7 @@ class AdminController extends Controller{
 	//dodawanie
 	if($request->isMethod('post') && $id==0){
 	    $form->handleRequest($request);
-	   
+	    
 	    $teacher=$this
 		->getDoctrine()
 		->getRepository(Pracownicy::class)
@@ -654,7 +681,9 @@ class AdminController extends Controller{
 	    $entityManager->persist($class);
 	    $entityManager->flush();
 	    
-	    return $this->redirectToRoute('classes');
+	    $this->get('session')->set('info','Dodano klasę.');
+	    
+	    return $this->redirectToRoute('admin_classes');
 	//edytowanie 
 	}else if($request->isMethod('post') && $id!=0){
 	    $entityManager->createQuery(
@@ -668,7 +697,9 @@ class AdminController extends Controller{
 	    )
 	    ->getResult();
 	    
-	    return $this->redirectToRoute('classes');
+	    $this->get('session')->set('info','Zedytowano klasę.');
+	    
+	    return $this->redirectToRoute('admin_classes');
 	//usuwanie
 	}else if($delete==1 && $id!=0){
 	    $entityManager->createQuery(
@@ -678,7 +709,9 @@ class AdminController extends Controller{
 	    )
 	    ->getResult();
 	    
-	    return $this->redirectToRoute('classes');
+	    $this->get('session')->set('info','Usunięto klasę.');
+	    
+	    return $this->redirectToRoute('admin_classes');
 	}
 
 	return $this->render('admin/classes.html.twig',[
@@ -688,12 +721,33 @@ class AdminController extends Controller{
     }
     
     /**
-     * @Route("/klasa/{numberClass}/{class}/{id}/{delete}", name="class", 
+     * @Route("/klasa/{numberClass}/{class}/{id}/{delete}", name="admin_class", 
      * defaults={"numberClass"="0","class"="0","id"="0","delete"="0"})
      */
     public function classAction(Request $request,$numberClass,$class,$id,$delete){
-	if(AdminController::checkAdmin()) return $this->redirectToRoute('homepage');
 	$entityManager=$this->getDoctrine()->getManager();
+	
+	//sprawdzanie przerwy techicznej
+	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break');
+	
+	//sprawdzawdzanie czy użytkownik to nauczyciel
+	if(!$this->get('session')->has('admin')){
+	    $this->get('session')->set('danger','Nie jesteś adminem.');
+	    return $this->redirectToRoute('homepage',[],302);
+	}
+	
+	//tworzenie kominikatu info
+	if($this->get('session')->has('info')){
+	    $this->get('twig')->addGlobal('info',$this->get('session')->get('info'));
+	    $this->get('session')->remove('info');
+	}
+	
+	//utworzenie kominikatu danger
+	if($this->get('session')->has('danger')){
+	    $this->get('twig')->addGlobal('danger',$this->get('session')->get('danger'));
+	    $this->get('session')->remove('danger');
+	}
+	
 	$classes=$entityManager->getRepository(Klasy::class)->findBy(['status'=>0]);
 	
 	if($class!=(string)0 && $numberClass!=0){
@@ -753,7 +807,7 @@ class AdminController extends Controller{
     }
     
     /**
-     * @Route("/przedmioty/{form}/{id}/{delete}", name="subjects", 
+     * @Route("/przedmioty/{form}/{id}/{delete}", name="admin_subjects", 
      * defaults={"form"="slownikPrzedmiotow","id"="0","delete"="0"})
      */
     public function subjectsAction(Request $request,$form,$id,$delete){
@@ -890,7 +944,7 @@ class AdminController extends Controller{
     }
     
     /**
-     * @Route("/godziny_lekcyjne/{id}/{delete}", name="lesson_hours", 
+     * @Route("/godziny_lekcyjne/{id}/{delete}", name="admin_lesson_hours", 
      * defaults={"id"="0","delete"="0"})
      */
     public function lessonHoursAction(Request $request,$id,$delete){
@@ -945,7 +999,7 @@ class AdminController extends Controller{
     }
     
     /**
-     * @Route("/sale/{id}/{delete}", name="rooms", 
+     * @Route("/sale/{id}/{delete}", name="admin_rooms", 
      * defaults={"id"="0","delete"="0"})
      */
     public function roomsAction(Request $request,$id,$delete){
@@ -1009,7 +1063,7 @@ class AdminController extends Controller{
     }
     
     /**
-     * @Route("/terminarz/{numberClass}/{class}/{id}/{delete}", name="time_table", 
+     * @Route("/terminarz/{numberClass}/{class}/{id}/{delete}", name="admin_time_table", 
      * defaults={"numberClass"="0","class"="0","id"="0","delete"="0"})
      */
     public function timeTableAction(Request $request,$numberClass,$class,$id,$delete){
@@ -1225,7 +1279,7 @@ class AdminController extends Controller{
     }
     
     /**
-     * @Route("/ustawienia", name="settings")
+     * @Route("/ustawienia", name="admin_settings")
      */
     public function settings(Request $request){
 	//sprawdzanie przerwy techicznej

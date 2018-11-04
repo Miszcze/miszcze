@@ -18,14 +18,14 @@
 		    <div class="col-sm-8">
 		    <a href="{{url('homepage')}}" class="text-light"><i class="fa fa-home"></i></a>
 		    {% if app.session.get('admin') is not empty %}
-			<a class="btn btn-outline-success btn-sm mt-1" href="{{url('users')}}">Użytkownicy</a> 
-			<a class="btn btn-outline-success btn-sm mt-1" href="{{url('classes')}}">Klasy</a>
-			<a class="btn btn-outline-success btn-sm mt-1" href="{{url('class')}}">Klasa</a>
-			<a class="btn btn-outline-success btn-sm mt-1" href="{{url('subjects')}}">Przedmioty</a>
-			<a class="btn btn-outline-success btn-sm mt-1" href="{{url('lesson_hours')}}">Godziny lekcyjne</a>
-			<a class="btn btn-outline-success btn-sm mt-1" href="{{url('rooms')}}">Sale</a>
-			<a class="btn btn-outline-success btn-sm mt-1" href="{{url('time_table')}}">Plan zajęć</a>
-			<a class="btn btn-outline-success btn-sm mt-1" href="{{url('settings')}}">Ustawienia</a>
+			<a class="btn btn-outline-success btn-sm mt-1" href="{{url('admin_users')}}">Użytkownicy</a> 
+			<a class="btn btn-outline-success btn-sm mt-1" href="{{url('admin_classes')}}">Klasy</a>
+			<a class="btn btn-outline-success btn-sm mt-1" href="{{url('admin_class')}}">Klasa</a>
+			<a class="btn btn-outline-success btn-sm mt-1" href="{{url('admin_subjects')}}">Przedmioty</a>
+			<a class="btn btn-outline-success btn-sm mt-1" href="{{url('admin_lesson_hours')}}">Godziny lekcyjne</a>
+			<a class="btn btn-outline-success btn-sm mt-1" href="{{url('admin_rooms')}}">Sale</a>
+			<a class="btn btn-outline-success btn-sm mt-1" href="{{url('admin_time_table')}}">Plan zajęć</a>
+			<a class="btn btn-outline-success btn-sm mt-1" href="{{url('admin_settings')}}">Ustawienia</a>
 		    {% endif %}
 
 		    {% if app.session.get('teacher') is not empty %}

@@ -24,12 +24,12 @@
 		    <td>
 			{% if users[i].typ=='uczeń' %}
 			<a class="btn btn-outline-primary" 
-			   href="{{ url('users',{'formType':'uczen','id':users[i].id} ) }}">
+			   href="{{ url('admin_users',{'formType':'uczen','id':users[i].id} ) }}">
 			    edytuj
 			</a>
 			{% else %}
 			<a class="btn btn-outline-primary" 
-			   href="{{ url('users',{'formType':users[i].typ,'id':users[i].id} ) }}">
+			   href="{{ url('admin_users',{'formType':users[i].typ,'id':users[i].id} ) }}">
 			    edytuj
 			</a>
 			{% endif %}
@@ -37,12 +37,12 @@
 		    <td>
 			{% if users[i].typ=='uczeń' %}
 			<a class="btn btn-outline-danger" 
-			   href="{{ url('users',{'formType':'uczen','id':users[i].id,'delete':1} ) }}">
+			   href="{{ url('admin_users',{'formType':'uczen','id':users[i].id,'delete':1} ) }}">
 			    usuń
 			</a>
 			{% else %}
 			<a class="btn btn-outline-danger" 
-			   href="{{ url('users',{'formType':users[i].typ,'id':users[i].id,'delete':1} ) }}">
+			   href="{{ url('admin_users',{'formType':users[i].typ,'id':users[i].id,'delete':1} ) }}">
 			    usuń
 			</a>
 			{% endif %}
@@ -58,11 +58,11 @@
     {# wybór formularza #}
     <div class="mt-5 font-weight-bold">Wybór formularza:</div>
     <select onchange="location=this.value;" class="form-control custom-select border-dark text-primary">
-	<option value="{{url('users',{'formType':'uczen'})}} "
+	<option value="{{url('admin_users',{'formType':'uczen'})}} "
 		{% if app.request.get('formType')=='uczen' %}selected{% endif %}>Uczeń</option>
-	<option value="{{url('users',{'formType':'opiekun'})}}"
+	<option value="{{url('admin_users',{'formType':'opiekun'})}}"
 		{% if app.request.get('formType')=='opiekun' %}selected{% endif %}>Opiekun</option>
-	<option value="{{url('users',{'formType':'pracownik'})}}"
+	<option value="{{url('admin_users',{'formType':'pracownik'})}}"
 		{% if app.request.get('formType')=='pracownik' %}selected{% endif %}>Pracownik</option>
     </select>
     
