@@ -24,7 +24,7 @@ class SchoolLateType extends AbstractType{
 	$term=$em->getRepository(Terminarz::class)->find($options['id']);
 
 	if(isset($term)){
-	     $students=$em
+	    $students=$em
 		->getRepository(Uczniowie::class)
 		->studentsWhere15minLastTerm($term->getId());
 

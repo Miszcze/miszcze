@@ -77,14 +77,6 @@
 	<div class="form-group">
 	    <div class="input-group mb-2">
 		<div class="input-group-prepend">
-		    <div class="input-group-text">Login</div>
-		</div>
-		{{form_widget(form.login,{'attr':{'class':'form-control'}})}}
-	    </div>
-	</div>
-	<div class="form-group">
-	    <div class="input-group mb-2">
-		<div class="input-group-prepend">
 		    <div class="input-group-text">Mail</div>
 		</div>
 		{{form_widget(form.mail,{'attr':{'class':'form-control'}})}}
@@ -194,14 +186,6 @@
 	    <div class="form-group">
 		<div class="input-group mb-2">
 		    <div class="input-group-prepend">
-			<div class="input-group-text">Login</div>
-		    </div>
-		    {{form_widget(form.login,{'attr':{'class':'form-control'}})}}
-		</div>
-	    </div>
-	    <div class="form-group">
-		<div class="input-group mb-2">
-		    <div class="input-group-prepend">
 			<div class="input-group-text">Mail</div>
 		    </div>
 		    {{form_widget(form.mail,{'attr':{'class':'form-control'}})}}
@@ -226,6 +210,14 @@
 	    <div class="form-group">
 		<div class="input-group mb-2">
 		    <div class="input-group-prepend">
+			<div class="input-group-text">Uczen</div>
+		    </div>
+		    {{form_widget(form.uczen,{'attr':{'class':'form-control custom-select'}})}}
+		</div>
+	    </div>
+	    <div class="form-group">
+		<div class="input-group mb-2">
+		    <div class="input-group-prepend">
 			<div class="input-group-text">Kontakt</div>
 		    </div>
 		    {{form_widget(form.kontakt,{'attr':{'class':'form-control'}})}}
@@ -244,14 +236,6 @@
 	</div>
 	<div class="form-body">
 	    {{ form_start(form) }}
-	    <div class="form-group">
-		<div class="input-group mb-2">
-		    <div class="input-group-prepend">
-			<div class="input-group-text">Login</div>
-		    </div>
-		    {{form_widget(form.login,{'attr':{'class':'form-control'}})}}
-		</div>
-	    </div>
 	    <div class="form-group">
 		<div class="input-group mb-2">
 		    <div class="input-group-prepend">
@@ -298,7 +282,10 @@
     </div>
     {% endif %}
     
-    {% for error in errors %}
-	{{error}}
-    {% endfor %}
+    {% if info is defined %}
+	<div class="alert alert-info mt-3">{{info}}</div>
+    {% endif %}
+    {% if danger is defined %}
+	<div class="alert alert-danger mt-3">{{danger}}</div>
+    {% endif %}
 {% endblock %}

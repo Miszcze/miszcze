@@ -43,25 +43,41 @@ class AdminController extends Controller{
 	(new Message($em))->count();
     }
     
-    public function setAdminForTest(){
-	$session=new Session();
-	$session->set('admin',true);
-    }
-    
-    public function checkAdmin(){
-	$session=new Session();
-	$admin=$session->has('admin');
-	if($admin==true) return false;
-	else return true;
-    }
+//    public function checkAdmin(){
+//	$session=new Session();
+//	$admin=$session->has('admin');
+//	if($admin==true) return false;
+//	else return true;
+//    }
     
     /**
      * @Route("/uzytkownicy/{formType}/{id}/{delete}", name="users", 
      * defaults={"formType"="pracownik","id"="0","delete"="0"})
      */
     public function usersAction(Request $request,$formType,$id,$delete){
-	if(AdminController::checkAdmin()) return $this->redirectToRoute('homepage');
 	$entityManager=$this->getDoctrine()->getManager();
+	
+	//sprawdzanie przerwy techicznej
+	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break');
+	
+	//sprawdzawdzanie czy użytkownik to nauczyciel
+	if(!$this->get('session')->has('admin')){
+	    $this->get('session')->set('danger','Nie jesteś adminem.');
+	    return $this->redirectToRoute('homepage',[],302);
+	}
+	
+	//tworzenie kominikatu info
+	if($this->get('session')->has('info')){
+	    $this->get('twig')->addGlobal('info',$this->get('session')->get('info'));
+	    $this->get('session')->remove('info');
+	}
+	
+	//utworzenie kominikatu danger
+	if($this->get('session')->has('danger')){
+	    $this->get('twig')->addGlobal('danger',$this->get('session')->get('danger'));
+	    $this->get('session')->remove('danger');
+	}
+	
 	$errors=null;
 
 	//tablice do formularzy
@@ -75,14 +91,14 @@ class AdminController extends Controller{
 	if($id==0) $disabledTyp=false;
 	else $disabledTyp=true;
 
-	//formularze
+	//formularz uczeń
 	if($formType=='uczen'){
 	    $formValue=null;
 	    if($id!=0){
 		$formValue=$entityManager->createQuery(
 		    "SELECT ".
-		    "	u.login,u.typ,u.mail,uc.imie,uc.imie2,uc.nazwisko,uc.dataUrodzenia, ".
-		    "	uc.pesel,uc.miejscowosc,uc.ulica,uc.nrDomu,uc.poczta,uc.kontakt,uc.kodPocztowy ".
+		    "	u.typ,u.mail,uc.imie,uc.imie2,uc.nazwisko,uc.dataUrodzenia,uc.pesel,".
+		    "	uc.miejscowosc,uc.ulica,uc.nrDomu,uc.poczta,uc.kontakt,uc.kodPocztowy ".
 		    "FROM AppBundle\Entity\Uczniowie uc ".
 		    "JOIN AppBundle\Entity\Uzytkownicy u ".
 		    "WITH uc.uzytkownik=u.id ".
@@ -94,7 +110,6 @@ class AdminController extends Controller{
 	    
 	    $form=$this->createFormBuilder($formValue)
 		->setMethod('POST')
-		->add('login',TextType::class)
 		->add('mail',EmailType::class)
 		->add('imie',TextType::class)
 		->add('imie2',TextType::class,['required'=>false])
@@ -109,11 +124,12 @@ class AdminController extends Controller{
 		->add('kontakt',TextareaType::class,['required'=>false])
 		->add('submit',SubmitType::class)
 		->getForm();
+	//formularz opiekun
 	}else if($formType=='opiekun'){
 	    $formValue=null;
 	    if($id!=0){
 		$formValue=$entityManager->createQuery(
-		    "SELECT u.login,u.typ,u.mail,o.imie,o.nazwisko,o.kontakt ".
+		    "SELECT u.typ,u.mail,o.imie,o.nazwisko,o.kontakt ".
 		    "FROM AppBundle\Entity\Opiekunowie o ".
 		    "JOIN AppBundle\Entity\Uzytkownicy u ".
 		    "WITH o.uzytkownik=u.id ".
@@ -124,21 +140,28 @@ class AdminController extends Controller{
 		if(!empty($formValue)) $formValue=$formValue[0];
 	    } 
 	    
+	    $students=$entityManager
+		->getRepository(Uczniowie::class)
+		->findBy(['opiekun'=>null]);
+		
+	    foreach($students as $value)
+		$choicesStudent[$value->getImie().' '.$value->getNazwisko()]=$value->getId();
+	    
 	    $form=$this->createFormBuilder($formValue)
 		->setMethod('POST')
-		->add('login',TextType::class)
 		->add('mail',EmailType::class)
 		->add('imie',TextType::class)
 		->add('nazwisko',TextType::class)
+		->add('uczen',ChoiceType::class,['choices'=>$choicesStudent])
 		->add('kontakt',TextareaType::class)
 		->add('submit',SubmitType::class)
 		->getForm();
-	    
+	//formularz pracownik
 	}else{
 	    $formValue=null;
 	    if($id!=0){
 		$formValue=$entityManager->createQuery(
-		    "SELECT u.login,u.typ,u.mail,p.imie,p.nazwisko,p.role,p.kontakt ".
+		    "SELECT u.typ,u.mail,p.imie,p.nazwisko,p.role,p.kontakt ".
 		    "FROM AppBundle\Entity\Pracownicy p ".
 		    "JOIN AppBundle\Entity\Uzytkownicy u ".
 		    "WITH p.uzytkownik=u.id ".
@@ -151,7 +174,6 @@ class AdminController extends Controller{
 	    
 	    $form=$this->createFormBuilder($formValue)
 		->setMethod('POST')
-		->add('login',TextType::class)
 		->add('mail',EmailType::class)
 		->add('imie',TextType::class)
 		->add('nazwisko',TextType::class)
@@ -163,33 +185,50 @@ class AdminController extends Controller{
 	
 	$form->handleRequest($request);
 	
-	//dodawanie
+	//dodawanie ucznia
 	if($request->isMethod('post') && $formType=='uczen' && $id==0){
-	    $login=$entityManager
-		->getRepository(Uzytkownicy::class)
-		->findOneBy(['login'=>$form->get('login')->getData()]);
-	    
-	    if(!empty($login))
-		$errors[]='Login: '.$form->get('login')->getData().' już istnieje.';
-	    
+	    $errors='';
+	
+	    //sprawdzanie czy mail istnieje
 	    $mail=$entityManager
 		->getRepository(Uzytkownicy::class)
 		->findOneBy(['mail'=>$form->get('mail')->getData()]);
 	    
 	    if(!empty($mail))
-		$errors[]='Mail: '.$form->get('mail')->getData().' już istnieje.';
+		$errors.='Mail: '.$form->get('mail')->getData().' już istnieje. ';
 	    
+	    //sprawdzanie czy pesel istnieje
 	    $pesel=$entityManager
 		->getRepository(Uczniowie::class)
 		->findOneBy(['pesel'=>$form->get('pesel')->getData()]);
 	    
 	    if(!empty($pesel))
-		$errors[]='Pesel: '.$form->get('pesel')->getData().' już istnieje.';
+		$errors.='Pesel: '.$form->get('pesel')->getData().' już istnieje. ';
 	    
-	    if($errors==null){
+	    if(!empty($errors)){
+		$this->get('session')->set('danger',$errors);
+	    }else{	    
+		$createLogin='U'.$form->get('dataUrodzenia')->getData()->format('y')
+		    .substr($form->get('imie')->getData(),0,2)
+		    .substr($form->get('nazwisko')->getData(),0,2);
+
+		//sprawdzanie czy login istnieje
+		$nr='';
+		while(1){
+		    $checkLogin=$entityManager
+			->getRepository(Uzytkownicy::class)
+			->findOneBy(['login'=>$createLogin.$nr]);
+
+		    if(empty($checkLogin)){
+			$createLogin=$createLogin.$nr;
+			break;
+		    }
+		    else $nr++;
+		}
+	    
 		$saltUser=new GenerateString(5);
 		$user=new Uzytkownicy();
-		$user->setLogin($form->get('login')->getData());
+		$user->setLogin($createLogin);
 		$user->setSol($saltUser->getGenerateString());
 		$user->setTyp('uczen');
 		$user->setMail($form->get('mail')->getData());
@@ -211,7 +250,19 @@ class AdminController extends Controller{
 		$student->setKontakt($form->get('kontakt')->getData());
 		$student->setStatus(0);
 		$student->setUzytkownik($user);
-		$student->setNumerLegitymacji(rand(10000,99999));
+		
+		$createNumerLegitymacji=$form->get('dataUrodzenia')->getData()->format('Ym');
+		//sprawdzanie czy numer legitymacji istnieje
+		$nr=0;
+		while(1){
+		    $checkNumerLegitymacji=$entityManager
+			->getRepository(Uczniowie::class)
+			->findOneBy(['numerLegitymacji'=>$createNumerLegitymacji.$nr]);
+
+		    if(empty($checkNumerLegitymacji)) break;
+		    else $nr++;
+		}
+		$student->setNumerLegitymacji($createNumerLegitymacji.$nr);
 
 		$saltConst=$entityManager->getRepository(Constant::class)->findOneBy(['name'=>'salt']);
 		$hashConst=$entityManager->getRepository(Constant::class)->findOneBy(['name'=>'hash']);
@@ -222,7 +273,7 @@ class AdminController extends Controller{
 		$password->setHaslo(
 		    hash(
 			$hashConst->getValue(),
-			$password->getSol().$form->get('login')->getData().
+			$password->getSol().$createLogin.
 			$saltConst->getValue().$user->getSol()
 		    )
 		);
@@ -234,63 +285,107 @@ class AdminController extends Controller{
 		$entityManager->persist($student);
 		$entityManager->flush();
 		
+		$this->get('session')->set('info','Dodano ucznia.');
+		
 		return $this->redirectToRoute('users');
 	    }
 	}else if($request->isMethod('post') && $formType=='opiekun' && $id==0){
+	    $createLogin='O'.substr($form->get('imie')->getData(),0,3)
+			    .substr($form->get('nazwisko')->getData(),0,3);
+
+	    //sprawdzanie czy login istnieje
+	    $nr='';
+	    while(1){
+		$checkLogin=$entityManager
+		    ->getRepository(Uzytkownicy::class)
+		    ->findOneBy(['login'=>$createLogin.$nr]);
+
+		if(empty($checkLogin)){
+		    $createLogin=$createLogin.$nr;
+		    break;
+		}
+		else $nr++;
+	    }
+		
 	    $saltUser=new GenerateString(5);
 	    $user=new Uzytkownicy();
-	    $user->setLogin($_POST['form']['imie']);
+	    $user->setLogin($createLogin);
 	    $user->setSol($saltUser->getGenerateString());
 	    $user->setTyp('opiekun');
-	    $user->setMail($_POST['form']['mail']);
+	    $user->setMail($form->get('mail')->getData());
 	    $user->setStatus(0);
 	    
 	    $guardian=new Opiekunowie();
-	    $guardian->setImie($_POST['form']['imie']);
-	    $guardian->setNazwisko($_POST['form']['nazwisko']);
-	    $guardian->setKontakt($_POST['form']['kontakt']);
+	    $guardian->setImie($form->get('imie')->getData());
+	    $guardian->setNazwisko($form->get('nazwisko')->getData());
+	    $guardian->setKontakt($form->get('kontakt')->getData());
 	    $guardian->setStatus(0);
 	    $guardian->setUzytkownik($user);
 	    
 	    $saltConst=$entityManager->getRepository(Constant::class)->findOneBy(['name'=>'salt']);
 	    $hashConst=$entityManager->getRepository(Constant::class)->findOneBy(['name'=>'hash']);
-	    $saltPassword=new Hasla();
+	    $password=new Hasla();
 	    $salt=new GenerateString(3);
 	    $password->setUzytkownik($user);
 	    $password->setSol($salt->getGenerateString());
-	    $password->setHaslo($_POST['form']['imie']);
 	    $password->setHaslo(
 		hash(
 		    $hashConst->getValue(),
-		    $saltPassword->getSol().$form->get('login')->getData().
+		    $password->getSol().$createLogin.
 		    $saltConst->getValue().$user->getSol()
 		)
 	    );
 	    $password->setData(new DateTime);
 	    $password->setProby(0);
 	    
+	    $student=$entityManager
+		->getRepository(Uczniowie::class)
+		->find($form->get('uczen')->getData());
+	    
+	    $student->setOpiekun($guardian);
+	    
 	    $entityManager->persist($user);
 	    $entityManager->persist($password);
 	    $entityManager->persist($guardian);
+	    $entityManager->persist($student);
 	    $entityManager->flush();
+	    
+	    $this->get('session')->set('info','Dodano opiekuna.');
 	    
 	    return $this->redirectToRoute('users');
 	}else if($request->isMethod('post') && $formType=='pracownik' && $id==0){
+	    $createLogin='P'.substr($form->get('imie')->getData(),0,3)
+			    .substr($form->get('nazwisko')->getData(),0,3);
+
+	    //sprawdzanie czy login istnieje
+	    $nr='';
+	    while(1){
+		$checkLogin=$entityManager
+		    ->getRepository(Uzytkownicy::class)
+		    ->findOneBy(['login'=>$createLogin.$nr]);
+
+		if(empty($checkLogin)){
+		    $createLogin=$createLogin.$nr;
+		    break;
+		}
+		else $nr++;
+	    }
+	    
 	    $saltUser=new GenerateString(5);
 	    $user=new Uzytkownicy();
-	    $user->setLogin($_POST['form']['imie']);
+	    $user->setLogin($createLogin);
 	    $user->setSol($saltUser->getGenerateString());
 	    $user->setTyp('pracownik');
-	    $user->setMail($_POST['form']['mail']);
+	    $user->setMail($form->get('mail')->getData());
 	    $user->setStatus(0);
 	    
 	    $saltConst=$entityManager->getRepository(Constant::class)->findOneBy(['name'=>'salt']);
 	    $hashConst=$entityManager->getRepository(Constant::class)->findOneBy(['name'=>'hash']);
 	    $employee=new Pracownicy();
-	    $employee->setImie($_POST['form']['imie']);
-	    $employee->setNazwisko($_POST['form']['nazwisko']);
-	    $employee->setKontakt($_POST['form']['kontakt']);
-	    $employee->setRole($_POST['form']['role']);
+	    $employee->setImie($form->get('imie')->getData());
+	    $employee->setNazwisko($form->get('nazwisko')->getData());
+	    $employee->setKontakt($form->get('kontakt')->getData());
+	    $employee->setRole($form->get('role')->getData());
 	    $employee->setStatus(0);
 	    $employee->setUzytkownik($user);
 	    
@@ -301,19 +396,19 @@ class AdminController extends Controller{
 	    $password->setHaslo(
 		hash(
 		    $hashConst->getValue(),
-		    $password->getSol().$form->get('login')->getData().
+		    $password->getSol().$createLogin.
 		    $saltConst->getValue().$user->getSol()
 		)
 	    );
 	    $password->setData(new DateTime);
 	    $password->setProby(0);
 	    
-	    echo $password->getSol();
-	    
 	    $entityManager->persist($user);
 	    $entityManager->persist($password);
 	    $entityManager->persist($employee);
 	    $entityManager->flush();
+	    
+	    $this->get('session')->set('info','Dodano pracownika.');
 	    
 	    return $this->redirectToRoute('users');
 	}
@@ -1119,7 +1214,27 @@ class AdminController extends Controller{
      * @Route("/ustawienia", name="settings")
      */
     public function settings(Request $request){
-	if(AdminController::checkAdmin()) return $this->redirectToRoute('homepage');
+	//sprawdzanie przerwy techicznej
+	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break');
+	
+	//sprawdzawdzanie czy użytkownik to nauczyciel
+	if(!$this->get('session')->has('admin')){
+	    $this->get('session')->set('danger','Nie jesteś adminem.');
+	    return $this->redirectToRoute('homepage',[],302);
+	}
+	
+	//tworzenie kominikatu info
+	if($this->get('session')->has('info')){
+	    $this->get('twig')->addGlobal('info',$this->get('session')->get('info'));
+	    $this->get('session')->remove('info');
+	}
+	
+	//utworzenie kominikatu danger
+	if($this->get('session')->has('danger')){
+	    $this->get('twig')->addGlobal('danger',$this->get('session')->get('danger'));
+	    $this->get('session')->remove('danger');
+	}
+	
 	$dir=$this->get('kernel')->getRootDir().'/../web/backup/';
 	$files=array_diff(scandir($dir),[".",".."]);
 	foreach($files as $file) $arrayFiles[$file]=$file;
@@ -1174,7 +1289,7 @@ class AdminController extends Controller{
      * @Route("/database", name="database")
      */
     public function database(){
-	if(AdminController::checkAdmin()) return $this->redirectToRoute('homepage');
+	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break');
 	AdminController::database_export();
 	return $this->redirectToRoute('settings');
     }
