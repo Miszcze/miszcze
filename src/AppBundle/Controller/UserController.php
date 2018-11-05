@@ -27,7 +27,7 @@ class UserController extends Controller{
      */
     public function homepageAction(){
 	//sprawdzanie przerwy techicznej
-	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break');
+	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break',[],302);
 	
 	//tworzenie kominikatu info
 	if($this->get('session')->has('info')){
@@ -51,7 +51,7 @@ class UserController extends Controller{
 	$entityManager=$this->getDoctrine()->getManager();
 	
 	//sprawdzanie przerwy techicznej
-	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break');
+	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break',[],302);
 	
 	//tworzenie kominikatu info
 	if($this->get('session')->has('info')){
@@ -147,6 +147,7 @@ class UserController extends Controller{
      * @Route("/wyloguj", name="logout")
      */
     public function logoutAction(){
+	//usuwanie sesji użytkownika
 	$this->get('session')->remove('user');
 	$this->get('session')->remove('student');
 	$this->get('session')->remove('admin');
@@ -155,7 +156,7 @@ class UserController extends Controller{
 	
 	$this->get('session')->set('info','Wylogowano.');
 
-	return $this->redirectToRoute('login');
+	return $this->redirectToRoute('login',[],201);
     }
     
     /**
@@ -165,7 +166,7 @@ class UserController extends Controller{
 	$entityManager=$this->getDoctrine()->getManager();
 	
 	//sprawdzanie przerwy techicznej
-	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break');
+	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break',[],302);
 	
 	//tworzenie kominikatu info
 	if($this->get('session')->has('info')){
@@ -226,7 +227,7 @@ class UserController extends Controller{
 	    
 	    $this->get('session')->set('info','Wysłano wiadomość.');
 	    
-	    return $this->redirectToRoute('messages',['id'=>$id]);
+	    return $this->redirectToRoute('messages',['id'=>$id],201);
 	}
 	
 	$sessionUserId=$this->get('session')->get('user')['user']->getId();
@@ -267,7 +268,7 @@ class UserController extends Controller{
 	$entityManager=$this->getDoctrine()->getManager();
 	
 	//sprawdzanie przerwy techicznej
-	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break');
+	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break',[],302);
 	
 	//tworzenie kominikatu info
 	if($this->get('session')->has('info')){
@@ -305,7 +306,7 @@ class UserController extends Controller{
 	    
 	    $this->get('session')->set('info','Usunięto wiadomość.');
 	    
-	    return $this->redirectToRoute('messages',['id'=>$idRoute]);
+	    return $this->redirectToRoute('messages',['id'=>$idRoute],201);
 	}
 	
 	$entityManager->createQuery(
@@ -320,7 +321,7 @@ class UserController extends Controller{
 	if($message->getNadawca()->getId()==$sessionUserId || $message->getOdbiorca()->getId()==$sessionUserId)
 	    return $this->render('user/message.html.twig',['message'=>$message]);
 	else 
-	    return $this->redirectToRoute('messages');
+	    return $this->redirectToRoute('messages',[],302);
     }
     
     /**

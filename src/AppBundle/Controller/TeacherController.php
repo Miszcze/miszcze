@@ -41,7 +41,7 @@ class TeacherController extends Controller{
 	$em=$this->getDoctrine()->getManager();
 	
 	//sprawdzanie przerwy techicznej
-	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break');
+	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break',[],302);
 	
 	//sprawdzawdzanie czy użytkownik to nauczyciel
 	if(!$this->get('session')->has('teacher')){
@@ -98,7 +98,7 @@ class TeacherController extends Controller{
 	    
 	    $this->get('session')->set('info','Sprawdzono obecność.');
 	    
-	    return $this->redirectToRoute('teacher_check_presence');
+	    return $this->redirectToRoute('teacher_check_presence',[],201);
 	}
 	
 	if(isset($form))
@@ -120,7 +120,7 @@ class TeacherController extends Controller{
 	$em=$this->getDoctrine()->getManager();
 	
 	//sprawdzanie przerwy techicznej
-	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break');
+	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break',[],302);
 	
 	//sprawdzawdzanie czy użytkownik to nauczyciel
 	if(!$this->get('session')->has('teacher')){
@@ -184,7 +184,7 @@ class TeacherController extends Controller{
 	    return $this->redirectToRoute('teacher_insert_rating',[
 		'term'=>$term->getId(),
 		'student'=>$student->getId()
-	    ]);
+	    ],201);
 	}
 	
 	return $this->render('teacher/rating.html.twig',[
@@ -204,7 +204,7 @@ class TeacherController extends Controller{
 	$em=$this->getDoctrine()->getManager();
 	
 	//sprawdzanie przerwy techicznej
-	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break');
+	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break',[],302);
 	
 	//sprawdzawdzanie czy użytkownik to nauczyciel
 	if(!$this->get('session')->has('teacher')){
@@ -260,7 +260,7 @@ class TeacherController extends Controller{
 	$em=$this->getDoctrine()->getManager();
 	
 	//sprawdzanie przerwy techicznej
-	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break');
+	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break',[],302);
 	
 	//sprawdzawdzanie czy użytkownik to nauczyciel
 	if(!$this->get('session')->has('teacher')){
@@ -320,7 +320,7 @@ class TeacherController extends Controller{
 	$em=$this->getDoctrine()->getManager();
 	
 	//sprawdzanie przerwy techicznej
-	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break');
+	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break',[],302);
 	
 	//sprawdzawdzanie czy użytkownik to nauczyciel
 	if(!$this->get('session')->has('teacher')){
@@ -369,11 +369,11 @@ class TeacherController extends Controller{
 
 		$this->get('session')->set('info','Wstawiono spóźnienie.');
 		
-		return $this->redirectToRoute('teacher_school_late',['term'=>$term]);
+		return $this->redirectToRoute('teacher_school_late',['term'=>$term],201);
 	    }else{
 		$this->get('session')->set('danger','Skończył się czas na spóźnienie.');
 		
-		return $this->redirectToRoute('teacher_school_late',['term'=>$term]);
+		return $this->redirectToRoute('teacher_school_late',['term'=>$term],201);
 	    }
 	}
 	
@@ -391,7 +391,7 @@ class TeacherController extends Controller{
 	$em=$this->getDoctrine()->getManager();
 	
 	//sprawdzanie przerwy techicznej
-	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break');
+	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break',[],302);
 	
 	//sprawdzawdzanie czy użytkownik to nauczyciel
 	if(!$this->get('session')->has('teacher')){
@@ -434,7 +434,7 @@ class TeacherController extends Controller{
 
 	    $this->get('session')->set('info','Usprawiedliwono.');
 
-	    return $this->redirectToRoute('teacher_select_presence');
+	    return $this->redirectToRoute('teacher_select_presence',[],201);
 	}
 	
 	return $this->render('teacher/select_presence.html.twig',[
@@ -450,7 +450,7 @@ class TeacherController extends Controller{
 	$em=$this->getDoctrine()->getManager();
 	
 	//sprawdzanie przerwy techicznej
-	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break');
+	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break',[],302);
 	
 	//sprawdzawdzanie czy użytkownik to nauczyciel
 	if(!$this->get('session')->has('teacher')){

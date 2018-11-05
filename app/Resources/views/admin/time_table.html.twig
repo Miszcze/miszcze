@@ -38,12 +38,12 @@
 		<td>{{ timeTable[i].opis }}</td>
 		<td>
 		    <a class="btn btn-outline-primary" 
-		       href="{{ url('time_table',{'id':timeTable[i].id} ) }}">
+		       href="{{ url('admin_time_table',{'id':timeTable[i].id} ) }}">
 			edytuj</a>
 		</td>
 		<td>
 		    <a class="btn btn-outline-danger" 
-		       href="{{ url('time_table',{'id':timeTable[i].id,'delete':1} ) }}">
+		       href="{{ url('admin_time_table',{'id':timeTable[i].id,'delete':1} ) }}">
 			usuń
 		    </a>
 		</td>
@@ -62,9 +62,9 @@
 		<div class="input-group-text border-dark text-dark">Plan lekcji</div>
 	    </div>
 	    <select onchange="location=this.value;" class="form-control custom-select border-dark text-primary">
-		<option value="{{url('time_table')}}">Wybierz klasę</option>
+		<option value="{{url('admin_time_table')}}">Wybierz klasę</option>
 		{% for class in classes %}
-		    <option value="{{url('time_table',{'numberClass':class.poziom,'class':class.klasa})}} ">
+		    <option value="{{url('admin_time_table',{'numberClass':class.poziom,'class':class.klasa})}} ">
 			{{class.poziom}}{{class.klasa}}</option>
 		{% endfor %}
 	    </select>
@@ -96,11 +96,11 @@
 			{% if lessons[i]['poniedzialek'] is not null %}
 			    {{ lessons[i]['poniedzialek'].ktoCo.przedmiot.nazwa }}
 			    <br>
-			    <a href="{{ url('time_table',{'id':lessons[i]['poniedzialek'].id} ) }}">
+			    <a href="{{ url('admin_time_table',{'id':lessons[i]['poniedzialek'].id} ) }}">
 				edytuj
 			    </a>
 			    /
-			    <a class="text-danger" href="{{ url('time_table',
+			    <a class="text-danger" href="{{ url('admin_time_table',
 				{'id':lessons[i]['poniedzialek'].id,'delete':1} ) }}">
 				usuń
 			    </a>
@@ -110,11 +110,11 @@
 			{% if lessons[i]['wtorek'] is not null %}
 			    {{ lessons[i]['wtorek'].ktoCo.przedmiot.nazwa }}
 			    <br>
-			    <a href="{{ url('time_table',{'id':lessons[i]['wtorek'].id} ) }}">
+			    <a href="{{ url('admin_time_table',{'id':lessons[i]['wtorek'].id} ) }}">
 				edytuj
 			    </a>
 			    /
-			    <a class="text-danger" href="{{ url('time_table',
+			    <a class="text-danger" href="{{ url('admin_time_table',
 				{'id':lessons[i]['wtorek'].id,'delete':1} ) }}">
 				usuń
 			    </a>
@@ -124,11 +124,11 @@
 			{% if lessons[i]['sroda'] is not null %}
 			    {{ lessons[i]['sroda'].ktoCo.przedmiot.nazwa }}
 			    <br>
-			    <a href="{{ url('time_table',{'id':lessons[i]['sroda'].id} ) }}">
+			    <a href="{{ url('admin_time_table',{'id':lessons[i]['sroda'].id} ) }}">
 				edytuj
 			    </a>
 			    /
-			    <a class="text-danger" href="{{ url('time_table',
+			    <a class="text-danger" href="{{ url('admin_time_table',
 				{'id':lessons[i]['sroda'].id,'delete':1} ) }}">
 				usuń
 			    </a>
@@ -138,11 +138,11 @@
 			{% if lessons[i]['czwartek'] is not null %}
 			    {{ lessons[i]['czwartek'].ktoCo.przedmiot.nazwa }}
 			    <br>
-			    <a href="{{ url('time_table',{'id':lessons[i]['czwartek'].id} ) }}">
+			    <a href="{{ url('admin_time_table',{'id':lessons[i]['czwartek'].id} ) }}">
 				edytuj
 			    </a>
 			    /
-			    <a class="text-danger" href="{{ url('time_table',
+			    <a class="text-danger" href="{{ url('admin_time_table',
 				{'id':lessons[i]['czwartek'].id,'delete':1} ) }}">
 				usuń
 			    </a>
@@ -152,11 +152,11 @@
 			{% if lessons[i]['piatek'] is not null %}
 			    {{ lessons[i]['piatek'].ktoCo.przedmiot.nazwa }}
 			    <br>
-			    <a href="{{ url('time_table',{'id':lessons[i]['piatek'].id} ) }}">
+			    <a href="{{ url('admin_time_table',{'id':lessons[i]['piatek'].id} ) }}">
 				edytuj
 			    </a>
 			    /
-			    <a class="text-danger" href="{{ url('time_table',
+			    <a class="text-danger" href="{{ url('admin_time_table',
 				{'id':lessons[i]['piatek'].id,'delete':1} ) }}">
 				usuń
 			    </a>
@@ -264,5 +264,11 @@
 	    {{form_end(form)}}
 	</div>
     </div>
-    {% if error is not empty %}<div class="alert alert-danger">{{error}}</div>{% endif %}
+	
+    {% if danger is defined %}
+	<div class="alert alert-danger mt-3">{{danger}}</div>
+    {% endif %}
+    {% if info is defined %}
+	<div class="alert alert-info mt-3">{{info}}</div>
+    {% endif %}
 {% endblock %}

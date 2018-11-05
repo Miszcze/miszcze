@@ -14,25 +14,21 @@ use AppBundle\Entity\SlownikPrzedmiotow;
 use AppBundle\Entity\Terminarz;
 use AppBundle\Entity\Uczniowie;
 use AppBundle\Entity\Uzytkownicy;
-use AppBundle\Utils\Admin;
 use AppBundle\Utils\GenerateString;
 use AppBundle\Utils\Message;
 use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Session;
-use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * @Route("/admin")
@@ -40,16 +36,10 @@ use Doctrine\ORM\EntityManagerInterface;
 class AdminController extends Controller{
     
     public function __construct(EntityManagerInterface $em){
+	//liczenie wiadomości do widoków
 	(new Message($em))->count();
     }
-    
-//    public function checkAdmin(){
-//	$session=new Session();
-//	$admin=$session->has('admin');
-//	if($admin==true) return false;
-//	else return true;
-//    }
-    
+
     /**
      * @Route("/uzytkownicy/{formType}/{id}/{delete}", name="admin_users", 
      * defaults={"formType"="pracownik","id"="0","delete"="0"})
@@ -58,9 +48,9 @@ class AdminController extends Controller{
 	$entityManager=$this->getDoctrine()->getManager();
 	
 	//sprawdzanie przerwy techicznej
-	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break');
+	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break',[],302);
 	
-	//sprawdzawdzanie czy użytkownik to nauczyciel
+	//sprawdzawdzanie czy użytkownik to admin
 	if(!$this->get('session')->has('admin')){
 	    $this->get('session')->set('danger','Nie jesteś adminem.');
 	    return $this->redirectToRoute('homepage',[],302);
@@ -287,7 +277,7 @@ class AdminController extends Controller{
 		
 		$this->get('session')->set('info','Dodano ucznia.');
 		
-		return $this->redirectToRoute('admin_users');
+		return $this->redirectToRoute('admin_users',[],201);
 	    }
 	}else if($request->isMethod('post') && $formType=='opiekun' && $id==0){
 	    $createLogin='O'.substr($form->get('imie')->getData(),0,3)
@@ -352,7 +342,7 @@ class AdminController extends Controller{
 	    
 	    $this->get('session')->set('info','Dodano opiekuna.');
 	    
-	    return $this->redirectToRoute('admin_users');
+	    return $this->redirectToRoute('admin_users',[],201);
 	}else if($request->isMethod('post') && $formType=='pracownik' && $id==0){
 	    $createLogin='P'.substr($form->get('imie')->getData(),0,3)
 			    .substr($form->get('nazwisko')->getData(),0,3);
@@ -410,7 +400,7 @@ class AdminController extends Controller{
 	    
 	    $this->get('session')->set('info','Dodano pracownika.');
 	    
-	    return $this->redirectToRoute('admin_users');
+	    return $this->redirectToRoute('admin_users',[],201);
 	}
 	
 	//edytowanie ucznia
@@ -444,7 +434,7 @@ class AdminController extends Controller{
 	    
 	    $this->get('session')->set('info','Zedytowano ucznia.');
 	    
-	    return $this->redirectToRoute('admin_users');
+	    return $this->redirectToRoute('admin_users',[],201);
 	//edytowanie opiekuna
 	}else if($request->isMethod('post') && $formType=='opiekun' && $id!=0 && $delete==0){
 	    $entityManager->createQuery(
@@ -477,7 +467,7 @@ class AdminController extends Controller{
 	    
 	    $this->get('session')->set('info','Zedytowano opiekuna.');
 	    
-	    return $this->redirectToRoute('admin_users');
+	    return $this->redirectToRoute('admin_users',[],201);
 	//edytowanie pracownika
 	}else if($request->isMethod('post') && $formType=='pracownik' && $id!=0 && $delete==0){
 	    $entityManager->createQuery(
@@ -507,7 +497,7 @@ class AdminController extends Controller{
 	    
 	    $this->get('session')->set('info','Zedytowano pracownika.');
 	    
-	    return $this->redirectToRoute('admin_users');
+	    return $this->redirectToRoute('admin_users',[],201);
 	}
 	
 	//usuwanie ucznia
@@ -528,7 +518,7 @@ class AdminController extends Controller{
 	    
 	    $this->get('session')->set('info','Usunięto ucznia.');
 	    
-	    return $this->redirectToRoute('admin_users');
+	    return $this->redirectToRoute('admin_users',[],201);
 	//usuwanie opiekuna
 	}else if($formType=='opiekun' && $id!=0 && $delete==1){
 	    $entityManager->createQuery(
@@ -547,7 +537,7 @@ class AdminController extends Controller{
 	    
 	    $this->get('session')->set('info','Usunięto opiekuna.');
 	    
-	    return $this->redirectToRoute('admin_users');
+	    return $this->redirectToRoute('admin_users',[],201);
 	//usuwanie pracownika
 	}if($formType=='pracownik' && $id!=0 && $delete==1){
 	    $entityManager->createQuery(
@@ -566,7 +556,7 @@ class AdminController extends Controller{
 	    
 	    $this->get('session')->set('info','Usunięto pracownika.');
 	    
-	    return $this->redirectToRoute('admin_users');
+	    return $this->redirectToRoute('admin_users',[],201);
 	}
 	
 	//dane do wyświetlenia
@@ -591,9 +581,9 @@ class AdminController extends Controller{
 	$entityManager=$this->getDoctrine()->getManager();
 	
 	//sprawdzanie przerwy techicznej
-	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break');
+	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break',[],302);
 	
-	//sprawdzawdzanie czy użytkownik to nauczyciel
+	//sprawdzawdzanie czy użytkownik to admin
 	if(!$this->get('session')->has('admin')){
 	    $this->get('session')->set('danger','Nie jesteś adminem.');
 	    return $this->redirectToRoute('homepage',[],302);
@@ -683,7 +673,7 @@ class AdminController extends Controller{
 	    
 	    $this->get('session')->set('info','Dodano klasę.');
 	    
-	    return $this->redirectToRoute('admin_classes');
+	    return $this->redirectToRoute('admin_classes',[],201);
 	//edytowanie 
 	}else if($request->isMethod('post') && $id!=0){
 	    $entityManager->createQuery(
@@ -699,7 +689,7 @@ class AdminController extends Controller{
 	    
 	    $this->get('session')->set('info','Zedytowano klasę.');
 	    
-	    return $this->redirectToRoute('admin_classes');
+	    return $this->redirectToRoute('admin_classes',[],201);
 	//usuwanie
 	}else if($delete==1 && $id!=0){
 	    $entityManager->createQuery(
@@ -711,7 +701,7 @@ class AdminController extends Controller{
 	    
 	    $this->get('session')->set('info','Usunięto klasę.');
 	    
-	    return $this->redirectToRoute('admin_classes');
+	    return $this->redirectToRoute('admin_classes',[],201);
 	}
 
 	return $this->render('admin/classes.html.twig',[
@@ -728,9 +718,9 @@ class AdminController extends Controller{
 	$entityManager=$this->getDoctrine()->getManager();
 	
 	//sprawdzanie przerwy techicznej
-	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break');
+	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break',[],302);
 	
-	//sprawdzawdzanie czy użytkownik to nauczyciel
+	//sprawdzawdzanie czy użytkownik to admin
 	if(!$this->get('session')->has('admin')){
 	    $this->get('session')->set('danger','Nie jesteś adminem.');
 	    return $this->redirectToRoute('homepage',[],302);
@@ -785,7 +775,7 @@ class AdminController extends Controller{
 	    return $this->redirectToRoute('admin_class',[
 		'numberClass'=>$class->getPoziom(),
 		'class'=>$class->getKlasa()
-	    ]);
+	    ],201);
 	}else if($id!=0 && $delete!=0){
 	    $entityManager->createQuery(
 	        "UPDATE AppBundle\Entity\Uczniowie u ".
@@ -799,7 +789,7 @@ class AdminController extends Controller{
 	    return $this->redirectToRoute('admin_class',[
 		'numberClass'=>$class->getPoziom(),
 		'class'=>$class->getKlasa()
-	    ]);
+	    ],201);
 	}
 	
 	return $this->render('admin/class.html.twig',[
@@ -818,9 +808,9 @@ class AdminController extends Controller{
 	$entityManager=$this->getDoctrine()->getManager();
 	
 	//sprawdzanie przerwy techicznej
-	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break');
+	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break',[],302);
 	
-	//sprawdzawdzanie czy użytkownik to nauczyciel
+	//sprawdzawdzanie czy użytkownik to admin
 	if(!$this->get('session')->has('admin')){
 	    $this->get('session')->set('danger','Nie jesteś adminem.');
 	    return $this->redirectToRoute('homepage',[],302);
@@ -896,7 +886,7 @@ class AdminController extends Controller{
 	    
 	    $this->get('session')->set('info','Dodano nazwę przedmiotu.');
 	    
-	    return $this->redirectToRoute('admin_subjects');
+	    return $this->redirectToRoute('admin_subjects',[],201);
 	}else if(isset($_POST['form']['submitSubjects']) && $id==0){
 	    $formSubjects->handleRequest($request);
 	    
@@ -920,7 +910,7 @@ class AdminController extends Controller{
 	    
 	    $this->get('session')->set('info','Przepisano nauczyciela do przedmiotu.');
 	    
-	    return $this->redirectToRoute('admin_subjects');
+	    return $this->redirectToRoute('admin_subjects',[],201);
 	//edytowanie
 	}else if(isset($_POST['form']['submitLibrarySubjects']) && $id!=0){
 	    $formLibrarySubjects->handleRequest($request);
@@ -936,7 +926,7 @@ class AdminController extends Controller{
 	    
 	    $this->get('session')->set('info','Zedytowano nazwę przedmiotu.');
 	    
-	    return $this->redirectToRoute('admin_subjects');
+	    return $this->redirectToRoute('admin_subjects',[],201);
 	}else if(isset($_POST['form']['submitSubjects']) && $id!=0){
 	    $formSubjects->handleRequest($request);
 	    
@@ -951,7 +941,7 @@ class AdminController extends Controller{
 	    
 	    $this->get('session')->set('info','Zedytowano przedmiot.');
 	    
-	    return $this->redirectToRoute('admin_subjects');
+	    return $this->redirectToRoute('admin_subjects',[],201);
 	//usuwanie
 	}else if($delete==1 && $form=='slownikPrzedmiotow' && $id!=0){
 	    $entityManager->createQuery(
@@ -962,7 +952,7 @@ class AdminController extends Controller{
 	    
 	    $this->get('session')->set('info','Usunięto nazwę przedmiotu.');
 	    
-	    return $this->redirectToRoute('admin_subjects');
+	    return $this->redirectToRoute('admin_subjects',[],201);
 	}else if($delete==1 && $form=='przedmioty' && $id!=0){
 	    $entityManager->createQuery(
 	        "UPDATE AppBundle\Entity\Przedmioty p ".
@@ -973,7 +963,7 @@ class AdminController extends Controller{
 	    
 	    $this->get('session')->set('info','Usunięto przedmiot.');
 	    
-	    return $this->redirectToRoute('admin_subjects');
+	    return $this->redirectToRoute('admin_subjects',[],201);
 	}
 	
 	return $this->render('admin/subjects.html.twig',[
@@ -992,9 +982,9 @@ class AdminController extends Controller{
 	$entityManager=$this->getDoctrine()->getManager();
 	
 	//sprawdzanie przerwy techicznej
-	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break');
+	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break',[],302);
 	
-	//sprawdzawdzanie czy użytkownik to nauczyciel
+	//sprawdzawdzanie czy użytkownik to admin
 	if(!$this->get('session')->has('admin')){
 	    $this->get('session')->set('danger','Nie jesteś adminem.');
 	    return $this->redirectToRoute('homepage',[],302);
@@ -1036,7 +1026,7 @@ class AdminController extends Controller{
 	    
 	    $this->get('session')->set('info','Dodano godzinę lekcyjną.');
 	    
-	    return $this->redirectToRoute('admin_lesson_hours');
+	    return $this->redirectToRoute('admin_lesson_hours',[],201);
 	//edytowanie
 	}else if($request->isMethod('post') && $id!=0){
 	    $form->handleRequest($request);
@@ -1047,7 +1037,7 @@ class AdminController extends Controller{
 	    
 	    $this->get('session')->set('info','Zedytowano godzinę lekcyjną.');
 	    
-	    return $this->redirectToRoute('admin_lesson_hours');
+	    return $this->redirectToRoute('admin_lesson_hours',[],201);
 	//usuwanie
 	}else if($delete==1 && $id!=0){
 	    $entityManager->createQuery(
@@ -1058,7 +1048,7 @@ class AdminController extends Controller{
 	    
 	    $this->get('session')->set('info','Usunięto godzinę lekcyjną.');
 	    
-	    return $this->redirectToRoute('admin_lesson_hours');
+	    return $this->redirectToRoute('admin_lesson_hours',[],201);
 	}
 	    
 	return $this->render('admin/lesson_hours.html.twig',[
@@ -1075,9 +1065,9 @@ class AdminController extends Controller{
 	$entityManager=$this->getDoctrine()->getManager();
 	
 	//sprawdzanie przerwy techicznej
-	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break');
+	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break',[],302);
 	
-	//sprawdzawdzanie czy użytkownik to nauczyciel
+	//sprawdzawdzanie czy użytkownik to admin
 	if(!$this->get('session')->has('admin')){
 	    $this->get('session')->set('danger','Nie jesteś adminem.');
 	    return $this->redirectToRoute('homepage',[],302);
@@ -1121,7 +1111,7 @@ class AdminController extends Controller{
 	    
 	    $this->get('session')->set('info','Dodano salę lekcyjną.');
 	    
-	    return $this->redirectToRoute('admin_rooms');
+	    return $this->redirectToRoute('admin_rooms',[],201);
 	//edytowanie
 	}if($request->isMethod('post') && $id!=0){
 	    $form->handleRequest($request);
@@ -1137,7 +1127,7 @@ class AdminController extends Controller{
 	    
 	    $this->get('session')->set('info','Zedytowano salę lekcyjną.');
 	    
-	    return $this->redirectToRoute('admin_rooms');
+	    return $this->redirectToRoute('admin_rooms',[],201);
 	//usuwanie
 	}else if($delete==1 && $id!=0){
 	    $entityManager->createQuery(
@@ -1148,7 +1138,7 @@ class AdminController extends Controller{
 	    
 	    $this->get('session')->set('info','Usunięto salę lekcyjną.');
 	    
-	    return $this->redirectToRoute('admin_rooms');
+	    return $this->redirectToRoute('admin_rooms',[],201);
 	}
 	
 	return $this->render('admin/rooms.html.twig',[
@@ -1165,9 +1155,9 @@ class AdminController extends Controller{
 	$entityManager=$this->getDoctrine()->getManager();
 	
 	//sprawdzanie przerwy techicznej
-	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break');
+	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break',[],302);
 	
-	//sprawdzawdzanie czy użytkownik to nauczyciel
+	//sprawdzawdzanie czy użytkownik to admin
 	if(!$this->get('session')->has('admin')){
 	    $this->get('session')->set('danger','Nie jesteś adminem.');
 	    return $this->redirectToRoute('homepage',[],302);
@@ -1184,7 +1174,6 @@ class AdminController extends Controller{
 	    $this->get('twig')->addGlobal('danger',$this->get('session')->get('danger'));
 	    $this->get('session')->remove('danger');
 	}
-	
 	
 	$timeTable=$this->getDoctrine()->getRepository(Terminarz::class)->findAll();
 	$formValue=null;
@@ -1226,12 +1215,12 @@ class AdminController extends Controller{
 	    'Sprawdzian'=>'sprawdzian'
 	];
 
-	//dane do wyświetlenia !EDIT!
+	//dane do wyświetlenia
 	if($class!=(string)0 && $numberClass!=0){
 	    $class=$this
-	    ->getDoctrine()
-	    ->getRepository(Klasy::class)
-	    ->findOneBy(['poziom'=>$numberClass,'klasa'=>$class]);
+		->getDoctrine()
+		->getRepository(Klasy::class)
+		->findOneBy(['poziom'=>$numberClass,'klasa'=>$class]);
 	
 	    $arrayWeek=['poniedzialek','wtorek','sroda','czwartek','piatek','sobota'];
 	    for($j=0;$j<count($arrayWeek);$j++)
@@ -1305,12 +1294,15 @@ class AdminController extends Controller{
 	    ->add('submit',SubmitType::class)
 	    ->getForm();
 	
-	$form->handleRequest($request);	
 	//walidacja
 	if($request->isMethod('post') && $form->get('poczatek')->getData()>=$form->get('koniec')->getData()){
-	    $error='Koniec nie może być wcześniejszy od początku.';
-	//dodawanie
+	    $this->get('session')->set('danger','Koniec daty nie może być wcześniejszy od początku.');
+	    
+	    return $this->redirectToRoute('admin_time_table',["numberClass"=>$numberClass,"class"=>$class],201);
+	//dodawanie terminu
 	}else if($request->isMethod('post') && $id==0){
+	    $form->handleRequest($request);	
+	    
 	    $term=new Terminarz();
 	    $term->setSala(
 		$this->getDoctrine()
@@ -1343,8 +1335,8 @@ class AdminController extends Controller{
 	    
 	    $this->get('session')->set('info','Dodano nowy termin do bazy.');
 	    
-	    return $this->redirectToRoute('time_table',["numberClass"=>$numberClass,"class"=>$class->getKlasa()],201);
-	//edytowanie
+	    return $this->redirectToRoute('admin_time_table',["numberClass"=>$numberClass,"class"=>$class],201);
+	//edytowanie terminu
 	}else if($request->isMethod('post') && $id!=0){
 	    $entityManager->createQuery(
 	        "UPDATE AppBundle\Entity\Terminarz t ".
@@ -1364,8 +1356,8 @@ class AdminController extends Controller{
 	    
 	    $this->get('session')->set('info','Zedytowano termin.');
 	    
-	    return $this->redirectToRoute('time_table',["numberClass"=>$numberClass,"class"=>$_POST['form']['klasa']],201);
-	//usuwanie
+	    return $this->redirectToRoute('admin_time_table',["numberClass"=>$numberClass,"class"=>$_POST['form']['klasa']],201);
+	//usuwanie terminu
 	}else if($delete==1 && $id!=0){
 	    $entityManager->createQuery(
 	        "DELETE AppBundle\Entity\Terminarz t ".
@@ -1375,7 +1367,7 @@ class AdminController extends Controller{
 	    
 	    $this->get('session')->set('info','Usunięto termin.');
 	    
-	    return $this->redirectToRoute('time_table',[],201);
+	    return $this->redirectToRoute('admin_time_table',[],201);
 	}
 	
 	return $this->render('admin/time_table.html.twig',[
@@ -1383,9 +1375,7 @@ class AdminController extends Controller{
 	    'timeTable'=>$timeTable,
 	    'lessonHours'=>$lessonHours,
 	    'lessons'=>@$lessons,
-	    'error'=>@$error,
-	    'classes'=>$classes,
-	    'info'=>@$info
+	    'classes'=>$classes
 	]);
     }
     
@@ -1394,9 +1384,9 @@ class AdminController extends Controller{
      */
     public function settings(Request $request){
 	//sprawdzanie przerwy techicznej
-	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break');
+	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break',[],302);
 	
-	//sprawdzawdzanie czy użytkownik to nauczyciel
+	//sprawdzawdzanie czy użytkownik to admin
 	if(!$this->get('session')->has('admin')){
 	    $this->get('session')->set('danger','Nie jesteś adminem.');
 	    return $this->redirectToRoute('homepage',[],302);
@@ -1441,14 +1431,16 @@ class AdminController extends Controller{
 		->add('submitTechnicalBreak',SubmitType::class,['label'=>'Ustaw'])
 		->getForm();
 	
+	//zmiana bazy danych
 	if($request->isMethod('post') && isset($_POST['form']['submitDatabase'])){
 	    $formDatabase->handleRequest($request);
 	    AdminController::database_import($formDatabase->get('database')->getData());
 	    
 	    $this->get('session')->set('info','Zmieniono bazę danych.');
 	    
-	    return $this->redirectToRoute('admin_settings');
+	    return $this->redirectToRoute('admin_settings',[],201);
 	}
+	//ustawianie przerwy technicznej
 	if($request->isMethod('post') && isset($_POST['form']['submitTechnicalBreak'])){
 	    $formTechnicalBreak->handleRequest($request);
 	    $entityManager->createQuery(
@@ -1460,7 +1452,7 @@ class AdminController extends Controller{
 	    
 	    $this->get('session')->set('info','Zmieniono stan przerwy technicznej.');
 	    
-	    return $this->redirectToRoute('admin_settings');
+	    return $this->redirectToRoute('admin_settings',[],201);
 	}
 	
 	return $this->render('admin/settings.html.twig',[
@@ -1474,14 +1466,15 @@ class AdminController extends Controller{
      * @Route("/database", name="database")
      */
     public function database(){
-	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break');
+	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break',[],302);
 	AdminController::database_export();
 	$this->get('session')->set('info','Utworzono kopie bazy danych.');
-	return $this->redirectToRoute('admin_settings');
+	return $this->redirectToRoute('admin_settings',[],201);
     }
     
+    //export bazy
     private function database_export($name=false){
-//	set_time_limit(3000);
+	//set_time_limit(3000);
 	if($name===false) $name=$this->getParameter('database_name');
 	$conn=$this->getDoctrine()->getConnection();
 	$queryTables=$conn->fetchAll('SHOW TABLES');
@@ -1539,6 +1532,7 @@ class AdminController extends Controller{
 	fclose($fp);
     }
     
+    //import bazy
     private function database_import($filename){
 	$con=$this->getDoctrine()->getConnection();	
 	$path=$this->get('kernel')->getRootDir().'/../web/backup/';
@@ -1551,6 +1545,7 @@ class AdminController extends Controller{
 	$con->prepare($sql)->execute();
     }
     
+    //sprawdzanie przerwy technicznej
     public function technicalBreak($controller){
 	$technicalBreak=$controller
 	    ->getDoctrine()
@@ -1560,7 +1555,6 @@ class AdminController extends Controller{
 	if(empty($technicalBreak) || $technicalBreak->getValue()==1) return true;
 	else return false;
     }
-    
     
     /**
      * @Route("/przerwa_techniczna", name="technical_break")

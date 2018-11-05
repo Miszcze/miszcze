@@ -4,10 +4,8 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/wamp64/www/miszcze/src/AppBundle/Controller/AdminController.php</file>
-            <file>file:/C:/wamp64/www/miszcze/app/Resources/views/admin/users.html.twig</file>
-            <file>file:/C:/wamp64/www/miszcze/app/Resources/views/base.html.twig</file>
-            <file>file:/C:/wamp64/www/miszcze/app/Resources/views/admin/subjects.html.twig</file>
-            <file>file:/C:/wamp64/www/miszcze/app/Resources/views/admin/classes.html.twig</file>
+            <file>file:/C:/wamp64/www/miszcze/app/Resources/views/admin/time_table.html.twig</file>
+            <file>file:/C:/wamp64/www/miszcze/app/Resources/views/admin/class.html.twig</file>
         </group>
     </open-files>
 </project-private>
