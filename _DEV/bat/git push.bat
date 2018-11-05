@@ -7,3 +7,8 @@ cd C:\wamp64\www\miszcze
 git add .
 git commit -m "%commit%"
 git push
+@echo off
+echo.
+echo kliknij enter aby wylaczyc konsole
+SET /P exit=
+@echo on
