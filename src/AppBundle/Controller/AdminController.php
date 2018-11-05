@@ -780,7 +780,9 @@ class AdminController extends Controller{
 	    )
 	    ->getResult();
 	    
-	    return $this->redirectToRoute('class',[
+	    $this->get('session')->set('info','Dodano ucznia do klasy.');
+	    
+	    return $this->redirectToRoute('admin_class',[
 		'numberClass'=>$class->getPoziom(),
 		'class'=>$class->getKlasa()
 	    ]);
@@ -792,7 +794,9 @@ class AdminController extends Controller{
 	    )
 	    ->getResult();
 	    
-	    return $this->redirectToRoute('class',[
+	    $this->get('session')->set('info','Usunięto ucznia z klasy.');
+	    
+	    return $this->redirectToRoute('admin_class',[
 		'numberClass'=>$class->getPoziom(),
 		'class'=>$class->getKlasa()
 	    ]);
@@ -811,8 +815,29 @@ class AdminController extends Controller{
      * defaults={"form"="slownikPrzedmiotow","id"="0","delete"="0"})
      */
     public function subjectsAction(Request $request,$form,$id,$delete){
-	if(AdminController::checkAdmin()) return $this->redirectToRoute('homepage');
 	$entityManager=$this->getDoctrine()->getManager();
+	
+	//sprawdzanie przerwy techicznej
+	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break');
+	
+	//sprawdzawdzanie czy użytkownik to nauczyciel
+	if(!$this->get('session')->has('admin')){
+	    $this->get('session')->set('danger','Nie jesteś adminem.');
+	    return $this->redirectToRoute('homepage',[],302);
+	}
+	
+	//tworzenie kominikatu info
+	if($this->get('session')->has('info')){
+	    $this->get('twig')->addGlobal('info',$this->get('session')->get('info'));
+	    $this->get('session')->remove('info');
+	}
+	
+	//utworzenie kominikatu danger
+	if($this->get('session')->has('danger')){
+	    $this->get('twig')->addGlobal('danger',$this->get('session')->get('danger'));
+	    $this->get('session')->remove('danger');
+	}
+	
 	$librarySubjects=$this->getDoctrine()->getRepository(SlownikPrzedmiotow::class)->findAll();
 	$subjects=$this->getDoctrine()->getRepository(Przedmioty::class)->findBy(['status'=>0]);
 	$teachers=$this->getDoctrine()->getRepository(Pracownicy::class)->findAll();
@@ -869,7 +894,9 @@ class AdminController extends Controller{
 	    $entityManager->persist($subject);
 	    $entityManager->flush();
 	    
-	    return $this->redirectToRoute('subjects');
+	    $this->get('session')->set('info','Dodano nazwę przedmiotu.');
+	    
+	    return $this->redirectToRoute('admin_subjects');
 	}else if(isset($_POST['form']['submitSubjects']) && $id==0){
 	    $formSubjects->handleRequest($request);
 	    
@@ -891,30 +918,40 @@ class AdminController extends Controller{
 	    $entityManager->persist($objSubject);
 	    $entityManager->flush();
 	    
-	    return $this->redirectToRoute('subjects');
+	    $this->get('session')->set('info','Przepisano nauczyciela do przedmiotu.');
+	    
+	    return $this->redirectToRoute('admin_subjects');
 	//edytowanie
 	}else if(isset($_POST['form']['submitLibrarySubjects']) && $id!=0){
+	    $formLibrarySubjects->handleRequest($request);
+	     
 	    $entityManager->createQuery(
 	        "UPDATE AppBundle\Entity\SlownikPrzedmiotow s ".
 	        "SET ".
-		"   s.nazwa='".$_POST['form']['nazwa']."', ".
-		"   s.opis='".$_POST['form']['opis']."' ".
+		"   s.nazwa='".$formLibrarySubjects->get('nazwa')->getData()."', ".
+		"   s.opis='".$formLibrarySubjects->get('opis')->getData()."' ".
 		"WHERE s.id=".$id
 	    )
 	    ->getResult();
 	    
-	    return $this->redirectToRoute('subjects');
+	    $this->get('session')->set('info','Zedytowano nazwę przedmiotu.');
+	    
+	    return $this->redirectToRoute('admin_subjects');
 	}else if(isset($_POST['form']['submitSubjects']) && $id!=0){
+	    $formSubjects->handleRequest($request);
+	    
 	    $entityManager->createQuery(
 	        "UPDATE AppBundle\Entity\Przedmioty p ".
 	        "SET ".
-		"   p.prowadzacy='".$_POST['form']['prowadzacy']."', ".
-		"   p.przedmiot='".$_POST['form']['przedmiot']."' ".
+		"   p.prowadzacy='".$formSubjects->get('prowadzacy')->getData()."', ".
+		"   p.przedmiot='".$formSubjects->get('przedmiot')->getData()."' ".
 		"WHERE p.id=".$id
 	    )
 	    ->getResult();
 	    
-	    return $this->redirectToRoute('subjects');
+	    $this->get('session')->set('info','Zedytowano przedmiot.');
+	    
+	    return $this->redirectToRoute('admin_subjects');
 	//usuwanie
 	}else if($delete==1 && $form=='slownikPrzedmiotow' && $id!=0){
 	    $entityManager->createQuery(
@@ -923,7 +960,9 @@ class AdminController extends Controller{
 	    )
 	    ->getResult();
 	    
-	    return $this->redirectToRoute('subjects');
+	    $this->get('session')->set('info','Usunięto nazwę przedmiotu.');
+	    
+	    return $this->redirectToRoute('admin_subjects');
 	}else if($delete==1 && $form=='przedmioty' && $id!=0){
 	    $entityManager->createQuery(
 	        "UPDATE AppBundle\Entity\Przedmioty p ".
@@ -932,7 +971,9 @@ class AdminController extends Controller{
 	    )
 	    ->getResult();
 	    
-	    return $this->redirectToRoute('subjects');
+	    $this->get('session')->set('info','Usunięto przedmiot.');
+	    
+	    return $this->redirectToRoute('admin_subjects');
 	}
 	
 	return $this->render('admin/subjects.html.twig',[
@@ -948,8 +989,29 @@ class AdminController extends Controller{
      * defaults={"id"="0","delete"="0"})
      */
     public function lessonHoursAction(Request $request,$id,$delete){
-	if(AdminController::checkAdmin()) return $this->redirectToRoute('homepage');
 	$entityManager=$this->getDoctrine()->getManager();
+	
+	//sprawdzanie przerwy techicznej
+	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break');
+	
+	//sprawdzawdzanie czy użytkownik to nauczyciel
+	if(!$this->get('session')->has('admin')){
+	    $this->get('session')->set('danger','Nie jesteś adminem.');
+	    return $this->redirectToRoute('homepage',[],302);
+	}
+	
+	//tworzenie kominikatu info
+	if($this->get('session')->has('info')){
+	    $this->get('twig')->addGlobal('info',$this->get('session')->get('info'));
+	    $this->get('session')->remove('info');
+	}
+	
+	//utworzenie kominikatu danger
+	if($this->get('session')->has('danger')){
+	    $this->get('twig')->addGlobal('danger',$this->get('session')->get('danger'));
+	    $this->get('session')->remove('danger');
+	}
+	
 	$lessonHours=$this->getDoctrine()->getRepository(GodzLek::class)->findAll();
 	$formValue=null;
 	
@@ -964,23 +1026,28 @@ class AdminController extends Controller{
 	
 	//dodawanie
 	if($request->isMethod('post') && $id==0){
+	    $form->handleRequest($request);
+	    
 	    $lessonHours=new GodzLek();
-	    $lessonHours->setPoczatek(new DateTime($_POST['form']['poczatek']));
+	    $lessonHours->setPoczatek($form->get('poczatek')->getData());
 	    
 	    $entityManager->persist($lessonHours);
 	    $entityManager->flush();
 	    
-	    return $this->redirectToRoute('lesson_hours');
+	    $this->get('session')->set('info','Dodano godzinę lekcyjną.');
+	    
+	    return $this->redirectToRoute('admin_lesson_hours');
 	//edytowanie
 	}else if($request->isMethod('post') && $id!=0){
-	    $entityManager->createQuery(
-	        "UPDATE AppBundle\Entity\GodzLek g ".
-	        "SET g.poczatek='".$_POST['form']['poczatek']."' ".
-		"WHERE g.id=".$id
-	    )
-	    ->getResult();
+	    $form->handleRequest($request);
+	    $lessonHours=$entityManager->getRepository(GodzLek::class)->find($id);
+	    $lessonHours->setPoczatek($form->get('poczatek')->getData());
+	    $entityManager->persist($lessonHours);
+	    $entityManager->flush();
 	    
-	    return $this->redirectToRoute('lesson_hours');
+	    $this->get('session')->set('info','Zedytowano godzinę lekcyjną.');
+	    
+	    return $this->redirectToRoute('admin_lesson_hours');
 	//usuwanie
 	}else if($delete==1 && $id!=0){
 	    $entityManager->createQuery(
@@ -989,7 +1056,9 @@ class AdminController extends Controller{
 	    )
 	    ->getResult();
 	    
-	    return $this->redirectToRoute('lesson_hours');
+	    $this->get('session')->set('info','Usunięto godzinę lekcyjną.');
+	    
+	    return $this->redirectToRoute('admin_lesson_hours');
 	}
 	    
 	return $this->render('admin/lesson_hours.html.twig',[
@@ -1003,8 +1072,28 @@ class AdminController extends Controller{
      * defaults={"id"="0","delete"="0"})
      */
     public function roomsAction(Request $request,$id,$delete){
-	if(AdminController::checkAdmin()) return $this->redirectToRoute('homepage');
 	$entityManager=$this->getDoctrine()->getManager();
+	
+	//sprawdzanie przerwy techicznej
+	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break');
+	
+	//sprawdzawdzanie czy użytkownik to nauczyciel
+	if(!$this->get('session')->has('admin')){
+	    $this->get('session')->set('danger','Nie jesteś adminem.');
+	    return $this->redirectToRoute('homepage',[],302);
+	}
+	
+	//tworzenie kominikatu info
+	if($this->get('session')->has('info')){
+	    $this->get('twig')->addGlobal('info',$this->get('session')->get('info'));
+	    $this->get('session')->remove('info');
+	}
+	
+	//utworzenie kominikatu danger
+	if($this->get('session')->has('danger')){
+	    $this->get('twig')->addGlobal('danger',$this->get('session')->get('danger'));
+	    $this->get('session')->remove('danger');
+	}
 	
 	$rooms=$this->getDoctrine()->getRepository(Sale::class)->findAll();
 	$formValue=null;
@@ -1030,7 +1119,9 @@ class AdminController extends Controller{
 	    $entityManager->persist($room);
 	    $entityManager->flush();
 	    
-	    return $this->redirectToRoute('rooms');
+	    $this->get('session')->set('info','Dodano salę lekcyjną.');
+	    
+	    return $this->redirectToRoute('admin_rooms');
 	//edytowanie
 	}if($request->isMethod('post') && $id!=0){
 	    $form->handleRequest($request);
@@ -1044,7 +1135,9 @@ class AdminController extends Controller{
 	    )
 	    ->getResult();
 	    
-	    return $this->redirectToRoute('rooms');
+	    $this->get('session')->set('info','Zedytowano salę lekcyjną.');
+	    
+	    return $this->redirectToRoute('admin_rooms');
 	//usuwanie
 	}else if($delete==1 && $id!=0){
 	    $entityManager->createQuery(
@@ -1053,7 +1146,9 @@ class AdminController extends Controller{
 	    )
 	    ->getResult();
 	    
-	    return $this->redirectToRoute('rooms');
+	    $this->get('session')->set('info','Usunięto salę lekcyjną.');
+	    
+	    return $this->redirectToRoute('admin_rooms');
 	}
 	
 	return $this->render('admin/rooms.html.twig',[
@@ -1067,14 +1162,30 @@ class AdminController extends Controller{
      * defaults={"numberClass"="0","class"="0","id"="0","delete"="0"})
      */
     public function timeTableAction(Request $request,$numberClass,$class,$id,$delete){
-	(new Message($this))->count($this);
-	if(!$this->get('session')->has('admin')) return $this->redirectToRoute('homepage',[],302);
+	$entityManager=$this->getDoctrine()->getManager();
+	
+	//sprawdzanie przerwy techicznej
+	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break');
+	
+	//sprawdzawdzanie czy użytkownik to nauczyciel
+	if(!$this->get('session')->has('admin')){
+	    $this->get('session')->set('danger','Nie jesteś adminem.');
+	    return $this->redirectToRoute('homepage',[],302);
+	}
+	
+	//tworzenie kominikatu info
 	if($this->get('session')->has('info')){
-	    $info=$this->get('session')->get('info');
+	    $this->get('twig')->addGlobal('info',$this->get('session')->get('info'));
 	    $this->get('session')->remove('info');
 	}
 	
-	$entityManager=$this->getDoctrine()->getManager();
+	//utworzenie kominikatu danger
+	if($this->get('session')->has('danger')){
+	    $this->get('twig')->addGlobal('danger',$this->get('session')->get('danger'));
+	    $this->get('session')->remove('danger');
+	}
+	
+	
 	$timeTable=$this->getDoctrine()->getRepository(Terminarz::class)->findAll();
 	$formValue=null;
 	$roomValue=null;
@@ -1333,7 +1444,10 @@ class AdminController extends Controller{
 	if($request->isMethod('post') && isset($_POST['form']['submitDatabase'])){
 	    $formDatabase->handleRequest($request);
 	    AdminController::database_import($formDatabase->get('database')->getData());
-	    return $this->redirectToRoute('settings');
+	    
+	    $this->get('session')->set('info','Zmieniono bazę danych.');
+	    
+	    return $this->redirectToRoute('admin_settings');
 	}
 	if($request->isMethod('post') && isset($_POST['form']['submitTechnicalBreak'])){
 	    $formTechnicalBreak->handleRequest($request);
@@ -1343,7 +1457,10 @@ class AdminController extends Controller{
 		"WHERE c.name='technical_break'"
 	    )
 	    ->getResult();
-	    return $this->redirectToRoute('settings');
+	    
+	    $this->get('session')->set('info','Zmieniono stan przerwy technicznej.');
+	    
+	    return $this->redirectToRoute('admin_settings');
 	}
 	
 	return $this->render('admin/settings.html.twig',[
@@ -1359,7 +1476,8 @@ class AdminController extends Controller{
     public function database(){
 	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break');
 	AdminController::database_export();
-	return $this->redirectToRoute('settings');
+	$this->get('session')->set('info','Utworzono kopie bazy danych.');
+	return $this->redirectToRoute('admin_settings');
     }
     
     private function database_export($name=false){

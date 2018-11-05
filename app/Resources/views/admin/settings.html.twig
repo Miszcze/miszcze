@@ -49,7 +49,11 @@
 		    {'attr':{'class':'btn btn-primary','label':'default'},'label':'Ustaw'})}}
 	    {{form_end(formTechnicalBreak)}}
 	</div>
-	</div>
+    </div>
+	    
+    {% if info is defined %}
+	<div class="alert alert-info mt-3">{{info}}</div>
+    {% endif %}
 {% endblock %}
 
 

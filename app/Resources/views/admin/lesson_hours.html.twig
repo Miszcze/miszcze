@@ -18,13 +18,13 @@
 		<td>{{ lessonHours[i].poczatek|date("G:i") }}</td>
 		<td>
 		    <a class="btn btn-outline-primary" 
-		       href="{{ url('lesson_hours',{'id':lessonHours[i].id} ) }}">
+		       href="{{ url('admin_lesson_hours',{'id':lessonHours[i].id} ) }}">
 			edytuj
 		    </a>
 		</td>
 		<td>
 		    <a class="btn btn-outline-danger" 
-		       href="{{ url('lesson_hours',{'id':lessonHours[i].id,'delete':1} ) }}">
+		       href="{{ url('admin_lesson_hours',{'id':lessonHours[i].id,'delete':1} ) }}">
 			usuń
 		    </a>
 		</td>
@@ -58,4 +58,7 @@
 	    {{form_end(form)}}
 	</div>
     </div>
+    {% if info is defined %}
+	<div class="alert alert-info mt-3">{{info}}</div>
+    {% endif %}
 {% endblock %}

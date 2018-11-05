@@ -21,13 +21,13 @@
 		<td>{{ rooms[i].opis }}</td>
 		<td>
 		    <a class="btn btn-outline-primary" 
-		       href="{{ url('rooms',{'id':rooms[i].id} ) }}">
+		       href="{{ url('admin_rooms',{'id':rooms[i].id} ) }}">
 			edytuj
 		    </a>
 		</td>
 		<td>
 		    <a class="btn btn-outline-danger" 
-		       href="{{ url('rooms',{'id':rooms[i].id,'delete':1} ) }}">
+		       href="{{ url('admin_rooms',{'id':rooms[i].id,'delete':1} ) }}">
 			usuń
 		    </a>
 		</td>
@@ -70,4 +70,8 @@
 	{{ form_end(form) }}
 	</div>
     </div>
+	
+    {% if info is defined %}
+	<div class="alert alert-info mt-3">{{info}}</div>
+    {% endif %}
 {% endblock %}

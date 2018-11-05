@@ -6,9 +6,9 @@
 	{# select klasy #}
 	<h1 class="text-center my-3">Klasa {{app.request.get('numberClass')}}{{app.request.get('class')}}</h1>  
 	<select onchange="location=this.value;" class="form-control custom-select border-dark text-primary">
-	    <option value="{{url('class')}}">Wybierz klasę</option>
+	    <option value="{{url('admin_class')}}">Wybierz klasę</option>
 	    {% for class in classes %}
-	    <option value="{{url('class',{'numberClass':class.poziom,'class':class.klasa})}} ">
+	    <option value="{{url('admin_class',{'numberClass':class.poziom,'class':class.klasa})}} ">
 		{{class.poziom}}{{class.klasa}}</option>
 	    {% endfor %}
 	</select>
@@ -27,7 +27,7 @@
 		<tr>
 		    <td>{{ student.imie }} {{ student.nazwisko }}</td>
 		    <td>
-			<a class="btn btn-outline-danger" href="{{url('class',
+			<a class="btn btn-outline-danger" href="{{url('admin_class',
 			{'numberClass':class.poziom,'class':class.klasa,'id':student.id,'delete':1})}}">
 			    usuń
 			</a>
@@ -58,16 +58,18 @@
 	    </div>
 	</div>
     {% else %}
-	
 	{# select klasy #}
 	<h1 class="text-center my-3">Nie wybrano klasy</h1>
 	<select onchange="location=this.value;" class="form-control custom-select border-dark text-primary">
-	    <option value="{{url('class')}}">Wybierz klasę</option>
+	    <option value="{{url('admin_class')}}">Wybierz klasę</option>
 	    {% for class in classes %}
-	    <option value="{{url('class',{'numberClass':class.poziom,'class':class.klasa})}} ">
+	    <option value="{{url('admin_class',{'numberClass':class.poziom,'class':class.klasa})}} ">
 		{{class.poziom}}{{class.klasa}}</option>
 	    {% endfor %}
 	</select>
+    {% endif %}
+    {% if info is defined %}
+	<div class="alert alert-info mt-3">{{info}}</div>
     {% endif %}
 {% endblock %}
 

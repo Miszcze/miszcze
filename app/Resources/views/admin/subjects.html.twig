@@ -21,13 +21,13 @@
 		<td>{{ librarySubjects[i].opis }}</td>
 		<td>
 		    <a class="btn btn-outline-primary" 
-		       href="{{ url('subjects',{'id':librarySubjects[i].id} ) }}">
+		       href="{{ url('admin_subjects',{'id':librarySubjects[i].id} ) }}">
 			edytuj
 		    </a>
 		</td>
 		<td>
 		    <a class="btn btn-outline-danger" 
-		       href="{{ url('subjects',{'id':librarySubjects[i].id,'delete':1} ) }}">
+		       href="{{ url('admin_subjects',{'id':librarySubjects[i].id,'delete':1} ) }}">
 			usuń
 		    </a>
 		</td>
@@ -91,12 +91,12 @@
 		<td>{{ subjects[i].przedmiot.nazwa }}</td>
 		<td>
 		    <a class="btn btn-outline-primary" 
-		       href="{{ url('subjects',{'id':subjects[i].id,'form':'przedmioty'} ) }}">
+		       href="{{ url('admin_subjects',{'id':subjects[i].id,'form':'przedmioty'} ) }}">
 			edytuj
 		    </a>
 		</td>
 		<td>
-		    <a class="btn btn-outline-danger" href="{{ url('subjects',{'id':subjects[i].id,
+		    <a class="btn btn-outline-danger" href="{{ url('admin_subjects',{'id':subjects[i].id,
 		    'form':'przedmioty','delete':1} ) }}">usuń</a>
 		</td>
 	    </tr>
@@ -139,4 +139,8 @@
 	    {{form_end(formSubjects)}}
 	</div>
     </div>
+	    
+    {% if info is defined %}
+	<div class="alert alert-info mt-3">{{info}}</div>
+    {% endif %}
 {% endblock %}
