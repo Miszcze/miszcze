@@ -1,5 +1,4 @@
 CALL :AUTORUN
-cls
 CALL :MACHINA
 timeout /t 3 >nul
 cls
@@ -59,7 +58,7 @@ rem ==========================================
 EXIT /B
 rem ==========================================
 :MENU
-	ECHO.
+	cls
 	ECHO.
 	ECHO.
 	ECHO     Witaj %USERNAME% 
@@ -75,22 +74,18 @@ rem ==========================================
 	SET /P MENU=Wybor=
 	if %MENU%==1 (
 		CALL :serverRun
-		cls
 		GOTO :MENU
 	) else (
 		IF %MENU%==2 (
 			CALL :appRun
-			cls
 			GOTO :MENU
 		) else (
 			IF %MENU%==3 (
 				CALL :Wyslij
-				cls
 				GOTO :MENU
 			) else (
 				IF %MENU%==4 (
 					CALL :Pobierz
-					cls
 					GOTO :MENU
 				) else (
 					IF %MENU%==5 (
