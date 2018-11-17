@@ -11,6 +11,13 @@ GOTO :KONIEC
 
 
 rem ==========================================
+rem Wysylanie
+rem GIT add .
+rem GIT commit -m miszcze
+rem GIT push
+rem ==========================================
+rem Pobieranie
+rem GIT pull
 rem ==========================================
 :AUTORUN
 ECHO OFF
