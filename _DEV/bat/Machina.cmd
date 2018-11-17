@@ -29,13 +29,24 @@ EXIT /B
 rem ==========================================
 :MACHINA
 	CLS
-	CALL :ECHA 5
+	CALL :ECHA 3
 	ECHO      =======================
 	ECHO      =                     =
 	ECHO      = M A C H I N A v.%v% =
 	ECHO      =                     =
 	ECHO      =======================
-	timeout /t 3 >nul
+	timeout /t 1 >nul
+	CALL :ECHA 3
+	ECHO UWAGA !!! UWAGA !!! UWAGA
+	ECHO Parametry pracy aplikacji:
+	ECHO.
+	ECHO SCIEZKA=%SCIEZKA%
+	ECHO PRZEGLADARKA=%PRZEGLADARKA%
+	ECHO ADRES APKI=%ADRES%:%PORT%
+	ECHO GIT=%GIT%
+	ECHO.
+	ECHO W razie potrzeby zmien
+	timeout /t 10 >nul
 EXIT /B
 rem ==========================================
 :MENU
@@ -44,7 +55,7 @@ rem ==========================================
 	ECHO     Witaj %USERNAME% 
 	ECHO   Co chcesz zrobic?
 	ECHO.
-	ECHO 1) Uruchomic server
+	ECHO 1) Uruchomic server php
 	ECHO 2) Uruchomic aplikacje 
 	ECHO 3) Wyslij na %GIT%
 	ECHO 4) Pobierz z %GIT%
@@ -69,7 +80,7 @@ rem ==========================================
 					GOTO :MENU
 				) else (
 					IF %MENU%==5 (
-						ECHO USTAWIENIA
+						CALL :USTAWIENIA
 						GOTO :MENU
 					) else (
 						IF %MENU%==6 (
@@ -107,7 +118,7 @@ rem ==========================================
 	%PRZEGLADARKA% %ADRES%:%PORT%
 	IF %ERRORLEVEL%==0 ( ECHO Odpalone . . .
 	) ELSE ( ECHO Cos poszlo nie tak)
-	timeout /t 3 >nul
+   	timeout /t 3 >nul
 EXIT /B
 rem ==========================================
 :Wyslij
@@ -160,6 +171,21 @@ rem ==========================================
 	Pause >nul
 EXIT /B
 rem ==========================================
+:USTAWIENIA
+	cls
+	ECHO.
+	ECHO. NARAZIE NIE JEST GOTOWE
+	FOR /L %%A IN (0,1,9) DO (
+		FOR /L %%B IN (0,1,9) DO (
+			COLOR %%A%%B
+			timeout /t 1 >nul
+			COLOR %%B%%A
+			timeout /t 1 >nul
+		)
+	)
+	color 3f
+EXIT /B
+rem ==========================================
 :ECHA
 	FOR /L %%A IN (1,1,%1) DO (
 	ECHO.
@@ -168,7 +194,7 @@ EXIT /B
 rem ==========================================
 :KONIEC
 	cls
-	ECHO
+	ECHO.
 	ECHO KONIEC
 	ECHO Wcisnij klawisz aby zakonczyc
 	pause >nul
