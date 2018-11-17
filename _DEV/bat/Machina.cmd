@@ -140,14 +140,30 @@ rem ==========================================
 	ECHO.
 	ECHO.
 	ECHO CTRL+C - Anuluj
-	SET /P ADD=Wprowadz parametr GIT add
+	SET /P ADD=Wprowadz parametr GIT add 
 	CD %SCIEZKA%
+	cls
+	ECHO.
+	ECHO.
+	ECHO ===============================
+	ECHO Wykonuje GIT add %ADD%
+	ECHO.
 	GIT add %ADD%
+	ECHO.
 	ECHO Dodano
+	ECHO ===============================
+	ECHO Wykonuje GIT commit -m %GIT%
+	ECHO.
 	GIT commit -m %GIT%
+	ECHO.
 	ECHO Zakomintowano
+	ECHO ===============================
+	ECHO Wykonuje GIT push
+	ECHO.
 	GIT push
+	ECHO.
 	ECHO Wyslano
+	ECHO ===============================
 	ECHO.
 	ECHO Wcisnij klawisz aby wrocic do menu
 	Pause >nul
