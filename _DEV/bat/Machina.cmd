@@ -89,7 +89,7 @@ rem ==========================================
 				GOTO :MENU
 			) else (
 				IF %MENU%==4 (
-					ECHO 4
+					CALL :Pobierz
 					cls
 					GOTO :MENU
 				) else (
@@ -163,6 +163,22 @@ rem ==========================================
 	GIT push
 	ECHO.
 	ECHO Wyslano
+	ECHO ===============================
+	ECHO.
+	ECHO Wcisnij klawisz aby wrocic do menu
+	Pause >nul
+EXIT /B
+rem ==========================================
+:Pobierz
+	cls
+	ECHO.
+	ECHO.
+	ECHO ===============================
+	ECHO Wykonuje GIT PULL
+	ECHO.
+	GIT PULL
+	ECHO.
+	ECHO Pobrano
 	ECHO ===============================
 	ECHO.
 	ECHO Wcisnij klawisz aby wrocic do menu
