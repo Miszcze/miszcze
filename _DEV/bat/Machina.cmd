@@ -67,9 +67,9 @@ rem ==========================================
 	ECHO.
 	ECHO 1) Uruchomic server
 	ECHO 2) Uruchomic aplikacje 
-	ECHO 2) Wyslij na %GIT%
-	ECHO 3) Pobierz z %GIT%
-	ECHO 4) USTAWIENIA
+	ECHO 3) Wyslij na %GIT%
+	ECHO 4) Pobierz z %GIT%
+	ECHO 5) USTAWIENIA
 	ECHO 5) Koniec
 	ECHO.
 	SET /P MENU=Wybor=
@@ -170,6 +170,7 @@ rem ==========================================
 EXIT /B
 rem ==========================================
 :Pobierz
+	CD %SCIEZKA%
 	cls
 	ECHO.
 	ECHO.
