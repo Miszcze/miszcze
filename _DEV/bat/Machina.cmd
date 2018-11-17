@@ -1,7 +1,5 @@
 CALL :AUTORUN
 CALL :MACHINA
-timeout /t 3 >nul
-cls
 CALL :MENU
 GOTO :KONIEC
 
@@ -43,6 +41,7 @@ rem Adres aplikacji
 EXIT /B
 rem ==========================================
 :MACHINA
+	CLS
 	ECHO.
 	ECHO.
 	ECHO.
@@ -55,6 +54,7 @@ rem ==========================================
 	ECHO.
 	ECHO.
 	ECHO.
+	timeout /t 3 >nul
 EXIT /B
 rem ==========================================
 :MENU
@@ -160,6 +160,7 @@ rem ==========================================
 	ECHO Wyslano
 	ECHO ===============================
 	ECHO.
+	timeout /t 3 >nul
 	ECHO Wcisnij klawisz aby wrocic do menu
 	Pause >nul
 EXIT /B
@@ -172,11 +173,12 @@ rem ==========================================
 	ECHO ===============================
 	ECHO Wykonuje GIT PULL
 	ECHO.
-	GIT PULL
+	GIT pull
 	ECHO.
 	ECHO Pobrano
 	ECHO ===============================
 	ECHO.
+	timeout /t 3 >nul
 	ECHO Wcisnij klawisz aby wrocic do menu
 	Pause >nul
 EXIT /B
