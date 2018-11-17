@@ -1,20 +1,7 @@
 CALL :AUTORUN
 CALL :MACHINA
 CALL :MENU
-GOTO :KONIEC
 
-
-
-
-
-rem ==========================================
-rem Wysylanie
-rem GIT add .
-rem GIT commit -m miszcze
-rem GIT push
-rem ==========================================
-rem Pobieranie
-rem GIT pull
 rem ==========================================
 :AUTORUN
 rem Wlacz wylacz echo
@@ -42,25 +29,18 @@ EXIT /B
 rem ==========================================
 :MACHINA
 	CLS
-	ECHO.
-	ECHO.
-	ECHO.
-	ECHO.
+	CALL :ECHA 5
 	ECHO      =======================
 	ECHO      =                     =
 	ECHO      = M A C H I N A v.%v% =
 	ECHO      =                     =
 	ECHO      =======================
-	ECHO.
-	ECHO.
-	ECHO.
 	timeout /t 3 >nul
 EXIT /B
 rem ==========================================
 :MENU
 	cls
-	ECHO.
-	ECHO.
+	CALL :ECHA 5
 	ECHO     Witaj %USERNAME% 
 	ECHO   Co chcesz zrobic?
 	ECHO.
@@ -69,7 +49,7 @@ rem ==========================================
 	ECHO 3) Wyslij na %GIT%
 	ECHO 4) Pobierz z %GIT%
 	ECHO 5) USTAWIENIA
-	ECHO 5) Koniec
+	ECHO 6) Koniec
 	ECHO.
 	SET /P MENU=Wybor=
 	if %MENU%==1 (
@@ -89,16 +69,20 @@ rem ==========================================
 					GOTO :MENU
 				) else (
 					IF %MENU%==5 (
-						ECHO 5
-						GOTO :KONIEC
+						ECHO USTAWIENIA
+						GOTO :MENU
 					) else (
-						ECHO.
-						ECHO.
-						ECHO Nieprawidlowy wybor - %MENU%
-						ECHO Sproboj ponownie
-						timeout /t 3 >nul
-						cls
-						GOTO :MENU 
+						IF %MENU%==6 (
+							GOTO :KONIEC
+						) else (
+							ECHO.
+							ECHO.
+							ECHO Nieprawidlowy wybor - %MENU%
+							ECHO Sproboj ponownie
+							timeout /t 3 >nul
+							cls
+							GOTO :MENU 
+						)
 					)
 				)
 			)
@@ -108,9 +92,7 @@ EXIT /B
 rem ==========================================
 :serverRun
 	cls
-	ECHO.
-	ECHO.
-	ECHO.
+	CALL :ECHA 5
 	ECHO Uruchamiam . . .
 	START /MIN /D %SCIEZKA% php bin/console server:run
 	IF %ERRORLEVEL%==0 ( ECHO Odpalone . . .
@@ -120,9 +102,7 @@ EXIT /B
 rem ==========================================
 :appRun
 	cls
-	ECHO.
-	ECHO.
-	ECHO.
+	CALL :ECHA 5
 	ECHO Uruchamiam aplikacje . . .
 	%PRZEGLADARKA% %ADRES%:%PORT%
 	IF %ERRORLEVEL%==0 ( ECHO Odpalone . . .
@@ -132,14 +112,12 @@ EXIT /B
 rem ==========================================
 :Wyslij
 	cls
-	ECHO.
-	ECHO.
+	CALL :ECHA 5
 	ECHO CTRL+C - Anuluj
 	SET /P ADD=Wprowadz parametr GIT add 
 	CD %SCIEZKA%
 	cls
-	ECHO.
-	ECHO.
+	CALL :ECHA 5
 	ECHO ===============================
 	ECHO Wykonuje GIT add %ADD%
 	ECHO.
@@ -168,8 +146,7 @@ rem ==========================================
 :Pobierz
 	CD %SCIEZKA%
 	cls
-	ECHO.
-	ECHO.
+	CALL :ECHA 5
 	ECHO ===============================
 	ECHO Wykonuje GIT PULL
 	ECHO.
@@ -183,7 +160,15 @@ rem ==========================================
 	Pause >nul
 EXIT /B
 rem ==========================================
+:ECHA
+	FOR /L %%A IN (1,1,%1) DO (
+	ECHO.
+	)
+EXIT /B
+rem ==========================================
 :KONIEC
+	cls
+	ECHO
 	ECHO KONIEC
 	ECHO Wcisnij klawisz aby zakonczyc
 	pause >nul
