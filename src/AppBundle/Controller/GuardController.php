@@ -6,6 +6,7 @@ use AppBundle\Entity\GodzLek;
 use AppBundle\Entity\Klasy;
 use AppBundle\Entity\Obecnosci;
 use AppBundle\Entity\Oceny;
+use AppBundle\Entity\Opiekunowie;
 use AppBundle\Entity\Przedmioty;
 use AppBundle\Entity\Terminarz;
 use AppBundle\Entity\Uczniowie;
@@ -20,9 +21,9 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * @Route("/uczen")
+ * @Route("/opiekun")
  */
-class StudentController extends Controller{
+class GuardController extends Controller{
     
     public function __construct(EntityManagerInterface $em){
 	//liczenie wiadomości do widoków
@@ -30,7 +31,7 @@ class StudentController extends Controller{
     }
 
     /**
-     * @Route("/oceny", name="student_rate")
+     * @Route("/oceny", name="guard_rate")
      */
     public function studentRateAction(Request $request){
 	$em=$this->getDoctrine()->getManager();
@@ -39,7 +40,7 @@ class StudentController extends Controller{
 	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break',[],302);
 		
 	//sprawdzawdzanie czy użytkownik to uczeń
-	if(!$this->get('session')->has('student')){
+	if(!$this->get('session')->has('guard')){
 	    $this->get('session')->set('danger','Nie jesteś uczniem.');
 	    return $this->redirectToRoute('homepage',[],302);
 	}
@@ -67,11 +68,12 @@ class StudentController extends Controller{
 	    ->add('submit',SubmitType::class)
 	    ->getForm();
 	
-	//pobranie sesji ucznia
-	$sessionStudentId=$this->get('session')->get('user')['user']->getId();
+	//pobranie ucznia
+	$sessionGuardId=$this->get('session')->get('user')['user']->getId();
+	$guard=$em->getRepository(Opiekunowie::class)->findBy(['uzytkownik'=>$sessionGuardId]);
 	$student=$em
 	    ->getRepository(Uczniowie::class)
-	    ->findOneBy(['uzytkownik'=>$sessionStudentId]);
+	    ->findOneBy(['opiekun'=>$guard]);
 	
 	//pobranie filtra (zmienne $_GET)
 	$get=$request->query->get('form');
@@ -88,7 +90,7 @@ class StudentController extends Controller{
     }
     
     /**
-     * @Route("/obecnosci", name="student_presence")
+     * @Route("/obecnosci", name="guard_presence")
      */
     public function studentPresence(Request $request){
 	$em=$this->getDoctrine()->getManager();
@@ -97,7 +99,7 @@ class StudentController extends Controller{
 	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break',[],302);
 			
 	//sprawdzawdzanie czy użytkownik to uczeń
-	if(!$this->get('session')->has('student')){
+	if(!$this->get('session')->has('guard')){
 	    $this->get('session')->set('danger','Nie jesteś uczniem.');
 	    return $this->redirectToRoute('homepage',[],302);
 	}
@@ -117,11 +119,12 @@ class StudentController extends Controller{
 	//formularz
 	$form=$this->createForm(SelectPresenceType::class);
 	
-	//pobranie sesji ucznia
-	$sessionStudentId=$this->get('session')->get('user')['user']->getId();
+	//pobranie ucznia
+	$sessionGuardId=$this->get('session')->get('user')['user']->getId();
+	$guard=$em->getRepository(Opiekunowie::class)->findBy(['uzytkownik'=>$sessionGuardId]);
 	$student=$em
 	    ->getRepository(Uczniowie::class)
-	    ->findOneBy(['uzytkownik'=>$sessionStudentId]);
+	    ->findOneBy(['opiekun'=>$guard]);
 	
 	//pobranie filtra (zmienne $_GET)
 	$get=$request->query->get('select_presence');
@@ -138,7 +141,7 @@ class StudentController extends Controller{
     }
     
     /**
-     * @Route("/plan-zajec", name="student_time_table")
+     * @Route("/plan-zajec", name="guard_time_table")
      */
     public function studentTimeTable(Request $request){
 	$em=$this->getDoctrine()->getManager();
@@ -147,7 +150,7 @@ class StudentController extends Controller{
 	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break',[],302);
 			
 	//sprawdzawdzanie czy użytkownik to uczeń
-	if(!$this->get('session')->has('student')){
+	if(!$this->get('session')->has('guard')){
 	    $this->get('session')->set('danger','Nie jesteś uczniem.');
 	    return $this->redirectToRoute('homepage',[],302);
 	}
@@ -164,11 +167,12 @@ class StudentController extends Controller{
 	    $this->get('session')->remove('danger');
 	}
 	
-	//pobranie sesji ucznia
-	$sessionStudentId=$this->get('session')->get('user')['user']->getId();
+	//pobranie ucznia
+	$sessionGuardId=$this->get('session')->get('user')['user']->getId();
+	$guard=$em->getRepository(Opiekunowie::class)->findBy(['uzytkownik'=>$sessionGuardId]);
 	$student=$em
 	    ->getRepository(Uczniowie::class)
-	    ->findOneBy(['uzytkownik'=>$sessionStudentId]);
+	    ->findOneBy(['opiekun'=>$guard]);
 
 	//tworzenie planu zajęć
 	$lessonHours=$this->getDoctrine()->getRepository(GodzLek::class)->findAll();
@@ -195,7 +199,7 @@ class StudentController extends Controller{
     }
     
     /**
-     * @Route("/uwagi", name="student_school_note")
+     * @Route("/uwagi", name="guard_school_note")
      */
     public function schoolNoteAction(Request $request){
 	$em=$this->getDoctrine()->getManager();
@@ -204,7 +208,7 @@ class StudentController extends Controller{
 	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break',[],302);
 			
 	//sprawdzawdzanie czy użytkownik to uczeń
-	if(!$this->get('session')->has('student')){
+	if(!$this->get('session')->has('guard')){
 	    $this->get('session')->set('danger','Nie jesteś uczniem.');
 	    return $this->redirectToRoute('homepage',[],302);
 	}
@@ -221,11 +225,12 @@ class StudentController extends Controller{
 	    $this->get('session')->remove('danger');
 	}
 	
-	//pobranie sesji ucznia
-	$sessionStudentId=$this->get('session')->get('user')['user']->getId();
+	//pobranie ucznia
+	$sessionGuardId=$this->get('session')->get('user')['user']->getId();
+	$guard=$em->getRepository(Opiekunowie::class)->findBy(['uzytkownik'=>$sessionGuardId]);
 	$student=$em
 	    ->getRepository(Uczniowie::class)
-	    ->findOneBy(['uzytkownik'=>$sessionStudentId]);
+	    ->findOneBy(['opiekun'=>$guard]);
 	
 	$schoolNote=$em
 	    ->getRepository(Uwagi::class)
