@@ -41,4 +41,22 @@ class ObecnosciRepository extends EntityRepository{
 	    ->getQuery()
 	    ->getResult();
     }
+    
+    public function selectPresenceWhereStudent($student,$day){
+	
+	return $this
+	    ->createQueryBuilder('o')
+	    ->select('o')
+	    ->join('o.zajecia','z')
+	    ->join('z.termin','t')
+	    ->join('t.ktoCo','p')
+	    ->join('o.uczen','u')
+	    ->where('u.id='.$student)
+	    ->andWhere('z.data>:get_data')
+	    ->andWhere('z.data<:get_data_end')
+	    ->setParameter('get_data',$day.' 00:00')
+	    ->setParameter('get_data_end',$day.' 59:59')
+	    ->getQuery()
+	    ->getResult();
+    }
 }

@@ -2,13 +2,10 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1 class="text-center my-3">
-	<img src="https://avatars2.githubusercontent.com/u/44133871?s=400&v=4" width="50"/>
-	Politechnika lubelska
-	<img src="https://avatars2.githubusercontent.com/u/44133871?s=400&v=4" width="50"/>
-    </h1>
-    <iframe src="https://www.youtube.com/embed/V7K3OgbdXPw?start=18" 
-    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    <h1 class="text-center my-3">Strona główna</h1>
+    {% if danger is defined %}
+	<div class="alert alert-danger mt-3">{{danger}}</div>
+    {% endif %}
     {% if info is defined %}
 	<div class="alert alert-info mt-3">{{info}}</div>
     {% endif %}

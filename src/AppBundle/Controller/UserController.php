@@ -117,10 +117,26 @@ class UserController extends Controller{
 		    )
 		    ->getResult();
 		    
+		    $guard=$entityManager->createQuery(
+			"SELECT o ".
+			"FROM AppBundle\Entity\Opiekunowie o ".
+			"WHERE o.uzytkownik=".$user[0]->getId() 
+		    )
+		    ->getResult();
+		    
+		    $student=$entityManager->createQuery(
+			"SELECT u ".
+			"FROM AppBundle\Entity\Uczniowie u ".
+			"WHERE u.uzytkownik=".$user[0]->getId() 
+		    )
+		    ->getResult();
+		    
 		    //ustawienie w sesji ról użytkownika
 		    if(!empty($admin)) $session->set('admin',true);
 		    if(!empty($teacher)) $session->set('teacher',true);
 		    if(!empty($classTeacher)) $session->set('classTeacher',true);
+		    if(!empty($guard)) $session->set('guard',true);
+		    if(!empty($student)) $session->set('student',true);
 		     
 		    $this->get('session')->set('info','Zalogowano.');
 		    
