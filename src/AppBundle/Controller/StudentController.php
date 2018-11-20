@@ -2,9 +2,12 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\GodzLek;
+use AppBundle\Entity\Klasy;
 use AppBundle\Entity\Obecnosci;
 use AppBundle\Entity\Oceny;
 use AppBundle\Entity\Przedmioty;
+use AppBundle\Entity\Terminarz;
 use AppBundle\Entity\Uczniowie;
 use AppBundle\Form\SelectPresenceType;
 use AppBundle\Utils\Message;
@@ -176,6 +179,29 @@ class StudentController extends Controller{
 	$student=$em
 	    ->getRepository(Uczniowie::class)
 	    ->findOneBy(['uzytkownik'=>$sessionStudentId]);
+
+	//tworzenie planu zajęć
+	$lessonHours=$this->getDoctrine()->getRepository(GodzLek::class)->findAll();
+	$class=$this
+	    ->getDoctrine()
+	    ->getRepository(Klasy::class)
+	    ->find($student->getKlasa());
+
+	$arrayWeek=['poniedzialek','wtorek','sroda','czwartek','piatek','sobota'];
+	for($j=0;$j<count($arrayWeek);$j++)
+	for($i=0;$i<count($lessonHours);$i++)
+	$lessons[$i][$arrayWeek[$j]]=$em
+	    ->getRepository(Terminarz::class)
+	    ->findOneBy([
+		'dzienTygodnia'=>$arrayWeek[$j],
+		'godzina'=>$lessonHours[$i]->getId(),
+		'klasa'=>$class->getId()
+	    ]);
+	
+	return $this->render('student/time_table.html.twig',[
+	    'lessonHours'=>$lessonHours,
+	    'lessons'=>$lessons
+	]);
     }
     
     /**
