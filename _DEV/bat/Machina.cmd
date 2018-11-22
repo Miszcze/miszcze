@@ -12,19 +12,10 @@ rem Wersja programu MACHINA
 	SET v=1.0
 rem Nazwa Gita
 	SET GIT=MISZCZE
-rem Ścieżka do apatcha
-	SET SCIEZKA=C:\xampp\htdocs\%GIT%
-rem sciezkla do chroma
-	SET CHROME="C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
-rem sciezka do Internet Explorera
-	SET IE="C:\Program Files (x86)\Internet Explorer\iexplore.exe"
-rem sciezka do Firefoxa
-	SET FIREFOX="Wpisac tutaj sciezke do programu firefox"
-rem Wybrana przegladarka
-	SET PRZEGLADARKA=%CHROME%
-rem Adres aplikacji
-	SET ADRES=127.0.0.1
-	SET PORT=8000
+	SET KOMMIT="Modyfikacja GITA"
+	if %username%==adm CALL :DAREK
+	if %username%==aaa CALL :MARCIN
+	if %username%==Krzys CALL :KRZYSIEK
 EXIT /B
 rem ==========================================
 :MACHINA
@@ -136,9 +127,9 @@ rem ==========================================
 	ECHO.
 	ECHO Dodano
 	ECHO ===============================
-	ECHO Wykonuje GIT commit -m %GIT%
+	ECHO Wykonuje GIT commit -m %KOMMIT%
 	ECHO.
-	GIT commit -m %GIT%
+	GIT commit -m %KOMMIT%
 	ECHO.
 	ECHO Zakomintowano
 	ECHO ===============================
@@ -185,6 +176,51 @@ rem ==========================================
 	)
 	color 3f
 EXIT /B
+rem ==========================================
+:DAREK
+rem Ścieżka do apatcha
+	SET SCIEZKA=C:\xampp\htdocs\%GIT%
+rem sciezkla do chroma
+	SET CHROME="C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
+rem sciezka do Internet Explorera
+	SET IE="C:\Program Files (x86)\Internet Explorer\iexplore.exe"
+rem sciezka do Firefoxa
+	SET FIREFOX="Wpisac tutaj sciezke do programu firefox"
+rem Wybrana przegladarka
+	SET PRZEGLADARKA=%CHROME%
+rem Adres aplikacji
+	SET ADRES=127.0.0.1
+	SET PORT=8000
+rem ==========================================
+:MARCIN
+rem Ścieżka do apatcha
+	SET SCIEZKA=C:\wamp64\www\%GIT%
+rem sciezkla do chroma
+	SET CHROME="C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
+rem sciezka do Internet Explorera
+	SET IE="C:\Program Files (x86)\Internet Explorer\iexplore.exe"
+rem sciezka do Firefoxa
+	SET FIREFOX="Wpisac tutaj sciezke do programu firefox"
+rem Wybrana przegladarka
+	SET PRZEGLADARKA=%CHROME%
+rem Adres aplikacji
+	SET ADRES=127.0.0.1
+	SET PORT=8000
+rem ==========================================
+:KRZYSIEK
+rem Ścieżka do apatcha
+	SET SCIEZKA=C:\xampp\htdocs\%GIT%
+rem sciezkla do chroma
+	SET CHROME="C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
+rem sciezka do Internet Explorera
+	SET IE="C:\Program Files (x86)\Internet Explorer\iexplore.exe"
+rem sciezka do Firefoxa
+	SET FIREFOX="Wpisac tutaj sciezke do programu firefox"
+rem Wybrana przegladarka
+	SET PRZEGLADARKA=%IE%
+rem Adres aplikacji
+	SET ADRES=127.0.0.1
+	SET PORT=8000
 rem ==========================================
 :ECHA
 	FOR /L %%A IN (1,1,%1) DO (
