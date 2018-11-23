@@ -1,0 +1,68 @@
+{% block title %}Terminarz{% endblock %}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1 class="text-center my-3">Plan zajęć</h1>
+    
+    {% if lessons is not empty %}
+	<table class="table table-hover table-light border border-dark table-responsive-md">
+	    <thead class="thead-dark">
+	    <tr>
+		<th>Godz.</th>
+		<th>Poniedziałek</th>
+		<th>Wtorek</th>
+		<th>Środa</th>
+		<th>Czwartek</th>
+		<th>Piątek</th>
+{#		<th>Sobota</th>#}
+	    </tr>
+	    </thead>
+	    <tbody>
+	    {% for i in 0..lessonHours|length-1 %}
+		<tr>
+		    <td>
+			{{ lessonHours[i].poczatek|date('H:i') }} - 
+			{{ lessonHours[i].poczatek|date_modify("+45 min")|date('H:i') }}
+		    </td>
+		    <td>
+			{% if lessons[i]['poniedzialek'] is not null %}
+			    {{ lessons[i]['poniedzialek'].klasa.poziom }}{{ lessons[i]['poniedzialek'].klasa.klasa }} - 
+			    {{ lessons[i]['poniedzialek'].ktoCo.przedmiot.nazwa }}
+			{% endif %}
+		    </td>
+		    <td>
+			{% if lessons[i]['wtorek'] is not null %}
+			    {{ lessons[i]['wtorek'].klasa.poziom }}{{ lessons[i]['wtorek'].klasa.klasa }} - 
+			    {{ lessons[i]['wtorek'].ktoCo.przedmiot.nazwa }}
+			{% endif %}
+		    </td>
+		    <td>
+			{% if lessons[i]['sroda'] is not null %}
+			    {{ lessons[i]['sroda'].klasa.poziom }}{{ lessons[i]['sroda'].klasa.klasa }} - 
+			    {{ lessons[i]['sroda'].ktoCo.przedmiot.nazwa }}
+			{% endif %}
+		    </td>
+		    <td>
+			{% if lessons[i]['czwartek'] is not null %}
+			    {{ lessons[i]['czwartek'].klasa.poziom }}{{ lessons[i]['czwartek'].klasa.klasa }} - 
+			    {{ lessons[i]['czwartek'].ktoCo.przedmiot.nazwa }}
+			{% endif %}
+		    </td>
+		    <td>
+			{% if lessons[i]['piatek'] is not null %}
+			    {{ lessons[i]['piatek'].klasa.poziom }}{{ lessons[i]['piatek'].klasa.klasa }} - 
+			    {{ lessons[i]['piatek'].ktoCo.przedmiot.nazwa }}
+			{% endif %}
+		    </td>
+{#		    <td>
+			{% if lessons[i]['sobota'] is not null %}
+			    {{ lessons[i]['sobota'].klasa.poziom }}{{ lessons[i]['sobota'].klasa.klasa }} - 
+			    {{ lessons[i]['sobota'].ktoCo.przedmiot.nazwa }}
+			{% endif %}
+		    </td>#}
+		</tr>
+	    {% endfor %}
+	    </tbody>
+	</table>
+    {% endif %}
+{% endblock %}

@@ -142,7 +142,7 @@ class AdminController extends Controller{
 		->add('mail',EmailType::class)
 		->add('imie',TextType::class)
 		->add('nazwisko',TextType::class)
-		->add('uczen',ChoiceType::class,['choices'=>$choicesStudent])
+		->add('uczen',ChoiceType::class,['choices'=>@$choicesStudent])
 		->add('kontakt',TextareaType::class)
 		->add('submit',SubmitType::class)
 		->getForm();

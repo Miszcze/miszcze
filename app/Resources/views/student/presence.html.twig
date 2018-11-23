@@ -1,0 +1,67 @@
+{% block title %}Oceny{% endblock %}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1 class="text-center my-3">Obecności</h1>
+    
+    {% if presences is not empty %}
+	<table class="table table-hover table-light border border-dark">
+	    <thead class="thead-dark">
+	    <tr>
+		<th>Obecność</th>
+		<th>Data sprawdzenia</th>
+		<th>Termin zajęć</th>
+		<th>Przedmiot</th>
+		<th>Prowadzący</th>
+	    </tr>
+	    </thead>
+	    <tbody> 
+	   {% for presence in presences %}
+		<tr>
+		    <td>
+			{% if presence.obecny==0 %}
+			    obecny
+			{% elseif presence.obecny==1 %}
+			    nieobecny
+			{% elseif presence.obecny==2 %}
+			    spóźniony
+			{% else %}
+			    usprawiedliwiony
+			{% endif %}
+		    </td>
+		    <td>{{presence.zajecia.data|date('Y-m-d')}}</td>
+		    <td>
+			{{presence.zajecia.termin.dzienTygodnia}}<br>
+			{{presence.zajecia.termin.godzina.poczatek|date('h:i')}}
+		    </td>
+		    <td>
+			{{presence.zajecia.termin.ktoCo.przedmiot.nazwa}}<br>
+			
+		    </td>
+                    <td>{{presence.zajecia.termin.ktoCo.prowadzacy.nazwisko}}</td>
+		</tr>
+	    {% endfor %}
+	    </tbody>
+	</table>
+    {% else %}
+	<div class="alert alert-info">Brak danych.</div>
+    {% endif %}
+    
+    {# formularz #}
+    <div class="border border-dark mt-5">
+	<div class="form-header">Obecności</div>
+	<div class="form-body">
+	{{form_start(form)}}
+	<div class="form-group">
+	    <div class="input-group mb-2">
+		<div class="input-group-prepend">
+		    <div class="input-group-text">Dzień</div>
+		</div>
+		{{ form_widget(form.dzien,{'attr':{'class':'form-control'}}) }}
+	    </div>
+	</div>
+	{{form_widget(form.submit,{'attr':{'class':'btn btn-primary','label':'default'},'label':'Wyślij'})}}
+	{{form_end(form)}}
+	</div>
+    </div>
+{% endblock %}

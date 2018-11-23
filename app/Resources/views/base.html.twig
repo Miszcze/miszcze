@@ -42,10 +42,17 @@
 		    {% endif %}
 		    
 		    {% if app.session.get('student') is not empty %}
-			<a class="btn btn-outline-light btn-sm mt-1" href="#">Oceny</a>
-			<a class="btn btn-outline-light btn-sm mt-1" href="#">Plan zajęć</a>
-			<a class="btn btn-outline-light btn-sm mt-1" href="#">Uwagi i pochwały</a>
-			<a class="btn btn-outline-light btn-sm mt-1" href="#">Obecności</a>
+			<a class="btn btn-outline-light btn-sm mt-1" href="{{url('student_rate')}}">Oceny</a>
+                        <a class="btn btn-outline-light btn-sm mt-1" href="{{url('student_presence')}}">Obecności</a>
+			<a class="btn btn-outline-light btn-sm mt-1" href="{{url('student_time_table')}}">Plan zajęć</a>
+			<a class="btn btn-outline-light btn-sm mt-1" href="{{url('student_school_note')}}">Uwagi i pochwały</a>
+		    {% endif %}
+                    
+                    {% if app.session.get('guard') is not empty %}
+			<a class="btn btn-outline-light btn-sm mt-1" href="{{url('guard_rate')}}">Oceny</a>
+                        <a class="btn btn-outline-light btn-sm mt-1" href="{{url('guard_presence')}}">Obecności</a>
+                        <a class="btn btn-outline-light btn-sm mt-1" href="{{url('guard_time_table')}}">Plan zajęć</a>
+			<a class="btn btn-outline-light btn-sm mt-1" href="{{url('guard_school_note')}}">Uwagi i pochwały</a>
 		    {% endif %}
 		    </div>
 		    
