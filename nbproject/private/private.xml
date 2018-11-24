@@ -3,9 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/wamp64/www/miszcze/src/AppBundle/Controller/AdminController.php</file>
-            <file>file:/C:/wamp64/www/miszcze/app/Resources/views/admin/time_table.html.twig</file>
-            <file>file:/C:/wamp64/www/miszcze/app/Resources/views/admin/class.html.twig</file>
+            <file>file:/C:/xampp/htdocs/miszcze/app/Resources/views/admin/users.html.twig</file>
+            <file>file:/C:/xampp/htdocs/miszcze/src/AppBundle/Utils/Message.php</file>
+            <file>file:/C:/xampp/htdocs/miszcze/app/Resources/views/student/time_table.html.twig</file>
+            <file>file:/C:/xampp/htdocs/miszcze/app/Resources/views/admin/class.html.twig</file>
         </group>
     </open-files>
 </project-private>
