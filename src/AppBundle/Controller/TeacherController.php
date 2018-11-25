@@ -295,10 +295,22 @@ class TeacherController extends Controller{
 	    
 	    //wstawienie uwagi lub pochwałę
 	    if($request->getMethod('post')){
+		$form->handleRequest($request);
+		
+		$student=$em->getRepository(Uczniowie::class)->find($form->get('uczen')->getData());
+		
 		$schoolNote=new Uwagi();
 		$schoolNote->getUczen();
+		$schoolNote->setTresc($form->get('tresc')->getData());
+		$schoolNote->setUczen($student);
+		$schoolNote->setNauczyciel($teacherLogged);
 		$schoolNote->setOdczytane(0);
 		$schoolNote->setStatus(0);
+		
+		$em->persist($schoolNote);
+		$em->flush();
+
+		$this->get('session')->set('info','Wstawiono uwagę.');
 	    }
 	}
 	
