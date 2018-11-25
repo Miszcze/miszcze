@@ -55,7 +55,7 @@ class ObecnosciRepository extends EntityRepository{
 	    ->andWhere('z.data>:get_data')
 	    ->andWhere('z.data<:get_data_end')
 	    ->setParameter('get_data',$day.' 00:00')
-	    ->setParameter('get_data_end',$day.' 59:59')
+	    ->setParameter('get_data_end',$day.' 23:59')
 	    ->getQuery()
 	    ->getResult();
     }
