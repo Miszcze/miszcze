@@ -1,0 +1,2 @@
+dir
+SET /P exit=

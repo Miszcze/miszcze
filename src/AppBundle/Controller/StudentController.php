@@ -5,11 +5,14 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\GodzLek;
 use AppBundle\Entity\Klasy;
 use AppBundle\Entity\Obecnosci;
+use AppBundle\Entity\Ocenianie;
 use AppBundle\Entity\Oceny;
+use AppBundle\Entity\Pracownicy;
 use AppBundle\Entity\Przedmioty;
 use AppBundle\Entity\Terminarz;
 use AppBundle\Entity\Uczniowie;
 use AppBundle\Entity\Uwagi;
+use AppBundle\Form\RateTeacherType;
 use AppBundle\Form\SelectPresenceType;
 use AppBundle\Utils\Message;
 use Doctrine\ORM\EntityManagerInterface;
@@ -236,5 +239,62 @@ class StudentController extends Controller{
 	return $this->render('student/school_note.html.twig',[
 	    'schoolNote'=>$schoolNote
 	]);
+    }
+    
+     /**
+     * @Route("/ankieta", name="student_questionnaire")
+     */
+    public function questionnaire(Request $request){
+	$em=$this->getDoctrine()->getManager();
+	
+	//sprawdzanie przerwy techicznej
+	if(AdminController::technicalBreak($this)) return $this->redirectToRoute('technical_break',[],302);
+			
+	//sprawdzawdzanie czy użytkownik to uczeń
+	if(!$this->get('session')->has('student')){
+	    $this->get('session')->set('danger','Nie jesteś uczniem.');
+	    return $this->redirectToRoute('homepage',[],302);
+	}
+	
+	//tworzenie kominikatu info
+	if($this->get('session')->has('info')){
+	    $this->get('twig')->addGlobal('info',$this->get('session')->get('info'));
+	    $this->get('session')->remove('info');
+	}
+	
+	//utworzenie kominikatu danger
+	if($this->get('session')->has('danger')){
+	    $this->get('twig')->addGlobal('danger',$this->get('session')->get('danger'));
+	    $this->get('session')->remove('danger');
+	}
+	
+	//pobranie sesji ucznia
+	$sessionStudentId=$this->get('session')->get('user')['user']->getId();
+	$student=$em
+	    ->getRepository(Uczniowie::class)
+	    ->findOneBy(['uzytkownik'=>$sessionStudentId]);
+	
+	//formularz
+	$form=$this->createForm(RateTeacherType::class,null,['id'=>$student->getId()]);
+	
+        //wysłanie ocen do bazy
+        if($request->isMethod('post')){
+	    $form->handleRequest($request);
+            $data=$form->getData();
+            foreach($data as $key=>$value){
+                $id=explode('_',$key);
+                $teacher=$em->getRepository(Pracownicy::class)->find($id[0]);
+                $rate=new Ocenianie();
+                $rate->setProwadzacy($teacher);
+                $rate->setUczen($student);
+                $rate->setOcena($value);
+                $em->persist($rate);
+                $em->flush();
+            }
+        }
+        
+	return $this->render('student/questionnaire.html.twig',[
+            'form'=>$form->createView()
+        ]);
     }
 }

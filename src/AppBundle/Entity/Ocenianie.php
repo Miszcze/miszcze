@@ -7,39 +7,11 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Ocenianie
  *
- * @ORM\Table(name="ocenianie", indexes={@ORM\Index(name="FK_ocenianie_uczniowie_idx", columns={"uczen"}), @ORM\Index(name="FK_ocenianie_przedmioty_idx", columns={"przedmiot"})})
+ * @ORM\Table(name="ocenianie", indexes={@ORM\Index(name="FK_ocenianie_uczniowie_idx", columns={"uczen"}), @ORM\Index(name="FK_ocenianie_pracownicy_idx", columns={"prowadzacy"})})
  * @ORM\Entity
  */
 class Ocenianie
 {
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="semestr", type="string", length=10, nullable=true)
-     */
-    private $semestr;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="terminowosc", type="integer", nullable=false)
-     */
-    private $terminowosc = '0';
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="wiedza", type="integer", nullable=false)
-     */
-    private $wiedza = '0';
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="kulturalnosc", type="integer", nullable=false)
-     */
-    private $kulturalnosc = '0';
-
     /**
      * @var integer
      *
@@ -48,6 +20,13 @@ class Ocenianie
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
+    
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="ocena", type="integer", nullable=false)
+     */
+    private $ocena = '0';
 
     /**
      * @var \AppBundle\Entity\Uczniowie
@@ -62,38 +41,12 @@ class Ocenianie
     /**
      * @var \AppBundle\Entity\Przedmioty
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Przedmioty")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Pracownicy")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="przedmiot", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="prowadzacy", referencedColumnName="id")
      * })
      */
-    private $przedmiot;
-
-
-
-    /**
-     * Set semestr
-     *
-     * @param string $semestr
-     *
-     * @return Ocenianie
-     */
-    public function setSemestr($semestr)
-    {
-        $this->semestr = $semestr;
-
-        return $this;
-    }
-
-    /**
-     * Get semestr
-     *
-     * @return string
-     */
-    public function getSemestr()
-    {
-        return $this->semestr;
-    }
+    private $prowadzacy;
 
     /**
      * Set terminowosc
@@ -102,9 +55,9 @@ class Ocenianie
      *
      * @return Ocenianie
      */
-    public function setTerminowosc($terminowosc)
+    public function setOcena($ocena)
     {
-        $this->terminowosc = $terminowosc;
+        $this->ocena = $ocena;
 
         return $this;
     }
@@ -114,57 +67,9 @@ class Ocenianie
      *
      * @return integer
      */
-    public function getTerminowosc()
+    public function getOcena()
     {
-        return $this->terminowosc;
-    }
-
-    /**
-     * Set wiedza
-     *
-     * @param integer $wiedza
-     *
-     * @return Ocenianie
-     */
-    public function setWiedza($wiedza)
-    {
-        $this->wiedza = $wiedza;
-
-        return $this;
-    }
-
-    /**
-     * Get wiedza
-     *
-     * @return integer
-     */
-    public function getWiedza()
-    {
-        return $this->wiedza;
-    }
-
-    /**
-     * Set kulturalnosc
-     *
-     * @param integer $kulturalnosc
-     *
-     * @return Ocenianie
-     */
-    public function setKulturalnosc($kulturalnosc)
-    {
-        $this->kulturalnosc = $kulturalnosc;
-
-        return $this;
-    }
-
-    /**
-     * Get kulturalnosc
-     *
-     * @return integer
-     */
-    public function getKulturalnosc()
-    {
-        return $this->kulturalnosc;
+        return $this->ocena;
     }
 
     /**
@@ -202,26 +107,26 @@ class Ocenianie
     }
 
     /**
-     * Set przedmiot
+     * Set terminowosc
      *
-     * @param \AppBundle\Entity\Przedmioty $przedmiot
+     * @param integer $terminowosc
      *
      * @return Ocenianie
      */
-    public function setPrzedmiot(\AppBundle\Entity\Przedmioty $przedmiot = null)
+    public function setProwadzacy($prowadzacy)
     {
-        $this->przedmiot = $przedmiot;
+        $this->prowadzacy = $prowadzacy;
 
         return $this;
     }
 
     /**
-     * Get przedmiot
+     * Get terminowosc
      *
-     * @return \AppBundle\Entity\Przedmioty
+     * @return integer
      */
-    public function getPrzedmiot()
+    public function getProwadzacy()
     {
-        return $this->przedmiot;
+        return $this->prowadzacy;
     }
 }
