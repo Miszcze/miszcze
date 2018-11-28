@@ -13,3 +13,5 @@ MG: był update w strukturze bazy, więc pamietajcie, żeby używać bazy 16.10.
 MG: nauczyciel odwołuję się do ucznia po numerze legitymacji, żeby aplikacja była zgodna z RODO, 
 trzeba spytać Dr Kozieła co o tym myśli
 MG: dopytać koziołka matołka czy można ciągnąć naszą prace na mag'istrze
+
+MG: NOWA BAZA!
