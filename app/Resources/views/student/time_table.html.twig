@@ -14,7 +14,6 @@
 		<th>Środa</th>
 		<th>Czwartek</th>
 		<th>Piątek</th>
-{#		<th>Sobota</th>#}
 	    </tr>
 	    </thead>
 	    <tbody>
@@ -54,12 +53,6 @@
 			    {{ lessons[i]['piatek'].ktoCo.przedmiot.nazwa }}
 			{% endif %}
 		    </td>
-{#		    <td>
-			{% if lessons[i]['sobota'] is not null %}
-			    {{ lessons[i]['sobota'].klasa.poziom }}{{ lessons[i]['sobota'].klasa.klasa }} - 
-			    {{ lessons[i]['sobota'].ktoCo.przedmiot.nazwa }}
-			{% endif %}
-		    </td>#}
 		</tr>
 	    {% endfor %}
 	    </tbody>
