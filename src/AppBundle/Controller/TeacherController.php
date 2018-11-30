@@ -294,7 +294,7 @@ class TeacherController extends Controller{
 	    $form=$this->createForm(SchoolNoteType::class,null,['id'=>$term]);
 	    
 	    //wstawienie uwagi lub pochwałę
-	    if($request->getMethod('post')){
+	    if($request->isMethod('post')){
 		$form->handleRequest($request);
 		
 		$student=$em->getRepository(Uczniowie::class)->find($form->get('uczen')->getData());
@@ -311,6 +311,8 @@ class TeacherController extends Controller{
 		$em->flush();
 
 		$this->get('session')->set('info','Wstawiono uwagę.');
+                
+                return $this->redirectToRoute('teacher_school_note',['term'=>$term],201);
 	    }
 	}
 	
